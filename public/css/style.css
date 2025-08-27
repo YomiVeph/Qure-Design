@@ -136,11 +136,26 @@ input[type="checkbox"]:checked {
   background-color: #0e3995;
   border-color: #0e3995;
 }
+
+.status {
+  font-size: 1.2rem;
+  color: red;
+  margin-top: 0.4rem;
+  display: block;
+  line-height: 1.4;
+}
+
 .term-label {
   display: flex;
   font-size: 1.4rem;
   gap: 0.8rem;
   align-items: center;
+  flex-wrap: wrap;
+}
+
+.term-label .status {
+  flex-basis: 100%;
+  margin-left: 4rem;
 }
 
 .term-label a {
