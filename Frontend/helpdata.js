@@ -39,12 +39,12 @@ const togglePassword = (input, icon) => {
   if (input.type === "password") {
     input.type = "text";
     icon.src =
-      "./asset/image/visibility_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24.svg";
+      "./public/asset/image/visibility_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24.svg";
     icon.alt = "visible";
   } else {
     input.type = "password";
     icon.src =
-      "./asset/image/visibility_off_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24.svg";
+      "./public/asset/image/visibility_off_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24.svg";
     icon.alt = "hidden";
   }
 };

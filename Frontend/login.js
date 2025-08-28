@@ -56,12 +56,12 @@ toggleIcon.addEventListener("click", () => {
   if (passwordInput.type === "password") {
     passwordInput.type = "text";
     toggleIcon.src =
-      "./asset/image/visibility_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24.svg";
+      "./public/asset/image/visibility_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24.svg";
     toggleIcon.alt = "visible";
   } else {
     passwordInput.type = "password";
     toggleIcon.src =
-      "./asset/image/visibility_off_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24.svg";
+      "./public/asset/image/visibility_off_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24.svg";
     toggleIcon.alt = "hidden";
   }
 });
