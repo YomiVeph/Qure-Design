@@ -1,41 +1,56 @@
 "use strict";
-const saveUserData = (user) => {
-  localStorage.setItem(
-    "userData",
-    JSON.stringify({
-      ...user,
-      isLoggedIn: user.isLoggedIn || false,
-      rememberMe: user.rememberMe || false,
-    })
-  );
-};
+function saveUsersData(users) {
+  localStorage.setItem("allUsers", JSON.stringify(users));
+}
 
-const getUserData = () => {
-  return (
-    JSON.parse(localStorage.getItem("userData")) || {
-      isLoggedIn: false,
-      rememberMe: false,
-    }
-  );
-};
+function getUsersData() {
+  return JSON.parse(localStorage.getItem("allUsers")) || [];
+}
 
-const checkLogin = () => {
-  const user = getUserData();
-  return user.isLoggedIn === true;
-};
+function saveSession(session) {
+  localStorage.setItem("session", JSON.stringify(session));
+}
 
-const logout = (redirect = "login.html") => {
-  const user = getUserData();
+function getSession() {
+  return JSON.parse(localStorage.getItem("session")) || null;
+}
 
-  if (!user.rememberMe) {
-    user.isLoggedIn = false;
-    localStorage.setItem("userData", JSON.stringify(user));
+function showError(input, message) {
+  // let span = input.nextElementSibling;
+  // if (!span || !span.classList.contains("status")) {
+  //   span = document.createElement("span");
+  //   span.className = "status";
+  //   input.insertAdjacentElement("afterend", span);
+  // }
+  const group = input.closest(".input-group, .lgn");
+  let span = group.querySelector(".status");
+  if (!span) {
+    span = document.createElement("span");
+    span.className = "status";
+    group.appendChild(span);
   }
+  span.textContent = message;
+  span.style.color = "red";
+}
 
-  window.location.href = redirect;
-};
+function clearError(input) {
+  const group = input.closest(".input-group, .lgn");
+  const span = group?.querySelector(".status");
+  if (span) {
+    span.textContent = "";
+    span.removeAttribute("style");
+  }
+}
 
-const togglePassword = (input, icon) => {
+function clearErrors(form) {
+  const spans = form.querySelectorAll(".status");
+  spans.forEach((s) => {
+    s.textContent = "";
+    s.removeAttribute("style");
+  });
+}
+
+function togglePassword(input, icon) {
   if (input.type === "password") {
     input.type = "text";
     icon.src =
@@ -45,54 +60,51 @@ const togglePassword = (input, icon) => {
     input.type = "password";
     icon.src =
       "asset/image/visibility_off_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24.svg";
-    icon.alt = "hidden";
+    icon.alt = "invisible";
   }
-};
+}
 
-const applyUserRules = () => {
-  const user = getUserData();
+function strongPassword(password) {
+  if (password.length < 8) return false;
+  let hasLower = false;
+  let hasUpper = false;
+  let hasNumber = false;
+  let hasSpecial = false;
+  for (let i = 0; i < password.length; i++) {
+    const char = password[i];
+    if (char >= "a" && char <= "z") hasLower = true;
+    else if (char >= "A" && char <= "Z") hasUpper = true;
+    else if (char >= "0" && char <= "9") hasNumber = true;
+    else hasSpecial = true;
+  }
+  return hasLower && hasUpper && hasNumber && hasSpecial;
+}
 
-  if (user && user.isLoggedIn && user.rememberMe) {
-    if (user.role === "patient") {
-      window.location.href = "patient-dashboard.html";
-    } else if (user.role === "staff") {
-      window.location.href = "staff-dashboard.html";
+function isValidEmail(email) {
+  email = email.trim();
+  const atIndex = email.indexOf("@");
+  const dotIndex = email.lastIndexOf(".");
+  if (atIndex < 1) return false;
+  if (dotIndex <= atIndex + 1) return false;
+  if (dotIndex === email.length - 1) return false;
+  return true;
+}
+
+function isValidPhone(phone) {
+  phone = phone.trim();
+
+  if (phone.length < 10 || phone.length > 15) {
+    return false;
+  }
+  for (let i = 0; i < phone.length; i++) {
+    const char = phone[i];
+    if (!(char >= "0" && char <= "9")) {
+      return false;
     }
   }
-};
+  return true;
+}
 
-const showError = (input, message) => {
-  let span;
-  if (input.type === "checkbox") {
-    let wrapper = input.closest(".terms") || input.parentElement;
-    span = wrapper.querySelector(".status");
-    if (!span) {
-      span = document.createElement("span");
-      span.className = "status";
-      wrapper.appendChild(span);
-    }
-  } else if (input.parentElement.classList.contains("password-wrapper")) {
-    span = input.parentElement.parentElement.querySelector(".status");
-    if (!span) {
-      span = document.createElement("span");
-      span.className = "status";
-      input.parentElement.parentElement.appendChild(span);
-    }
-  } else {
-    span = input.closest(".input-group")?.querySelector(".status");
-    if (!span) {
-      span = document.createElement("span");
-      span.className = "status";
-      input.insertAdjacentElement("afterend", span);
-    }
-  }
-  span.textContent = message;
-  span.style.color = "red";
-};
-
-const clearErrors = (form) => {
-  form.querySelectorAll(".status").forEach((s) => {
-    s.textContent = "";
-    s.removeAttribute("style");
-  });
-};
+function isValidEmailOrPhone(value) {
+  return isValidEmail(value) || isValidPhone(value);
+}
