@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="wait.css" />
+    <title>Waiting Area Management</title>
+  </head>
+  <body>
+    <div class="container">
+      <!-- Sidebar -->
+      <div class="sidebar">
+        <div class="logo">
+          <img src="./asset/image/Vector (2).png" alt="logo" />
+          <h2>Qure</h2>
+        </div>
+        <div class="sidebar-link">
+          <ul>
+            <li>
+              <a class="icon active" href="#"
+                ><span class="material-symbols-outlined">dashboard</span
+                >Dashboard</a
+              >
+            </li>
+            <li>
+              <a class="icon inactive" href="queue.html"
+                ><span class="material-symbols-outlined">group_add</span
+                >Queues</a
+              >
+            </li>
+            <li>
+              <a class="icon inactive" href="#"
+                ><span class="material-symbols-outlined">switch_account</span
+                >Waiting Area</a
+              >
+            </li>
+            <li>
+              <a class="icon inactive" href="#"
+                ><span class="material-symbols-outlined">stacked_inbox</span
+                >Appointments</a
+              >
+            </li>
+            <li>
+              <a class="icon inactive" href="#"
+                ><span class="material-symbols-outlined">settings</span
+                >Settings</a
+              >
+            </li>
+          </ul>
+          <div class="log-out">
+            <span class="material-symbols-outlined">logout</span>
+            <a href="login.html">Logout</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Content -->
+      <div class="main">
+        <h1>Waiting Area Management</h1>
+        <div class="select-button">
+          <div class="hospital-department">
+            <div class="hosp-dropdown dropdown">
+              <div class="hosp-dropdown-toggle dropdown-toggle">
+                <button class="hosp-btn btn">Select Facility</button>
+                <span class="material-symbols-outlined hosp-arrow arrow-icon">
+                  arrow_drop_down
+                </span>
+              </div>
+              <ul class="dropdown-content hosp-dropdown-content">
+                <li>
+                  Main Hospital - Central location handling all major services
+                </li>
+                <li>
+                  Outpatient Wing - General consultations and follow - ups
+                </li>
+                <li>
+                  Specialist Clinic - Referred Cases requiring special care
+                </li>
+                <li>
+                  Children's Hospital - Pediatric care and child health services
+                </li>
+                <li>
+                  Diagnostic & Imaging Center - MRI, X-ray, Ultrasound services
+                </li>
+                <li>
+                  Maternity & Women's Health - Prenatal, delivery,postnatal care
+                </li>
+                <li>
+                  Emergency Care Unit - 24/7 emergency response and trauma care
+                </li>
+                <li>Oncology Center - Cancer Diagnosis and treatment</li>
+                <li>
+                  Rehabilitation & Physiotherapy - Post - surgery and injury
+                  recovery
+                </li>
+                <li>Dental & Oral Health Clinic - Specialized dental care</li>
+              </ul>
+            </div>
+
+            <div class="dropdown dept-dropdown">
+              <div class="dropdown-toggle dept-dropdown-toggle">
+                <button class="btn dept-btn">Select Floor</button>
+                <span class="material-symbols-outlined dept-arrow arrow-icon">
+                  arrow_drop_down
+                </span>
+              </div>
+              <ul class="dropdown-content dept-dropdown-content">
+                <li>Ground Floor- Reception, Pharmacy, Triage Area</li>
+                <li>
+                  1st Floor - General Consultation Rooms, Lab Sample Collection
+                </li>
+                <li>2nd Floor - Specialist Clinics (ENT, Cardiology, etc)</li>
+                <li>3rd Floor - Operating Theatres, ICU</li>
+                <li>4th Floor - Wards & Recovery Rooms</li>
+                <li>5th Floor - Admin Offices, Conference Rooms</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="content">
+          <div class="waiting-areas">
+            <div class="room yellow">
+              <h3>Waiting Room A</h3>
+              <p>Main Hall</p>
+              <span>19/25 (76%) - Last updated: 2 mins ago</span>
+            </div>
+            <div class="room green">
+              <h3>Waiting Room B</h3>
+              <p>Pediatrics Lobby</p>
+              <span>4/15 (26%) - Last updated: 5 mins ago</span>
+            </div>
+            <div class="room orange">
+              <h3>Waiting Room C</h3>
+              <p>Lab Sample Area</p>
+              <span>8/12 (66%) - Last updated: 3 mins ago</span>
+            </div>
+            <div class="room red">
+              <h3>Waiting Room D</h3>
+              <p>X-Ray Waiting</p>
+              <span>22/22 (100%) - Last updated: Just now</span>
+            </div>
+            <div class="room yellow">
+              <h3>Waiting Room E</h3>
+              <p>General OPD</p>
+              <span>12/20 (60%) - Last updated: 7 mins ago</span>
+            </div>
+            <div class="room green">
+              <h3>Waiting Room F</h3>
+              <p>Emergency Hall</p>
+              <span>6/10 (60%) - Last updated: 1 min ago</span>
+            </div>
+          </div>
+          <div class="details">
+            <h2>X-Ray Waiting</h2>
+            <p>22/22</p>
+            <div class="critical">CRITICAL</div>
+            <div class="patient-list">
+              <div><span>Samantha Adams</span><span>3 mins</span></div>
+              <div><span>David Fola</span><span>8 mins</span></div>
+              <div><span>Bella Johnson</span><span>5 mins</span></div>
+              <div><span>Leon James</span><span>13 mins</span></div>
+            </div>
+            <div class="actions">
+              <button>Email</button>
+              <button>Speaker</button>
+              <button class="confirm">Confirm</button>
+            </div>
+          </div>
+        </div>
+        <button class="add-btn">Add New Waiting Area</button>
+      </div>
+    </div>
+  </body>
+</html>

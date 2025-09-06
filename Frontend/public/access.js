@@ -5,6 +5,22 @@ const continueBtn = document.querySelector(".continue-btn");
 const backBtn = document.querySelector(".back-btn");
 const generateCode = "STAFF-2025";
 
+let sideBarOpen = false;
+const sidebar = document.getElementById("sidebar");
+function openSideBar() {
+  if (!sideBarOpen) {
+    sidebar.classList.add("sidebar-responsive");
+    sideBarOpen = true;
+  }
+}
+
+function closeSideBar() {
+  if (sideBarOpen) {
+    sidebar.classList.remove("sidebar-responsive");
+    sideBarOpen = false;
+  }
+}
+
 function checkCode() {
   const userInput = inputArea.value.trim();
   if (userInput === generateCode) {

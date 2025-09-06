@@ -1,0 +1,257 @@
+/* Settings.css */
+html {
+  font-size: 62.5%;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Plus Jakarta Sans", sans-serif;
+}
+
+body {
+  min-height: 100vh;
+  background-color: #f9fafb;
+}
+
+/* ===== Container ===== */
+.container {
+  height: 100vh;
+  display: grid;
+  grid-template-columns: 250px 1fr;
+  grid-template-areas: "sidebar main";
+}
+
+/* ===== Sidebar ===== */
+.sidebar {
+  grid-area: sidebar;
+  background-color: #0e3995;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem 1rem;
+  height: 100%;
+}
+
+.logo {
+  display: flex;
+  gap: 0.8rem;
+  align-items: center;
+  margin-bottom: 3.8rem;
+}
+
+.logo img {
+  width: 2.4rem;
+  height: 2.4rem;
+}
+
+.logo h2 {
+  font-size: 2.8rem;
+  font-weight: 600;
+}
+
+.sidebar-link {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+}
+
+.sidebar-link ul {
+  list-style: none;
+  width: 100%;
+}
+
+.sidebar-link ul li {
+  margin-bottom: 1.5rem;
+}
+
+.sidebar-link ul li a {
+  text-decoration: none;
+  color: #6c99f8;
+  font-size: 1.6rem;
+  font-weight: 500;
+  padding: 0.8rem 1.2rem;
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  border-radius: 0.8rem;
+  transition: all 0.3s ease;
+}
+
+.sidebar-link ul li a.active {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.log-out {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  font-size: 1.6rem;
+  font-weight: 500;
+  color: #d0dffd;
+  cursor: pointer;
+}
+
+.log-out a {
+  color: #6c99f8;
+  text-decoration: none;
+  transition: 0.3s;
+}
+
+.log-out a:hover {
+  color: #fff;
+}
+
+/* ===== Main ===== */
+.main {
+  grid-area: main;
+  padding: 2.4rem;
+}
+
+.settings-header {
+  font-size: 2.4rem;
+  font-weight: 600;
+  margin-bottom: 2rem;
+  color: #111827;
+}
+
+/* ===== Tabs ===== */
+.tabs {
+  display: flex;
+  gap: 2rem;
+  margin-bottom: 2.4rem;
+  border-bottom: 1px solid #e5e7eb;
+  flex-wrap: wrap; /* make tabs wrap when screen shrinks */
+}
+
+.tab {
+  font-size: 1.6rem;
+  font-weight: 500;
+  color: #6b7280;
+  padding-bottom: 0.8rem;
+  cursor: pointer;
+}
+
+.tab.active {
+  color: #0e3995;
+  font-weight: 600;
+  border-bottom: 0.3rem solid #0e3995;
+}
+
+/* ===== Add Button ===== */
+.add-btn {
+  background: #0e3995;
+  color: #fff;
+  border: none;
+  padding: 0.8rem 1.6rem;
+  font-size: 1.4rem;
+  border-radius: 0.6rem;
+  cursor: pointer;
+  margin-bottom: 2rem;
+}
+
+.add-btn:hover {
+  background: #092b6e;
+}
+
+/* ===== Table ===== */
+.dept-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  border-radius: 0.8rem;
+  overflow: hidden;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.dept-table th,
+.dept-table td {
+  padding: 1.2rem;
+  text-align: left;
+  border: 1px solid #e5e7eb;
+  font-size: 1.4rem;
+}
+
+.dept-table th {
+  background-color: #f3f4f6;
+  font-weight: 600;
+  color: #374151;
+}
+
+.dept-table td {
+  color: #374151;
+}
+
+.status {
+  padding: 0.4rem 0.8rem;
+  border-radius: 0.4rem;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.status.active {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.status.inactive {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.action-icons {
+  display: flex;
+  gap: 1rem;
+  color: #6b7280;
+  cursor: pointer;
+}
+
+.action-icons span:hover {
+  color: #0e3995;
+}
+
+/* ===== Responsive Sidebar Shrink ===== */
+@media (max-width: 768px) {
+  .container {
+    grid-template-columns: 80px 1fr; /* shrink sidebar */
+  }
+
+  .logo h2 {
+    display: none; /* hide text logo */
+  }
+
+  .sidebar-link ul li a {
+    font-size: 0; /* hide labels */
+    justify-content: center;
+  }
+
+  .sidebar-link ul li a span {
+    font-size: 2.4rem; /* icons stay visible */
+  }
+
+  .log-out a {
+    display: none; /* hide logout text */
+  }
+}
+
+.log-out {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.log-out a {
+  color: #6c99f8;
+  text-decoration: none;
+  font-size: 1.6rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.log-out a:hover {
+  color: #fff;
+}

@@ -667,6 +667,12 @@ tbody tr:hover {
   border-radius: 0.8rem;
 }
 
+.log-out {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
 .log-out a {
   color: #6c99f8;
   text-decoration: none;
