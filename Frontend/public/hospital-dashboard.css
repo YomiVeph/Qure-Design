@@ -108,6 +108,19 @@ body {
   color: #d0dffd;
   cursor: pointer;
 }
+
+.log-out a {
+  color: #6c99f8;
+  text-decoration: none;
+  font-size: 1.6rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.log-out a:hover {
+  color: #fff;
+}
+
 .main-content {
   grid-area: main;
   padding: 3.2rem 9.5rem 3.2rem 3.5rem;
@@ -751,4 +764,119 @@ input[type="text"]:focus {
 
 .chart-card canvas {
   flex: 1;
+}
+
+.heat-map-action {
+  grid-column: 2;
+  grid-row: 2;
+  display: flex;
+  align-items: flex-start;
+}
+
+.heat-map {
+  display: flex;
+  flex-direction: column;
+}
+
+.heat-map h4 {
+  font-size: 1.2rem;
+  color: #282828;
+  font-size: 600;
+  padding: 0.4rem 1.6rem;
+  border-right: 1px solid #757575;
+  border-left: 1px solid #757575;
+}
+
+.heatmap {
+  display: grid;
+  grid-template-columns: repeat(8, 1.6rem);
+  gap: 0.4rem;
+  padding: 0.4rem 1.6rem;
+  border: 1px solid #757575;
+}
+
+.sq {
+  width: 1.6rem;
+  height: 1.6rem;
+}
+.sq.low {
+  background: #cfd2d8;
+}
+
+.sq.high {
+  background-color: #0e3995;
+}
+
+.heat-btn {
+  margin-top: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #757575;
+  padding: 0.4rem 1.6rem;
+  border-radius: 0.8rem;
+}
+
+.heat-btn p {
+  color: #fff;
+  font-size: 1.6rem;
+  font-weight: 500;
+}
+
+.heat-btn .arrow-down {
+  color: #fff;
+}
+
+.action-guide {
+  display: flex;
+  flex-direction: column;
+}
+.action-guide h4 {
+  border-right: 1px solid #757575;
+  border-bottom: 1px solid #757575;
+  padding: 0.4rem 1.6rem;
+  font-size: 1.2rem;
+}
+
+.action-color {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  border-right: 1px solid #757575;
+  border-bottom: 1px solid #757575;
+}
+
+.act {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.act-icon {
+  font-size: 1.5rem;
+}
+
+.call-action .act-icon,
+.call-action p {
+  color: #ffa500;
+}
+
+.attend-action .act-icon,
+.attend-action p {
+  color: #28a745;
+}
+
+.no-show-action .act-icon,
+.no-show-action p {
+  color: #ff0000;
+}
+
+.message-action .act-icon,
+.message-action p {
+  color: #0e3995;
+}
+
+.room-action .act-icon,
+.room-action p {
+  color: #f4c20d;
 }

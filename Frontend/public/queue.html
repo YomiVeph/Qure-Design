@@ -23,6 +23,9 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
   </head>
   <body>
+    <!-- <button class="hamburger" id="hamburger" onclick="toggleSidebar()">
+      <span class="material-symbols-outlined">menu</span>
+    </button> -->
     <div class="container">
       <div class="sidebar">
         <div class="logo">
@@ -32,13 +35,13 @@
         <div class="sidebar-link">
           <ul>
             <li>
-              <a class="icon active" href="#">
+              <a class="icon inactive" href="hospital-dashboard.html">
                 <span class="material-symbols-outlined">dashboard</span
                 >Dashboard
               </a>
             </li>
             <li>
-              <a class="icon inactive" href="#">
+              <a class="icon active" href="#">
                 <span class="material-symbols-outlined"> group_add </span>Queues
               </a>
             </li>
@@ -64,7 +67,7 @@
           </ul>
           <div class="log-out">
             <span class="material-symbols-outlined"> logout </span>
-            <p>Logout</p>
+            <a href="login.html">Logout</a>
           </div>
         </div>
       </div>
@@ -237,7 +240,7 @@
                       </div>
                     </td>
                     <td>PM-098</td>
-                    <td><span class="status admit">Admitted</span></td>
+                    <td><span class="status complete">Completed</span></td>
                     <td>In</td>
                     <td>Room 1</td>
                     <td class="action">
@@ -259,7 +262,7 @@
                       </div>
                     </td>
                     <td>G-087</td>
-                    <td><span class="status complete">Completed</span></td>
+                    <td><span class="status admit">Admitted</span></td>
                     <td>In</td>
                     <td>Room 3</td>
                     <td class="action">
@@ -409,12 +412,61 @@
                 </tbody>
               </table>
             </div>
+            <div class="process">
+              <p>15 patients waiting, 3 in progress, 10 completed today</p>
+              <div class="pagination">
+                <button class="btn prev">
+                  <span class="material-symbols-outlined chevron">
+                    chevron_left
+                  </span>
+                </button>
+
+                <button class="btn next">
+                  <span class="material-symbols-outlined chevron">
+                    chevron_right
+                  </span>
+                </button>
+              </div>
+            </div>
           </div>
 
-          <div class="profile"></div>
+          <div class="profile">
+            <div class="profile-details">
+              <div class="pic-name">
+                <div class="prof-pic">
+                  <img
+                    src="asset/image/Avatar/Image-40-2.png"
+                    alt="Andrey-profile-pic"
+                  />
+                </div>
+                <div class="profile-name">
+                  <h2>Jane Andrey</h2>
+                  <p>28/Female</p>
+                </div>
+              </div>
+              <div class="history">
+                <h3>Queue History</h3>
+                <p>Visit 1: Feb, 11 2023</p>
+                <p>Visit 2: May, 8 2023</p>
+              </div>
+              <div class="notes">
+                <h3>Notes</h3>
+                <p>Patient is allergic to penicillin</p>
+              </div>
+            </div>
+            <div class="profile-button">
+              <button class="next pro-btn">Next</button>
+              <button class="prev pro-btn">Previous</button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
-    <script></script>
+    <script>
+      function toggleSidebar() {
+        document.querySelector(".sidebar").classList.toggle("active");
+        document.querySelector(".hamburger").classList.toggle("active");
+      }
+    </script>
   </body>
 </html>
