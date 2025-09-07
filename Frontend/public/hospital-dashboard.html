@@ -28,38 +28,38 @@
         <div class="sidebar-link">
           <ul>
             <li>
-              <a class="icon inactive" href="#">
-                <span class="material-symbols-outlined">dashboard</span
-                >Dashboard
+              <a class="active" href="#">
+                <span class="material-symbols-outlined">dashboard</span>
+                Dashboard
               </a>
             </li>
             <li>
-              <a class="icon inactive" href="queue.html">
-                <span class="material-symbols-outlined"> group_add </span>Queues
+              <a href="queue.html">
+                <span class="material-symbols-outlined">group_add</span>
+                Queues
               </a>
             </li>
             <li>
-              <a class="icon inactive" href="#">
-                <span class="material-symbols-outlined"> switch_account </span
-                >Waiting Area
+              <a href="wait-management.html">
+                <span class="material-symbols-outlined">switch_account</span>
+                Waiting Area
               </a>
             </li>
             <li>
-              <a class="icon inactive" href="#">
-                <span class="material-symbols-outlined"> stacked_inbox </span
-                >Appointments
+              <a href="appoinment.html">
+                <span class="material-symbols-outlined">stacked_inbox</span>
+                Appointments
               </a>
             </li>
-
             <li>
-              <a class="icon inactive" href="#">
-                <span class="material-symbols-outlined"> settings </span
-                >Settings
+              <a href="Settings.html">
+                <span class="material-symbols-outlined">settings</span>
+                Settings
               </a>
             </li>
           </ul>
           <div class="log-out">
-            <span class="material-symbols-outlined"> logout </span>
+            <span class="material-symbols-outlined">logout</span>
             <a href="login.html">Logout</a>
           </div>
         </div>
@@ -159,19 +159,19 @@
         <div class="average">
           <div class="length">
             <h3>Current Queue Length</h3>
-            <p>12</p>
+            <p id="queue-length">5</p>
           </div>
           <div class="length">
             <h3>Avg. Wait Time</h3>
-            <p>15 mins</p>
+            <p id="avg-wait">15 mins</p>
           </div>
           <div class="length">
             <h3>No Shows Today</h3>
-            <p>4</p>
+            <p id="no-shows">1</p>
           </div>
           <div class="length">
             <h3>Occupancy</h3>
-            <p>65%</p>
+            <p id="occupancy">65%</p>
           </div>
         </div>
 
@@ -180,7 +180,7 @@
             <div class="queue-hd">
               <h3>Queue</h3>
               <div class="call-next">
-                <button class="call-button">Call Next</button>
+                <button class="call-button" id="callNextBtn">Call Next</button>
               </div>
             </div>
             <div class="queue-table">
@@ -192,7 +192,7 @@
                     <th>
                       <div class="department-dropdown dropdown">
                         <div class="dropdown-toggle dept-dropdown-toggle">
-                          <button class="btn dept-btn">Department</button>
+                          <button class="btns dept-btn">Department</button>
                           <span
                             class="material-symbols-outlined dept-arrow arrow-icon"
                           >
@@ -212,7 +212,7 @@
                     <th>
                       <div class="select-dropdown dropdown">
                         <div class="dropdown-toggle select-dropdown-toggle">
-                          <button class="btn select-btn">Status</button>
+                          <button class="btns select-btn">Status</button>
                           <span
                             class="material-symbols-outlined dept-arrow arrow-icon"
                           >

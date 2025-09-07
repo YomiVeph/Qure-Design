@@ -73,21 +73,18 @@ body {
 }
 
 .sidebar-link ul li a.active {
-  background-color: rgba(255, 255, 255, 0.15);
-  color: #fff;
-}
-
-.sidebar-link ul li a {
   text-decoration: none;
-  color: #6c99f8;
+  color: #fff;
   font-size: 1.6rem;
   font-weight: 500;
   width: 100%;
   padding: 0.8rem 1.2rem;
-  display: flex;
-  align-items: center;
-  gap: 2rem;
-  transition: all 0.3s ease;
+  border-radius: 0.8rem;
+}
+
+.sidebar-link ul li a.active {
+  background-color: rgba(255, 255, 255, 0.15);
+  color: #fff;
 }
 
 .sidebar-link ul li a:hover {
@@ -109,6 +106,12 @@ body {
   overflow-y: auto;
 }
 
+.header h2 {
+  color: 2.4rem;
+  color: #282828;
+  font-weight: 600;
+}
+
 .date-search {
   display: flex;
   flex-direction: row;
@@ -118,24 +121,11 @@ body {
   padding: 2.4rem;
 }
 
-.date-meter {
-  position: relative;
-  display: inline-block;
-  min-width: 26rem;
-  max-width: 100%;
-}
-
 .date-btn {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  width: 100%;
+  outline: none;
+  color: #fff;
+  background-color: #0e3995;
   padding: 0.8rem 1.2rem;
-  border: 1px solid #75757580;
-  border-radius: 0.8rem;
-  background-color: #fff;
-  cursor: pointer;
 }
 
 .date-left {
@@ -159,10 +149,6 @@ body {
 }
 .date-meter.open .arrow {
   transform: rotate(180deg);
-}
-
-.dropdown.open .dropdown-content {
-  display: block;
 }
 
 .dropdown-menu {
@@ -684,11 +670,6 @@ tbody tr:hover {
   color: #fff;
 }
 
-.header h2 {
-  font-size: 2.4rem;
-  color: #282828;
-}
-
 /* ========= Responsive Design ========= */
 
 /* Tablet (max-width: 1024px) */
@@ -955,51 +936,3 @@ tbody tr:hover {
     white-space: nowrap;
   }
 } */
-
-.queue-controls {
-  margin: 2rem 0;
-  background: #fff;
-  padding: 1.5rem;
-  border-radius: 0.8rem;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-}
-
-.queue-input {
-  display: flex;
-  gap: 1rem;
-  margin-bottom: 1rem;
-}
-
-.queue-input input {
-  flex: 1;
-  padding: 0.8rem;
-  border: 1px solid #ddd;
-  border-radius: 0.4rem;
-  font-size: 1.4rem;
-}
-
-.queue-controls .btn-primary {
-  background-color: #0e3995;
-  color: #fff;
-}
-
-.queue-controls .btn-success {
-  background-color: #16a34a;
-  color: #fff;
-}
-
-.queue-controls .btn-danger {
-  background-color: #dc2626;
-  color: #fff;
-}
-
-.queue-list {
-  list-style: none;
-  padding: 0;
-}
-
-.queue-list li {
-  padding: 0.6rem 1rem;
-  border-bottom: 1px solid #eee;
-  font-size: 1.4rem;
-}

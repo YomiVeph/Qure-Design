@@ -15,7 +15,7 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="queue.css" />
-    <title>Queue</title>
+    <title>Appointment</title>
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
@@ -38,7 +38,7 @@
               </a>
             </li>
             <li>
-              <a class="icon active" href="#">
+              <a class="icon inactive" href="queue.html">
                 <span class="material-symbols-outlined"> group_add </span>Queues
               </a>
             </li>
@@ -49,14 +49,14 @@
               </a>
             </li>
             <li>
-              <a class="icon inactive" href="#">
+              <a class="icon active" href="#">
                 <span class="material-symbols-outlined"> stacked_inbox </span
                 >Appointments
               </a>
             </li>
 
             <li>
-              <a class="icon inactive" href="#">
+              <a class="icon inactive" href="Settings.html">
                 <span class="material-symbols-outlined"> settings </span
                 >Settings
               </a>
@@ -72,34 +72,10 @@
       <div class="main-content">
         <div class="date-search">
           <div class="header">
-            <h2>Queue Control</h2>
+            <h2>Appointments</h2>
           </div>
-          <div class="date-meter" id="dateMeter">
-            <button type="button" class="date-btn">
-              <div class="date-left">
-                <span class="material-symbols-outlined"> date_range </span>
-                <span id="current-date">April 23, 2024 - May 1</span>
-              </div>
-              <span class="material-symbols-outlined arrow">
-                arrow_drop_down
-              </span>
-            </button>
-            <div class="dropdown-menu" id="menu">
-              <div>
-                <label for="start-date">Start Date</label>
-                <input type="date" id="start-date" />
-              </div>
-              <div>
-                <label for="end-date">End Date</label>
-                <input type="date" id="end-date" />
-              </div>
-              <div class="actions">
-                <button class="btn" id="clearBtn" type="button">Clear</button>
-                <button class="btn primary" id="applyBtn" type="button">
-                  Apply
-                </button>
-              </div>
-            </div>
+          <div class="btn-appoint">
+            <button type="button" class="date-btn">New Appointment</button>
           </div>
         </div>
 
