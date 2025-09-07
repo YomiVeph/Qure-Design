@@ -106,7 +106,41 @@ html {
   color: #000;
   line-height: 1.6;
 }
+/* new section */
+.sign-section {
+  display: none;
+  gap: 2rem;
 
+  padding: 4rem;
+}
+.sign-section button {
+  width: 100%;
+  padding: 12px;
+  background-color: #0e3995;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 1.6rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 0.4rem 0.2rem rgba(0, 0, 0, 0.2);
+}
+.sign-section-2 {
+  display: none;
+  gap: 2rem;
+  padding: 2rem;
+}
+.sign-section-2 button {
+  width: 100%;
+  padding: 12px;
+  background-color: #0e3995;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 1.6rem;
+  font-weight: 600;
+  cursor: pointer;
+}
 .sub-section {
   display: flex;
   flex-direction: column;
@@ -627,4 +661,760 @@ html {
 
 .footer-bottom-links a:hover {
   color: #0a2a7a;
+}
+
+/*barz button*/
+.bars button {
+  max-width: 40px;
+  height: 35px;
+  border-radius: 8px;
+  border: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin: 10px;
+  color: inherit;
+  background-color: transparent;
+}
+.bars {
+  display: none;
+}
+.fa-bars {
+  font-size: 29px;
+  color: #000;
+}
+
+@media screen and (max-width: 1024px) {
+  .header {
+    padding: 2rem 4rem;
+  }
+
+  .logo p {
+    font-size: 2.4rem;
+  }
+
+  .nav-links {
+    display: none;
+  }
+
+  .nav-btn {
+    display: none;
+  }
+
+  .main-section {
+    padding: 10rem 4rem 2rem 4rem;
+    gap: 5rem;
+  }
+
+  .sub-section {
+    display: flex;
+    flex-direction: column;
+    padding: 0 4rem;
+    margin-bottom: 5rem;
+  }
+  .sub-section h2 {
+    font-size: 4rem;
+  }
+  .role {
+    flex-direction: column;
+    gap: 3.6rem;
+  }
+
+  .feature {
+    padding: 3rem 4rem;
+  }
+
+  .features-card {
+    flex-direction: column;
+    gap: 3.6rem;
+  }
+  .features-img {
+    width: 60rem;
+    height: 60rem;
+    align-items: center;
+    justify-content: center;
+    margin-left: 0;
+  }
+  .features-img img {
+    width: 100%;
+    height: auto;
+  }
+
+  .work-section {
+    padding: 5rem 4rem;
+  }
+
+  .work-step {
+    flex-direction: column;
+    gap: 3.6rem;
+  }
+
+  #how {
+    padding: 5rem 4rem;
+  }
+  #question {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 5rem 4rem;
+    gap: 3rem;
+  }
+  .freq-text h2 {
+    font-size: 4.8rem;
+    text-align: center;
+    padding: 0 1rem;
+    line-height: 1.2;
+  }
+  .freq-img {
+    width: 40rem;
+    height: auto;
+    align-items: center;
+    justify-content: center;
+    margin-left: 0;
+  }
+  .freq-img img {
+    width: 100%;
+    height: auto;
+  }
+  .most-asked {
+    padding: 4rem 4rem;
+  }
+  .most-asked-1 {
+    padding: 1rem 1.2rem;
+    font-size: 1.4rem;
+    line-height: 1.4;
+    gap: 0.2rem;
+    margin-bottom: 0.4rem;
+    margin-top: 0.4rem;
+    width: 100%;
+  }
+  .semi-footer {
+    padding: 5rem 4rem;
+    margin-left: 0;
+  }
+  .semi-footer-header h2 {
+    font-size: 4.8rem;
+    line-height: 1.2;
+    text-align: center;
+  }
+  .semi-footer-header p {
+    font-size: 1.6rem;
+    line-height: 1.4;
+    text-align: center;
+  }
+  .semi-footer-img-btn {
+    width: 40rem;
+    height: auto;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    display: block;
+    padding: 0 1rem;
+    margin-left: 0;
+  }
+  .our-info p {
+    font-size: 1.6rem;
+    line-height: 1.4;
+    text-align: center;
+  }
+  .our-info h2 {
+    font-size: 4.8rem;
+    line-height: 1.2;
+    text-align: center;
+  }
+  .semi-footer-img-btn img {
+    width: 100%;
+    height: auto;
+  }
+  .footer {
+    padding: 5rem 4rem;
+  }
+}
+@media screen and (max-width: 900px) {
+  .role-card {
+    width: 30rem;
+    height: 36rem;
+  }
+}
+@media screen and (max-width: 820px) {
+  .first-part h1 {
+    font-size: 4.8rem;
+  }
+  .first-part p {
+    font-size: 1.4rem;
+    line-height: 1.4;
+    font-weight: 400;
+  }
+  .role-card {
+    width: 28rem;
+    height: 40rem;
+  }
+  .second-part {
+    width: 100%;
+    height: 38rem;
+    align-items: center;
+    justify-content: center;
+    margin-left: 0;
+    padding: 0 2rem;
+    display: flex;
+  }
+  .second-part img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+  }
+}
+@media screen and (max-width: 768px) {
+  .header {
+    padding: 2rem 2rem;
+  }
+
+  .logo p {
+    font-size: 2.4rem;
+  }
+
+  .nav-links {
+    display: none;
+  }
+
+  .nav-btn {
+    display: none;
+  }
+
+  .main-section {
+    flex-direction: row;
+    justify-content: space-evenly;
+    padding: 10rem 2rem 2rem 3rem;
+    gap: 2rem;
+  }
+
+  .sub-section {
+    padding: 0 2rem;
+    margin-bottom: 5rem;
+    gap: 2rem;
+    width: 100%;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+  }
+  .sub-section h2 {
+    font-size: 3.6rem;
+  }
+  .role {
+    flex-direction: column;
+    gap: 3.6rem;
+  }
+
+  .feature {
+    padding: 3rem 2rem;
+    width: 100%;
+    max-width: 500px;
+  }
+
+  .features-card {
+    flex-direction: column;
+    gap: 3.6rem;
+  }
+  .features-img {
+    width: 35rem;
+    height: 35rem;
+    align-items: center;
+    justify-content: center;
+    margin-left: 2rem;
+  }
+  .features-img img {
+    width: 100%;
+    height: auto;
+  }
+
+  .work-section {
+    padding: 5rem 2rem;
+  }
+
+  .work-step {
+    flex-direction: column;
+    gap: 3.6rem;
+  }
+}
+@media screen and (max-width: 650px) {
+  .work h3 {
+    font-size: 3.2rem;
+    padding: 1rem 2rem;
+  }
+  #how {
+    padding: 5rem 2rem;
+  }
+  #question {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 5rem 2rem;
+    gap: 3rem;
+  }
+  .freq-text h2 {
+    font-size: 3.6rem;
+    text-align: center;
+    padding: 0 1rem;
+    line-height: 1.2;
+  }
+  .freq-img {
+    width: 28rem;
+    height: 28rem;
+    align-items: center;
+    justify-content: center;
+    margin-left: 10rem;
+  }
+  .freq-img img {
+    width: 100%;
+    height: auto;
+  }
+  .most-asked {
+    padding: 4rem 2rem;
+  }
+  .most-asked-1 {
+    padding: 1rem 1.2rem;
+    font-size: 1.4rem;
+    line-height: 1.4;
+    gap: 0.2rem;
+    margin-bottom: 0.4rem;
+    margin-top: 0.4rem;
+    width: 100%;
+  }
+  .semi-footer {
+    padding: 5rem 2rem;
+    margin-left: 0;
+  }
+  .semi-footer-header h2 {
+    font-size: 3.6rem;
+    line-height: 1.2;
+    text-align: center;
+  }
+  .semi-footer-header p {
+    font-size: 1.4rem;
+    line-height: 1.4;
+    text-align: center;
+  }
+  .semi-footer-img-btn {
+    width: 28rem;
+    height: 28rem;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    display: block;
+    padding: 0 1rem;
+    margin-left: 0;
+  }
+  .our-info p {
+    font-size: 1.4rem;
+    line-height: 1.4;
+    text-align: center;
+  }
+  .our-info h2 {
+    font-size: 3.6rem;
+    line-height: 1.2;
+    text-align: center;
+  }
+  .semi-footer-img-btn img {
+    width: 100%;
+    height: auto;
+  }
+  .footer {
+    padding: 5rem 2rem;
+  }
+}
+@media screen and (max-width: 600px) {
+  .sign-section {
+    display: flex;
+  }
+  .sign-section button {
+    font-size: 1.4rem;
+    padding: 11px;
+    border-radius: 20px;
+    font-weight: 400;
+    box-shadow: 0 0.01rem rgba(0, 0, 0, 0.021);
+  }
+  .sign-section-2 {
+    display: flex;
+  }
+  .sign-section-2 button {
+    font-size: 1.4rem;
+    padding: 11px;
+    border-radius: 20px;
+    font-weight: 400;
+    box-shadow: 0 0.01rem rgba(0, 0, 0, 0.021);
+  }
+}
+@media screen and (max-width: 540px) {
+  body {
+    overflow-x: hidden;
+  }
+  .first-part {
+    width: 100%;
+    gap: 2rem;
+  }
+}
+@media screen and (max-width: 500px) {
+  /* Styles for screens up to 488px wide */
+  body {
+    overflow-x: hidden;
+  }
+  .first-part {
+    width: 100%;
+    gap: 2rem;
+  }
+
+  .first-part h1 {
+    font-size: 3.4rem;
+  }
+  .first-part p {
+    font-size: 1.4rem;
+    line-height: 1.4;
+    font-weight: 400;
+  }
+  .role-card {
+    width: 28rem;
+    height: 40rem;
+  }
+  .second-part {
+    width: 100%;
+    height: 38rem;
+    align-items: center;
+    justify-content: center;
+    margin-left: 0;
+    padding: 0 2rem;
+    display: flex;
+  }
+  .second-part img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+  }
+  .sign-section {
+    display: flex;
+  }
+  .sign-section button {
+    font-size: 1.4rem;
+    padding: 11px;
+    border-radius: 20px;
+    font-weight: 400;
+    box-shadow: 0 0.01rem rgba(0, 0, 0, 0.021);
+  }
+  .header {
+    padding: 2rem 2rem;
+  }
+
+  .logo p {
+    font-size: 2.4rem;
+  }
+
+  .nav-links {
+    display: none;
+  }
+
+  .nav-btn {
+    display: none;
+  }
+
+  .main-section {
+    flex-direction: row;
+    justify-content: space-evenly;
+    padding: 10rem 2rem 2rem 3rem;
+    gap: 2rem;
+  }
+
+  .sub-section {
+    padding: 0 2rem;
+    margin-bottom: 5rem;
+    gap: 2rem;
+    width: 100%;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+  }
+  .sub-section h2 {
+    font-size: 3.6rem;
+  }
+  .role {
+    flex-direction: column;
+    gap: 3.6rem;
+  }
+
+  .feature {
+    padding: 3rem 2rem;
+    width: 100%;
+    max-width: 500px;
+  }
+
+  .features-card {
+    flex-direction: column;
+    gap: 3.6rem;
+  }
+  .features-img {
+    width: 35rem;
+    height: 35rem;
+    align-items: center;
+    justify-content: center;
+    margin-left: 2rem;
+  }
+  .features-img img {
+    width: 100%;
+    height: auto;
+  }
+
+  .work-section {
+    padding: 5rem 2rem;
+  }
+
+  .work-step {
+    flex-direction: column;
+    gap: 3.6rem;
+  }
+  .work h3 {
+    font-size: 3.2rem;
+    padding: 1rem 2rem;
+  }
+
+  #how {
+    padding: 5rem 2rem;
+  }
+  #question {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 5rem 2rem;
+    gap: 3rem;
+  }
+  .freq-text h2 {
+    font-size: 3.6rem;
+    text-align: center;
+    padding: 0 1rem;
+    line-height: 1.2;
+  }
+  .freq-img {
+    width: 28rem;
+    height: 28rem;
+    align-items: center;
+    justify-content: center;
+    margin-left: 10rem;
+  }
+  .freq-img img {
+    width: 100%;
+    height: auto;
+  }
+  .most-asked {
+    padding: 4rem 2rem;
+  }
+  .most-asked-1 {
+    padding: 1rem 1.2rem;
+    font-size: 1.4rem;
+    line-height: 1.4;
+    gap: 0.2rem;
+    margin-bottom: 0.4rem;
+    margin-top: 0.4rem;
+    width: 100%;
+  }
+  .semi-footer {
+    padding: 5rem 1rem;
+    margin-left: 3rem;
+  }
+  .semi-footer-header h2 {
+    font-size: 3.6rem;
+    line-height: 1.2;
+    text-align: left;
+  }
+  .semi-footer-header p {
+    font-size: 1.4rem;
+    line-height: 1.4;
+    text-align: left;
+  }
+  .semi-footer-img-btn {
+    width: 28rem;
+    height: 28rem;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    display: block;
+    padding: 0 1rem;
+  }
+  .our-info p {
+    font-size: 1.4rem;
+    line-height: 1.4;
+    text-align: center;
+  }
+  .our-info h2 {
+    font-size: 3.6rem;
+    line-height: 1.2;
+    text-align: center;
+  }
+
+  .semi-footer-img-btn img {
+    width: 100%;
+    height: auto;
+  }
+  .footer {
+    padding: 5rem 2rem;
+  }
+  .footer-links {
+    flex-direction: row;
+    padding: 4rem 2rem;
+    gap: 3rem;
+    align-items: self-start;
+  }
+  .footer-bottom {
+    flex-direction: column;
+    gap: 3rem;
+  }
+  .bars {
+    display: block;
+  }
+  .bars button {
+    max-width: 40px;
+    height: 35px;
+    border-radius: 8px;
+    border: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin: 10px;
+    color: inherit;
+    background-color: transparent;
+  }
+  .fa-bars {
+    font-size: 29px;
+    color: #000;
+  }
+  .sign-section-2 {
+    display: flex;
+    margin-top: 0rem;
+    padding-top: 0rem;
+    align-items: center;
+    justify-content: center;
+  }
+  .sign-section-2 button {
+    font-size: 1.4rem;
+    padding: 11px;
+    border-radius: 10px;
+    font-weight: 400;
+    box-shadow: 0 0.01rem rgba(0, 0, 0, 0.021);
+  }
+
+  .semi-footer-btn {
+    display: none;
+  }
+  .footer-links h4 {
+    font-size: 14px;
+  }
+}
+@media screen and (max-width: 430px) {
+  .role-card {
+    width: 22rem;
+    height: 30rem;
+  }
+  .role-card img {
+    height: 8rem;
+    width: 8rem;
+  }
+  .role-card h3 {
+    font-size: 2.4rem;
+  }
+  .role-card p {
+    font-size: 1.4rem;
+  }
+  .second-part {
+    width: 100%;
+    height: 28rem;
+    align-items: center;
+    justify-content: center;
+    margin-left: 0;
+    padding: 0 2rem;
+    display: flex;
+  }
+  .second-part img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+  }
+  .sign-section button {
+    font-size: 1.2rem;
+    padding: 10px;
+    border-radius: 20px;
+    font-weight: 400;
+    box-shadow: 0 0.01rem rgba(0, 0, 0, 0.021);
+  }
+}
+@media screen and (max-width: 380px) {
+  .role-card {
+    width: 18rem;
+    height: 25rem;
+  }
+  .role-card img {
+    height: 6rem;
+    width: 6rem;
+  }
+  .role-card h3 {
+    font-size: 2rem;
+  }
+  .feature {
+    padding: 3rem 1rem;
+    width: 100%;
+    max-width: 400px;
+  }
+  .features-card p {
+    font-size: 1.2rem;
+  }
+  .features-card {
+    padding-left: 2rem;
+  }
+  .role-card p {
+    font-size: 1.2rem;
+  }
+  .second-part {
+    width: 100%;
+    height: 22rem;
+    align-items: center;
+    justify-content: center;
+    margin-left: 0;
+    padding: 0 2rem;
+    display: flex;
+  }
+  .second-part img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+  }
+  .sign-section button {
+    font-size: 1.1rem;
+    padding: 10px;
+    border-radius: 20px;
+    font-weight: 400;
+    box-shadow: 0 0.01rem rgba(0, 0, 0, 0.021);
+  }
+}
+@media screen and (max-width: 320px) {
+  .role-card {
+    width: 15rem;
+    height: 22rem;
+  }
+  .role-card img {
+    height: 5rem;
+    width: 5rem;
+  }
+  .role-card h3 {
+    font-size: 1.8rem;
+  }
+  .role-card p {
+    font-size: 1.1rem;
+  }
+  .second-part {
+    width: 100%;
+    height: 20rem;
+    align-items: center;
+    justify-content: center;
+    margin-left: 0;
+    padding: 0 2rem;
+    display: flex;
+  }
+  .second-part img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+  }
 }
