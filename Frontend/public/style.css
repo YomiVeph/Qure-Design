@@ -245,3 +245,26 @@ button:hover {
 .hidden {
   display: none;
 }
+
+@media (max-width: 1080px) {
+  .form-wrapper {
+    grid-template-columns: 1fr;
+  }
+  .illustration-part {
+    display: none;
+  }
+}
+@media (max-width: 578px) {
+  .form-fill {
+    margin: 1.6rem;
+  }
+}
+
+@media (max-width: 400px) {
+  .form-fill {
+    margin: 1rem;
+  }
+  .form-fill p {
+    font-size: 1.2rem;
+  }
+}

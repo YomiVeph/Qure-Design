@@ -125,10 +125,10 @@ body {
 .page-title {
   font-size: 3rem;
   font-weight: 700;
-  margin: 2rem 0; /* spacing above & below */
+  margin: 2rem 0; 
 }
 
-/* ===== Tabs ===== */
+
 .tabs {
   display: flex;
   gap: 2rem;

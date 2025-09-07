@@ -14,7 +14,7 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="Settings.css" />
-    <title>Hospital-Dashboard</title>
+    <title>Hospital Dashboard</title>
   </head>
   <body>
     <div class="container">
@@ -27,31 +27,31 @@
         <div class="sidebar-link">
           <ul>
             <li>
-              <a href="hospital-dashboard.html">
+              <a class="icon inactive" href="#">
                 <span class="material-symbols-outlined">dashboard</span>
                 Dashboard
               </a>
             </li>
             <li>
-              <a href="queue.html">
+              <a class="icon inactive" href="queue.html">
                 <span class="material-symbols-outlined">group_add</span>
                 Queues
               </a>
             </li>
             <li>
-              <a href="wait-management.html">
+              <a class="icon inactive" href="#">
                 <span class="material-symbols-outlined">switch_account</span>
                 Waiting Area
               </a>
             </li>
             <li>
-              <a href="appoinment.html">
+              <a class="icon inactive" href="#">
                 <span class="material-symbols-outlined">stacked_inbox</span>
                 Appointments
               </a>
             </li>
             <li>
-              <a class="active" href="#">
+              <a class="icon active" href="#">
                 <span class="material-symbols-outlined">settings</span>
                 Settings
               </a>
@@ -66,80 +66,78 @@
 
       <!-- Main -->
       <div class="main">
-        <!-- Header -->
-        <div class="settings-header">Settings</div>
+        <h1 class="main-title">Settings</h1>
 
         <!-- Tabs -->
         <div class="tabs">
-          <div class="tab">Organization</div>
-          <div class="tab active">Departments</div>
-          <div class="tab">Staff & Roles</div>
-          <div class="tab">Notifications</div>
-          <div class="tab">Integration</div>
-          <div class="tab">Security</div>
+          <a href="Settings.html" class="tab active">Organization</a>
+          <a href="Settings1.html" class="tab">Departments</a>
+          <a href="Settings2.html" class="tab">Staff & Roles</a>
+          <a href="Settings3.html" class="tab">Notifications</a>
+          <a href="Settings4.html" class="tab">Integration</a>
+          <a href="Settings5.html" class="tab">Security</a>
+        </div>
+        <!-- Settings Card -->
+        <div class="settings-card">
+          <h2 class="section-title">Hospital Information</h2>
+
+          <form class="form">
+            <div class="form-left">
+              <label>Hospital Name</label>
+              <input type="text" placeholder="General Hospital Abuja" />
+
+              <label>Address</label>
+              <input type="text" placeholder="1234 Main St., Abuja" />
+
+              <div class="upload-box">Upload Logo</div>
+            </div>
+
+            <div class="form-right">
+              <label>Time zone</label>
+              <select>
+                <option>(GMT+1:00) West Africa Time</option>
+              </select>
+
+              <div class="capacity">
+                <label>Capacity Thresholds</label>
+                <div class="capacity-inputs">
+                  <div>
+                    <span>Low</span>
+                    <input type="number" value="25" />
+                  </div>
+                  <div>
+                    <span>Med</span>
+                    <input type="number" value="50" />
+                  </div>
+                  <div>
+                    <span>High</span>
+                    <input type="number" value="100" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
         </div>
 
-        <!-- Add Button -->
-        <button class="add-btn">Add New Department</button>
-
-        <!-- Table -->
-        <table class="dept-table">
-          <thead>
-            <tr>
-              <th>Department</th>
-              <th>Short code</th>
-              <th>Status</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Cardiology</td>
-              <td>CAR</td>
-              <td><span class="status active">Active</span></td>
-              <td>
-                <div class="action-icons">
-                  <span class="material-symbols-outlined">edit</span>
-                  <span class="material-symbols-outlined">delete</span>
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <td>Pediatrics</td>
-              <td>PED</td>
-              <td><span class="status inactive">Inactive</span></td>
-              <td>
-                <div class="action-icons">
-                  <span class="material-symbols-outlined">edit</span>
-                  <span class="material-symbols-outlined">delete</span>
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <td>Pharmacy</td>
-              <td>PHR</td>
-              <td><span class="status active">Active</span></td>
-              <td>
-                <div class="action-icons">
-                  <span class="material-symbols-outlined">edit</span>
-                  <span class="material-symbols-outlined">delete</span>
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <td>Radiology</td>
-              <td>RAD</td>
-              <td><span class="status inactive">Inactive</span></td>
-              <td>
-                <div class="action-icons">
-                  <span class="material-symbols-outlined">edit</span>
-                  <span class="material-symbols-outlined">delete</span>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+        <!-- Footer buttons -->
+        <div class="footer-buttons">
+          <button class="btn cancel">Cancel</button>
+          <button class="btn save">Save</button>
+        </div>
       </div>
     </div>
+    <script>
+      const tabs = document.querySelectorAll(".tabs .tab");
+
+      tabs.forEach((tab) => {
+        tab.addEventListener("click", () => {
+          const page = tab.dataset.page;
+
+          if (page) {
+            window.location.href = page;
+          }
+        });
+      });
+    </script>
   </body>
 </html>

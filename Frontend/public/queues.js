@@ -135,13 +135,102 @@ dropdownItems.forEach((item) => {
 let selectedPatients = []; // history of checked patients
 let currentIndex = -1;
 
+const patientData = {
+  "Abel Johnson": {
+    history: [
+      "Visit 1: Jan 15, 2023",
+      "Visit 2: Mar 10, 2023",
+      "Visit 3: Jul 2, 2023",
+    ],
+    notes: "Patient has mild asthma and uses inhaler occasionally.",
+  },
+  "Alex Martins": {
+    history: ["Visit 1: Feb 8, 2023", "Visit 2: May 18, 2023"],
+    notes: "Recovering from knee surgery, follow-up in 2 weeks.",
+  },
+  "Jane Andrey": {
+    history: [
+      "Visit 1: Feb 11, 2023",
+      "Visit 2: May 8, 2023",
+      "Visit 3: Dec 22, 2023",
+    ],
+    notes: "Allergic to penicillin, monitor during prescriptions.",
+  },
+  "Emily Jordan": {
+    history: ["Visit 1: Mar 3, 2023", "Visit 2: Jun 25, 2023"],
+    notes: "Patient reports frequent migraines, advised neurology consult.",
+  },
+  "Steven Banks": {
+    history: ["Visit 1: Apr 19, 2023", "Visit 2: Aug 11, 2023"],
+    notes: "Hypertension under observation, continues medication.",
+  },
+  "Mya Smith": {
+    history: [
+      "Visit 1: Jan 29, 2023",
+      "Visit 2: Apr 5, 2023",
+      "Visit 3: Oct 14, 2023",
+    ],
+    notes: "Regular check-ups for diabetes management.",
+  },
+  "Ruth Patrick": {
+    history: ["Visit 1: May 7, 2023", "Visit 2: Jul 30, 2023"],
+    notes: "Patient is undergoing physical therapy after accident.",
+  },
+  "Paul Adams": {
+    history: ["Visit 1: Feb 20, 2023", "Visit 2: Sep 12, 2023"],
+    notes: "Admitted for appendicitis surgery, recovering well.",
+  },
+  "James Daniel": {
+    history: ["Visit 1: Mar 17, 2023", "Visit 2: Nov 2, 2023"],
+    notes: "High cholesterol, on prescribed diet and medication.",
+  },
+  "Bello George": {
+    history: ["Visit 1: Jan 9, 2023", "Visit 2: May 25, 2023"],
+    notes: "Fractured wrist last year, currently fully healed.",
+  },
+};
+
 // Update profile UI
+// function updateProfile(row) {
+//   const name = row.querySelector(".name").innerText.trim();
+//   const img = row.querySelector(".name img").src;
+//   const status = row.querySelector("td:nth-child(4) .status").innerText;
+//   const ticket = row.querySelector("td:nth-child(3)").innerText;
+//   const room = row.querySelector("td:nth-child(6)").innerText;
+
+//   profileSection.innerHTML = `
+//     <div class="pic-name">
+//       <div class="prof-pic">
+//         <img src="${img}" alt="${name}-profile-pic" />
+//       </div>
+//       <div class="profile-name">
+//         <h2>${name}</h2>
+//         <p>Ticket: ${ticket}</p>
+//         <p>Status: ${status}</p>
+//         <p>Room: ${room}</p>
+//       </div>
+//     </div>
+//     <div class="history">
+//       <h3>Queue History</h3>
+//       <p>Visit 1: Feb, 11 2023</p>
+//       <p>Visit 2: May, 8 2023</p>
+//     </div>
+//     <div class="notes">
+//       <h3>Notes</h3>
+//       <p>Patient details updated dynamically</p>
+//     </div>
+//   `;
+// }
+
 function updateProfile(row) {
   const name = row.querySelector(".name").innerText.trim();
   const img = row.querySelector(".name img").src;
   const status = row.querySelector("td:nth-child(4) .status").innerText;
   const ticket = row.querySelector("td:nth-child(3)").innerText;
   const room = row.querySelector("td:nth-child(6)").innerText;
+
+  const history = patientData[name]?.history || ["No previous visits"];
+  const notes = patientData[name]?.notes || "No notes available";
 
   profileSection.innerHTML = `
     <div class="pic-name">
@@ -157,12 +246,11 @@ function updateProfile(row) {
     </div>
     <div class="history">
       <h3>Queue History</h3>
-      <p>Visit 1: Feb, 11 2023</p>
-      <p>Visit 2: May, 8 2023</p>
+      ${history.map((h) => `<p>${h}</p>`).join("")}
     </div>
     <div class="notes">
       <h3>Notes</h3>
-      <p>Patient details updated dynamically</p>
+      <p>${notes}</p>
     </div>
   `;
 }
@@ -276,8 +364,3 @@ patientInput.addEventListener("keypress", function (e) {
     addPatient(patientInput.value);
   }
 });
-
-// Demo patients for testing
-addPatient("John Doe");
-addPatient("Jane Smith");
-addPatient("Ali Musa");
