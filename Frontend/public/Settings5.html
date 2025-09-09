@@ -14,7 +14,7 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="Settings5.css" />
-    <title>Hospital - Settings</title>
+    <title>Security</title>
   </head>
   <body>
     <div class="container">
@@ -45,7 +45,7 @@
               >
             </li>
             <li>
-              <a href="appoinment.html"
+              <a href="appointments.html"
                 ><span class="material-symbols-outlined">stacked_inbox</span
                 >Appointments</a
               >
@@ -155,6 +155,29 @@
           </div>
         </section>
       </main>
+      <div id="popup-save" class="popup">
+        <div class="popup-content">
+          <p>✅ Changes have been saved successfully!</p>
+          <button id="close-save" class="btn save">OK</button>
+        </div>
+      </div>
+
+      <div id="popup-cancel" class="popup">
+        <div class="popup-content">
+          <p>⚠️ Do you want to cancel?</p>
+          <div class="popup-buttons">
+            <button id="confirm-cancel" class="btn save">Yes</button>
+            <button id="close-cancel" class="btn-light2">No</button>
+          </div>
+        </div>
+      </div>
+      <div id="popup-cancelled" class="popup">
+        <div class="popup-content">
+          <p>❌ Changes have been cancelled.</p>
+          <button id="close-cancelled" class="btn save">OK</button>
+        </div>
+      </div>
     </div>
+    <script src="settings5.js"></script>
   </body>
 </html>

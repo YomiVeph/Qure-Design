@@ -428,7 +428,7 @@ body {
   border-radius: 0.8rem;
   box-shadow: 0 0.1rem 0 rgba(1.6rem, 2.4rem, 4rem, 0.01),
     0 0.1rem 0 rgba(1.6rem, 2.4rem, 4rem, 0.08);
-  overflow: hidden;
+  overflow-x: auto;
 }
 
 .active-patient {
@@ -440,7 +440,8 @@ table {
   border-collapse: collapse;
   background: #fff;
   border-radius: 0.8rem;
-  overflow: hidden;
+  overflow: visible;
+  min-width: 60rem;
 }
 
 thead {
@@ -689,273 +690,6 @@ tbody tr:hover {
   color: #282828;
 }
 
-/* ========= Responsive Design ========= */
-
-/* Tablet (max-width: 1024px) */
-/* @media (max-width: 1024px) {
-  .container {
-    grid-template-columns: 200px 1fr; 
-  } */
-
-/* .main-content {
-    padding: 2rem;
-  }
-
-  .select-button {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 1.2rem;
-  }
-
-  .hospital-department {
-    flex-wrap: wrap;
-    width: 100%;
-  }
-
-  .search-bar {
-    width: 100%;
-  }
-
-  .button-choose {
-    flex-wrap: wrap;
-    gap: 1.2rem;
-    justify-content: flex-start;
-  }
-
-  .list-profile {
-    flex-direction: column;
-  }
-
-  .profile {
-    margin-top: 2rem;
-  }
-}
-
-/* Mobile (max-width: 768px) */
-/* @media (max-width: 768px) {
-  .container {
-    grid-template-columns: 1fr; 
-    grid-template-areas:
-      "sidebar"
-      "main";
-  }
-
-  .sidebar {
-    flex-direction: row;
-    justify-content: space-between;
-    padding: 1rem;
-    overflow-x: auto;
-  }
-
-  .sidebar-link ul {
-    display: flex;
-    flex-direction: row;
-    gap: 1.5rem;
-  }
-
-  .sidebar-link ul li {
-    margin-bottom: 0;
-  }
-
-  .main-content {
-    padding: 1.5rem;
-  }
-
-  .date-search {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 1rem;
-  }
-
-  .date-meter {
-    min-width: 100%;
-  }
-
-  .select-button {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .dropdown {
-    width: 100%;
-  }
-
-  .button-choose {
-    flex-direction: column;
-    gap: 1rem;
-    align-items: stretch;
-  }
-
-  table {
-    font-size: 1.2rem;
-    display: block;
-    overflow-x: auto;
-    white-space: nowrap;
-  }
-
-  .process {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 1rem;
-  }
-
-  .pagination {
-    width: auto;
-  }
-} */
-
-/* Small Mobile (max-width: 480px) */
-/* @media (max-width: 480px) {
-  .logo h2 {
-    font-size: 2rem;
-  }
-
-  .btn {
-    font-size: 1.4rem;
-    padding: 0.6rem 1rem;
-  }
-
-  thead th,
-  tbody td {
-    padding: 0.8rem;
-  }
-
-  .profile-button {
-    flex-direction: column;
-    gap: 1rem;
-  }
-} */
-/* checking */
-
-/* .hamburger {
-  display: none;
-  flex-direction: column;
-  cursor: pointer;
-  gap: 0.5rem;
-  z-index: 1100;
-}
-
-.hamburger span {
-  width: 25px;
-  height: 3px;
-  background: #fff;
-  border-radius: 5px;
-  transition: all 0.3s ease;
-}
-
-/* Animate into X */
-/* .hamburger.active span:nth-child(1) {
-  transform: rotate(45deg) translate(5px, 5px);
-}
-
-.hamburger.active span:nth-child(2) {
-  opacity: 0;
-}
-
-.hamburger.active span:nth-child(3) {
-  transform: rotate(-45deg) translate(5px, -5px);
-} */
-
-/* Show hamburger on tablets & below */
-/* @media (max-width: 1024px) {
-  .hamburger {
-    display: flex;
-  }
-
-  .sidebar {
-    position: fixed;
-    left: -260px;
-    top: 0;
-    height: 100%;
-    width: 250px;
-    transition: left 0.3s ease;
-    z-index: 1000;
-  }
-
-  .sidebar.active {
-    left: 0;
-  }
-
-  .container {
-    grid-template-columns: 1fr;
-  }
-} */
-
-/* Tablet (<=1024px) */
-/* @media (max-width: 1024px) {
-  .container {
-    grid-template-columns: 1fr;
-  }
-
-  .main-content {
-    padding: 2rem;
-  }
-
-  .sidebar {
-    position: fixed;
-    top: 0;
-    left: -260px; 
-    height: 100%;
-    width: 250px;
-    transition: left 0.3s ease;
-    z-index: 1000;
-  }
-
-  .sidebar.active {
-    left: 0; 
-  }
-
-  .hamburger {
-    display: flex;
-    position: fixed;
-    top: 1.5rem;
-    left: 1.5rem;
-  }
-}
-
-
-@media (max-width: 889px) {
-  .main-content {
-    padding: 1.5rem;
-  }
-
-  .select-button {
-    flex-direction: column;
-  }
-
-  .date-search {
-    flex-direction: column;
-    gap: 1rem;
-  }
-
-  .search-bar {
-    width: 100%;
-  }
-
-  .list-profile {
-    flex-direction: column;
-  }
-}
-
-
-@media (max-width: 480px) {
-  .logo h2 {
-    font-size: 2rem;
-  }
-
-  .btn {
-    font-size: 1.4rem;
-    padding: 0.6rem 1rem;
-  }
-
-  table {
-    font-size: 1.2rem;
-    display: block;
-    overflow-x: auto;
-    white-space: nowrap;
-  }
-} */
-
 .queue-controls {
   margin: 2rem 0;
   background: #fff;
@@ -1002,4 +736,77 @@ tbody tr:hover {
   padding: 0.6rem 1rem;
   border-bottom: 1px solid #eee;
   font-size: 1.4rem;
+}
+
+@media (max-width: 1024px) {
+  .container {
+    grid-template-columns: 80px 1fr;
+  }
+
+  .main-content {
+    padding: 3.2rem;
+  }
+
+  .hospital-department {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .hosp-dropdown,
+  .dept-dropdown {
+    width: 100%;
+  }
+
+  .logo h2 {
+    display: none;
+  }
+
+  .sidebar-link ul li a {
+    font-size: 0;
+    justify-content: center;
+  }
+
+  .sidebar-link ul li a span {
+    font-size: 2.2rem;
+  }
+
+  .search-bar {
+    width: 100%;
+  }
+
+  .select-button {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .button-choose {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .btn {
+    width: 100%;
+  }
+
+  .log-out a {
+    display: none;
+  }
+
+  .list-profile {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 780px) {
+  .date-search {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .date-meter {
+    width: 100%;
+  }
+
+  .table {
+    min-width: 400px;
+  }
 }

@@ -852,6 +852,15 @@ input[type="text"]:focus {
   border-bottom: 1px solid #757575;
 }
 
+.queue-table {
+  width: "100%";
+  overflow-x: auto;
+}
+
+.queue {
+  min-width: 200px;
+}
+
 .act {
   display: flex;
   align-items: center;
@@ -940,6 +949,7 @@ input[type="text"]:focus {
   .heat-map-action {
     grid-column: 1;
     grid-row: auto;
+    overflow-x: auto;
   }
 
   .charts-grid {
@@ -965,8 +975,31 @@ input[type="text"]:focus {
     grid-template-columns: 80px 1fr;
   }
 
+  .date-search {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+
+  .date-meter {
+    width: 100%;
+  }
+
+  .search-bar {
+    width: 100%;
+  }
+
   .logo h2 {
     display: none;
+  }
+
+  .log-out {
+    justify-content: center;
+    align-items: center;
+  }
+
+  .log-out a {
+    font-size: 0;
   }
 
   .sidebar-link ul li a {
@@ -988,9 +1021,26 @@ input[type="text"]:focus {
   }
 }
 
-@media (max-width: 576px) {
+@media (max-width: 630px) {
   .page-title {
     font-size: 2.4rem;
+  }
+
+  .hospital-department {
+    flex-direction: column;
+  }
+
+  .button-part {
+    flex-direction: column;
+  }
+
+  .add-staff,
+  .add-staff .add-staff-btn,
+  .announcement,
+  .announcement .announcement-btn,
+  .export-data,
+  .export-data .export-btn {
+    width: 100%;
   }
 
   .card {

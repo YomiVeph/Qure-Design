@@ -14,11 +14,10 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="Settings1.css" />
-    <title>Hospital-Dashboard</title>
+    <title>Departments</title>
   </head>
   <body>
     <div class="container">
-      <!-- Sidebar -->
       <div class="sidebar">
         <div class="logo">
           <img src="./asset/image/Vector (2).png" alt="logo" />
@@ -45,7 +44,7 @@
               </a>
             </li>
             <li>
-              <a href="appoinment.html">
+              <a href="appointments.html">
                 <span class="material-symbols-outlined">stacked_inbox</span>
                 Appointments
               </a>
@@ -64,12 +63,8 @@
         </div>
       </div>
 
-      <!-- Main -->
       <div class="main">
-        <!-- Header -->
         <div class="settings-header">Settings</div>
-
-        <!-- Tabs -->
         <div class="tabs">
           <a href="Settings.html" class="tab">Organization</a>
           <a href="Settings1.html" class="tab active">Departments</a>
@@ -79,66 +74,84 @@
           <a href="Settings5.html" class="tab">Security</a>
         </div>
 
-        <button class="add-btn">Add New Department</button>
-        <table class="dept-table">
-          <thead>
-            <tr>
-              <th>Department</th>
-              <th>Short code</th>
-              <th>Status</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Cardiology</td>
-              <td>CAR</td>
-              <td><span class="status active">Active</span></td>
-              <td>
-                <div class="action-icons">
-                  <span class="material-symbols-outlined">edit</span>
-                  <span class="material-symbols-outlined">delete</span>
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <td>Pediatrics</td>
-              <td>PED</td>
-              <td><span class="status inactive">Inactive</span></td>
-              <td>
-                <div class="action-icons">
-                  <span class="material-symbols-outlined">edit</span>
-                  <span class="material-symbols-outlined">delete</span>
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <td>Pharmacy</td>
-              <td>PHR</td>
-              <td><span class="status active">Active</span></td>
-              <td>
-                <div class="action-icons">
-                  <span class="material-symbols-outlined">edit</span>
-                  <span class="material-symbols-outlined">delete</span>
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <td>Radiology</td>
-              <td>RAD</td>
-              <td><span class="status inactive">Inactive</span></td>
-              <td>
-                <div class="action-icons">
-                  <span class="material-symbols-outlined">edit</span>
-                  <span class="material-symbols-outlined">delete</span>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+        <div class="add-save-row">
+          <button class="add-btn" id="addDeptBtn">Add New Department</button>
+          <button class="save-all-btn" id="saveAllBtn">Save All</button>
+          <div class="saved-indicator" id="savedIndicator">
+            Successfully Saved
+          </div>
+        </div>
+        <div class="table-wrapper">
+          <table class="dept-table" id="deptTable">
+            <thead>
+              <tr>
+                <th>Department</th>
+                <th>Short code</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Cardiology</td>
+                <td>CAR</td>
+                <td><span class="status active">Active</span></td>
+                <td>
+                  <div class="action-icons">
+                    <span class="material-symbols-outlined">edit</span>
+                    <span class="material-symbols-outlined">delete</span>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>Pediatrics</td>
+                <td>PED</td>
+                <td><span class="status inactive">Inactive</span></td>
+                <td>
+                  <div class="action-icons">
+                    <span class="material-symbols-outlined">edit</span>
+                    <span class="material-symbols-outlined">delete</span>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>Pharmacy</td>
+                <td>PHR</td>
+                <td><span class="status active">Active</span></td>
+                <td>
+                  <div class="action-icons">
+                    <span class="material-symbols-outlined">edit</span>
+                    <span class="material-symbols-outlined">delete</span>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>Radiology</td>
+                <td>RAD</td>
+                <td><span class="status inactive">Inactive</span></td>
+                <td>
+                  <div class="action-icons">
+                    <span class="material-symbols-outlined">edit</span>
+                    <span class="material-symbols-outlined">delete</span>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="modal" id="confirmModal">
+          <div class="modal-content">
+            <p id="modalMessage">Are you sure?</p>
+            <div class="modal-btns">
+              <button class="yes-btn" id="yesBtn">Yes</button>
+              <button class="no-btn" id="noBtn">No</button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
-    <script></script>
+    <script src="settings1.js"></script>
   </body>
 </html>

@@ -14,7 +14,6 @@ body {
   background-color: #f9fafb;
 }
 
-/* ===== Container ===== */
 .container {
   height: 100vh;
   display: grid;
@@ -22,7 +21,6 @@ body {
   grid-template-areas: "sidebar main";
 }
 
-/* ===== Sidebar ===== */
 .sidebar {
   grid-area: sidebar;
   background-color: #0e3995;
@@ -116,7 +114,6 @@ body {
   color: #fff;
 }
 
-/* ===== Main ===== */
 .main {
   grid-area: main;
   padding: 2rem 3rem;
@@ -125,9 +122,8 @@ body {
 .page-title {
   font-size: 3rem;
   font-weight: 700;
-  margin: 2rem 0; 
+  margin: 2rem 0;
 }
-
 
 .tabs {
   display: flex;
@@ -149,7 +145,6 @@ body {
   font-weight: 600;
 }
 
-/* ===== Staff table ===== */
 .table-box {
   background: #fff;
   padding: 2rem;
@@ -175,6 +170,24 @@ body {
 .staff-table th {
   font-weight: 600;
   color: #374151;
+}
+
+.log-out a {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.log-out a {
+  color: #6c99f8;
+  text-decoration: none;
+  font-size: 1.6rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.log-out a:hover {
+  color: #fff;
 }
 
 .actions {
@@ -203,13 +216,12 @@ body {
   background: #092a6d;
 }
 
-/* ===== Role permissions ===== */
 .role-section {
   background: #fff;
   padding: 2rem;
   border-radius: 0.8rem;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-  margin-top: 3rem; /* spacing above section */
+  margin-top: 3rem;
 }
 
 .role-section h2 {
@@ -234,7 +246,7 @@ body {
 
 .permissions-table th:first-child,
 .permissions-table td:first-child {
-  text-align: left; /* keep Role column aligned left */
+  text-align: left;
 }
 
 .permissions-table th {
@@ -246,10 +258,9 @@ body {
   width: 1.6rem;
   height: 1.6rem;
   display: block;
-  margin: 0 auto; /* center align */
+  margin: 0 auto;
 }
 
-/* ===== Responsive ===== */
 @media (max-width: 768px) {
   .container {
     grid-template-columns: 80px 1fr;
@@ -266,7 +277,8 @@ body {
 
   .log-out a {
     font-size: 0;
-    align-items: ;
+    align-items: center;
+    justify-content: center;
   }
 
   .sidebar-link ul li a span {
@@ -291,22 +303,4 @@ body {
   .page-title {
     font-size: 2.4rem;
   }
-}
-
-.log-out {
-  display: flex;
-  align-items: center;
-  gap: 2rem;
-}
-
-.log-out a {
-  color: #6c99f8;
-  text-decoration: none;
-  font-size: 1.6rem;
-  font-weight: 500;
-  transition: all 0.3s ease;
-}
-
-.log-out a:hover {
-  color: #fff;
 }
