@@ -25,7 +25,7 @@ function checkCode() {
   const userInput = inputArea.value.trim();
   if (userInput === generateCode) {
     errorMsg.style.display = "none";
-    window.location.href = "staff-dashboard.html";
+    window.location.href = "hospital-dashboard.html";
   } else if (userInput === "") {
     errorMsg.style.display = "block";
     errorMsg.textContent = "Please enter the access code.";
