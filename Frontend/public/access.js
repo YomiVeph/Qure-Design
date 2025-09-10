@@ -1,9 +1,10 @@
-"use script";
+"use strict";
 const inputArea = document.querySelector("#code-area");
 const errorMsg = document.querySelector(".error-msg");
 const continueBtn = document.querySelector(".continue-btn");
 const backBtn = document.querySelector(".back-btn");
-const generateCode = "STAFF-2025";
+
+// Validation temporarily disabled; backend wiring will be added later
 
 let sideBarOpen = false;
 const sidebar = document.getElementById("sidebar");
@@ -22,19 +23,12 @@ function closeSideBar() {
 }
 
 function checkCode() {
-  const userInput = inputArea.value.trim();
-  if (userInput === generateCode) {
-    errorMsg.style.display = "none";
-    window.location.href = "hospital-dashboard.html";
-  } else if (userInput === "") {
-    errorMsg.style.display = "block";
-    errorMsg.textContent = "Please enter the access code.";
-  } else {
-    errorMsg.style.display = "block";
-    errorMsg.textContent = "Invalid access code. Please try again.";
-  }
+  window.location.href = "hospital-dashboard.html";
 }
-continueBtn.addEventListener("click", checkCode);
+continueBtn.addEventListener("click", (e) => {
+  e.preventDefault();
+  checkCode();
+});
 
 continueBtn.addEventListener("keydown", function (e) {
   if (e.key === "Enter") {
@@ -42,6 +36,7 @@ continueBtn.addEventListener("keydown", function (e) {
   }
 });
 
-backBtn.addEventListener("click", () => {
+backBtn.addEventListener("click", (e) => {
+  e.preventDefault();
   window.location.href = "index.html";
 });

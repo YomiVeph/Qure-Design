@@ -48,58 +48,13 @@ const handleViewQueue = () => {
 };
 
 const handleCancelQueue = () => {
-  // Show confirmation dialog
-  if (confirm("Are you sure you want to cancel your queue position?")) {
-    // In a real application, this would make an API call to cancel the queue
-    alert("Queue cancelled successfully!");
-
-    // Update the UI to show "Not in queue" state
-    const queueStatusCard = document.querySelector(".queue-status-card");
-    queueStatusCard.innerHTML = `
-      <h3 class="queue-title">You are not in a queue</h3>
-      <div class="queue-info">
-        <span class="queue-number" style="color: #64748b;">-</span>
-        <span class="queue-eta">No active queue</span>
-      </div>
-      <div class="queue-actions">
-        <button class="btn btn-primary" id="join-queue-btn">JOIN QUEUE</button>
-      </div>
-    `;
-
-    // Add event listener to the new join queue button
-    document
-      .getElementById("join-queue-btn")
-      .addEventListener("click", handleJoinQueue);
-  }
+  // Backend integration required
+  alert("Cancel queue is not connected. Backend integration pending.");
 };
 
 const handleJoinQueue = () => {
-  // In a real application, this would make an API call to join a queue
-  alert("Joining queue...");
-
-  // Simulate joining a queue after a short delay
-  setTimeout(() => {
-    const queueStatusCard = document.querySelector(".queue-status-card");
-    queueStatusCard.innerHTML = `
-      <h3 class="queue-title">You are in a queue</h3>
-      <div class="queue-info">
-        <span class="queue-number">C-012</span>
-        <span class="queue-eta">ETA: 4 mins</span>
-      </div>
-      <div class="queue-actions">
-        <button class="btn btn-primary" id="view-queue-btn">VIEW QUEUE</button>
-        <button class="btn btn-secondary" id="cancel-queue-btn">CANCEL</button>
-      </div>
-    `;
-
-    // Re-add event listeners
-    document
-      .getElementById("view-queue-btn")
-      .addEventListener("click", handleViewQueue);
-    document
-      .getElementById("cancel-queue-btn")
-      .addEventListener("click", handleCancelQueue);
-  }, 1000);
+  // Backend integration required
+  alert("Join queue is not connected. Backend integration pending.");
 };
 
 const handleBookAppointment = () => {
@@ -115,28 +70,11 @@ bookAppointmentBtn.addEventListener("click", handleBookAppointment);
 
 // Appointment Management Functions
 const handleReschedule = (appointmentCard) => {
-  // In a real application, this would open a rescheduling modal or redirect
-  alert("Opening rescheduling options...");
+  alert("Reschedule is not connected. Backend integration pending.");
 };
 
 const handleCancelAppointment = (appointmentCard) => {
-  if (confirm("Are you sure you want to cancel this appointment?")) {
-    // In a real application, this would make an API call to cancel the appointment
-    alert("Appointment cancelled successfully!");
-
-    // Remove the appointment card from the UI
-    appointmentCard.remove();
-
-    // Check if there are no more appointments
-    const appointmentsList = document.querySelector(".appointments-list");
-    if (appointmentsList.children.length === 0) {
-      appointmentsList.innerHTML = `
-        <div class="empty-appointments">
-          <p>No upcoming appointments</p>
-        </div>
-      `;
-    }
-  }
+  alert("Cancel appointment is not connected. Backend integration pending.");
 };
 
 // Add event listeners to appointment action buttons
@@ -267,33 +205,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
-// Auto-refresh queue ETA (simulate real-time updates)
-let queueETACounter = 4; // Starting with 4 minutes
-
-const updateQueueETA = () => {
-  if (queueETACounter > 0) {
-    queueETACounter--;
-    const etaElement = document.querySelector(".queue-eta");
-    if (etaElement) {
-      etaElement.textContent = `ETA: ${queueETACounter} min${
-        queueETACounter !== 1 ? "s" : ""
-      }`;
-    }
-
-    // If ETA reaches 0, show "Now serving" or similar
-    if (queueETACounter === 0) {
-      const etaElement = document.querySelector(".queue-eta");
-      if (etaElement) {
-        etaElement.textContent = "Now serving!";
-        etaElement.style.color = "#10b981";
-        etaElement.style.fontWeight = "600";
-      }
-    }
-  }
-};
-
-// Update ETA every minute (60000ms)
-setInterval(updateQueueETA, 60000);
+// Removed simulated ETA updates; will be driven by backend events.
 
 // Initialize page
 document.addEventListener("DOMContentLoaded", () => {
@@ -331,21 +243,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   */
 
-  // DEVELOPMENT MODE: Use default user data
-  console.log("Running in development mode - authentication check disabled");
-
-  // You can still test with mock user data if needed
-  const mockUser = {
-    firstName: "Joan",
-    email: "joan@example.com",
-    role: "patient",
-  };
-
-  // Update greeting with mock user name
-  const greeting = document.querySelector(".greeting");
-  if (greeting) {
-    greeting.textContent = `Hi, ${mockUser.firstName}`;
-  }
+  // Waiting for backend auth; no mock user injected
 });
 
 // Handle window resize for responsive behavior

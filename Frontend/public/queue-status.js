@@ -58,76 +58,23 @@ const setLoadingState = (isLoading) => {
   }
 };
 
-// Simulate API call for queue status
+// Backend integration placeholder for queue status
 const checkQueueStatus = async (ticketNumber) => {
-  // Simulate network delay
-  await new Promise((resolve) => setTimeout(resolve, 2000));
-
-  // Mock response - in real app, this would be an API call
-  const mockResponses = {
-    "C-012": {
-      status: "active",
-      position: 3,
-      estimatedWait: "15 minutes",
-      department: "Cardiology",
-    },
-    "A-045": {
-      status: "waiting",
-      position: 12,
-      estimatedWait: "45 minutes",
-      department: "General Medicine",
-    },
-    "B-023": {
-      status: "completed",
-      position: 0,
-      estimatedWait: "0 minutes",
-      department: "Pediatrics",
-    },
-  };
-
-  const response = mockResponses[ticketNumber.toUpperCase()];
-
-  if (!response) {
-    throw new Error("Ticket number not found. Please check and try again.");
-  }
-
-  return response;
+  // Replace with: await api.queue.getStatus(ticketNumber)
+  throw new Error(
+    "Queue status service not connected. Backend integration pending."
+  );
 };
 
 const displayQueueStatus = (statusData) => {
-  // Create status display modal or redirect to status page
-  const statusMessage = `
-    Status: ${statusData.status}
-    Position: ${statusData.position}
-    Estimated Wait: ${statusData.estimatedWait}
-    Department: ${statusData.department}
-  `;
-
-  alert(statusMessage); // In real app, this would be a proper modal or page
+  // TODO: Render a proper modal or redirect when backend is connected
+  console.log("Queue status:", statusData);
 };
 
 const handleFormSubmission = async (event) => {
   event.preventDefault();
-
-  const ticketNumber = ticketNumberInput.value;
-  const validationError = validateTicketNumber(ticketNumber);
-
-  if (validationError) {
-    showInputError(validationError);
-    return;
-  }
-
-  clearInputError();
-  setLoadingState(true);
-
-  try {
-    const statusData = await checkQueueStatus(ticketNumber);
-    displayQueueStatus(statusData);
-  } catch (error) {
-    showInputError(error.message);
-  } finally {
-    setLoadingState(false);
-  }
+  // Relaxed: navigate to real-time tracking for now
+  window.location.href = "real-time-queue-tracking.html";
 };
 
 // Mobile menu functionality
@@ -192,8 +139,7 @@ const initializePage = () => {
 
 // Event Listeners
 queueTrackingForm.addEventListener("submit", handleFormSubmission);
-ticketNumberInput.addEventListener("input", handleInputChange);
-ticketNumberInput.addEventListener("blur", handleInputChange);
+// Relaxed: disable live validation during navigation-only mode
 mobileMenuToggle.addEventListener("click", toggleMobileMenu);
 mobileCloseButton.addEventListener("click", closeMobileMenu);
 

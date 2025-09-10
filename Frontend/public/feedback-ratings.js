@@ -396,48 +396,7 @@ document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
   });
 });
 
-// Add form auto-save functionality
-let autoSaveTimeout;
-const autoSaveForm = () => {
-  clearTimeout(autoSaveTimeout);
-  autoSaveTimeout = setTimeout(() => {
-    const formData = {
-      rating: selectedRating,
-      comments: feedbackComments.value,
-    };
-
-    localStorage.setItem("feedbackFormDraft", JSON.stringify(formData));
-    console.log("Feedback form auto-saved");
-  }, 1000);
-};
-
-// Add auto-save listeners
-feedbackComments.addEventListener("input", autoSaveForm);
-
-// Restore form data on page load
-const restoreFormData = () => {
-  const savedData = localStorage.getItem("feedbackFormDraft");
-  if (savedData) {
-    try {
-      const data = JSON.parse(savedData);
-
-      if (data.rating > 0) {
-        handleStarClick(data.rating);
-      }
-      if (data.comments) {
-        feedbackComments.value = data.comments;
-        updateCharCount();
-      }
-
-      console.log("Feedback form data restored from auto-save");
-    } catch (error) {
-      console.error("Error restoring feedback form data:", error);
-    }
-  }
-};
-
-// Restore form data when page loads
-document.addEventListener("DOMContentLoaded", restoreFormData);
+// Removed localStorage autosave/restore for feedback form.
 
 // Add keyboard navigation for star rating
 const handleStarKeyboard = (e) => {

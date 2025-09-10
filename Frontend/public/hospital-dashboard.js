@@ -324,29 +324,8 @@ document.addEventListener("click", (e) => {
 
 /* ---------- Call Next: choose status randomly and dept from header list ---------- */
 callNextBtn.addEventListener("click", () => {
-  const randomId = Math.floor(Math.random() * 1000);
-  const statuses = [
-    "Waiting",
-    "Called",
-    "In Triage",
-    "With Doc",
-    "Completed",
-    "No show",
-  ];
-  const randomStatus = statuses[Math.floor(Math.random() * statuses.length)];
-
-  const headerDepts = getHeaderDeptOptions();
-  const dept = headerDepts.length
-    ? headerDepts[Math.floor(Math.random() * headerDepts.length)]
-    : "General";
-
-  addQueueRow(
-    "Patient " + randomId,
-    "T-" + randomId,
-    dept,
-    randomStatus,
-    Math.floor(Math.random() * 10) + " mins"
-  );
+  // Backend integration required to call next patient
+  alert("Call Next is not connected. Backend integration pending.");
 });
 
 /* ---------- Initialize: compute indexes and update stats ---------- */

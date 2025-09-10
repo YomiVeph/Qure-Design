@@ -232,53 +232,7 @@ document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
   });
 });
 
-// Add form auto-save functionality
-let autoSaveTimeout;
-const autoSaveForm = () => {
-  clearTimeout(autoSaveTimeout);
-  autoSaveTimeout = setTimeout(() => {
-    const formData = {
-      name: contactName.value,
-      email: contactEmail.value,
-      message: contactMessage.value,
-    };
-
-    localStorage.setItem("contactFormDraft", JSON.stringify(formData));
-    console.log("Contact form auto-saved");
-  }, 1000);
-};
-
-// Add auto-save listeners
-contactName.addEventListener("input", autoSaveForm);
-contactEmail.addEventListener("input", autoSaveForm);
-contactMessage.addEventListener("input", autoSaveForm);
-
-// Restore form data on page load
-const restoreFormData = () => {
-  const savedData = localStorage.getItem("contactFormDraft");
-  if (savedData) {
-    try {
-      const data = JSON.parse(savedData);
-
-      if (data.name) {
-        contactName.value = data.name;
-      }
-      if (data.email) {
-        contactEmail.value = data.email;
-      }
-      if (data.message) {
-        contactMessage.value = data.message;
-      }
-
-      console.log("Contact form data restored from auto-save");
-    } catch (error) {
-      console.error("Error restoring contact form data:", error);
-    }
-  }
-};
-
-// Restore form data when page loads
-document.addEventListener("DOMContentLoaded", restoreFormData);
+// Removed localStorage autosave/restore for contact form.
 
 // Add keyboard navigation for better accessibility
 const handleFormKeyboard = (e) => {

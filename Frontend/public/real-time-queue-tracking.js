@@ -16,51 +16,7 @@ let lastUpdateTime = new Date();
 let autoRefreshInterval = null;
 let isRefreshing = false;
 
-// Mock queue data - in real app, this would come from an API
-const mockQueueData = [
-  {
-    id: 1,
-    patientName: "Richard Oladipo",
-    service: "Consultation",
-    status: "now-serving",
-    estimatedWait: "Now Serving",
-  },
-  {
-    id: 2,
-    patientName: "Peter Babarinde",
-    service: "Radiology",
-    status: "next",
-    estimatedWait: "Next",
-  },
-  {
-    id: 3,
-    patientName: "Adewale John",
-    service: "Dermatology",
-    status: "waiting",
-    estimatedWait: "25 minutes",
-  },
-  {
-    id: 4,
-    patientName: "Obi Fredricks",
-    service: "Pediatrics",
-    status: "waiting",
-    estimatedWait: "50 minutes",
-  },
-  {
-    id: 5,
-    patientName: "David Benjamin",
-    service: "Consultation",
-    status: "waiting",
-    estimatedWait: "1hr 15 minutes",
-  },
-  {
-    id: 6,
-    patientName: "Olaseni Emmanuel",
-    service: "Radiology",
-    status: "waiting",
-    estimatedWait: "1hr 35 minutes",
-  },
-];
+// Removed mock queue data. Data should come from backend API.
 
 // Utility functions
 const formatTimeAgo = (date) => {
@@ -143,43 +99,11 @@ const hideLoadingState = () => {
   loadingState.style.display = "none";
 };
 
-// Simulate API call for queue data
+// Backend integration placeholder for queue data
 const fetchQueueData = async () => {
-  // Simulate network delay
-  await new Promise((resolve) => setTimeout(resolve, 1000));
-
-  // In real app, this would be an API call
-  // For demo purposes, we'll randomly modify some data to simulate real-time updates
-  const updatedData = mockQueueData.map((item) => {
-    if (item.status === "waiting") {
-      // Randomly update some waiting times
-      const randomChange = Math.random() > 0.7;
-      if (randomChange) {
-        const currentWait = item.estimatedWait;
-        if (currentWait.includes("minutes")) {
-          const minutes = parseInt(currentWait);
-          if (minutes > 5) {
-            item.estimatedWait = `${minutes - 1} minutes`;
-          }
-        } else if (currentWait.includes("hr")) {
-          const hours = parseInt(currentWait);
-          const minutes = parseInt(
-            currentWait.match(/(\d+) minutes/)?.[1] || 0
-          );
-          if (hours > 0 || minutes > 5) {
-            if (minutes > 5) {
-              item.estimatedWait = `${hours}hr ${minutes - 1} minutes`;
-            } else if (hours > 0) {
-              item.estimatedWait = `${hours - 1}hr 59 minutes`;
-            }
-          }
-        }
-      }
-    }
-    return item;
-  });
-
-  return updatedData;
+  // Replace with: await api.queue.list()
+  // For now, return an empty array to render the empty state
+  return [];
 };
 
 const refreshQueueData = async () => {
@@ -206,10 +130,8 @@ const refreshQueueData = async () => {
 };
 
 const startAutoRefresh = () => {
-  // Auto-refresh every 30 seconds
-  autoRefreshInterval = setInterval(() => {
-    refreshQueueData();
-  }, 30000);
+  // Hook for real-time updates (e.g., WebSocket/SSE) to be added with backend
+  // Auto-refresh disabled until backend is ready
 };
 
 const stopAutoRefresh = () => {
