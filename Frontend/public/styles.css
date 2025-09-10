@@ -11,11 +11,15 @@ html {
   box-sizing: border-box;
   font-family: "Plus Jakarta Sans", sans-serif;
 }
+body {
+}
+
 .container {
   min-height: 100vh;
   background-color: #f8fafc;
   color: #1e293b;
   line-height: 1.6;
+  overflow-x: hidden;
 }
 
 .page-header {
@@ -1373,7 +1377,6 @@ html {
 }
 @media screen and (max-width: 380px) {
   .role-card {
-    width: 18rem;
     height: 25rem;
   }
   .role-card img {
@@ -1406,6 +1409,7 @@ html {
     padding: 0 2rem;
     display: flex;
   }
+
   .second-part img {
     width: 100%;
     height: auto;
@@ -1480,22 +1484,22 @@ html {
   z-index: 1000;
   transform: translateX(-100%);
   transition: transform 0.3s ease;
-  display: flex;
-  flex-direction: column;
-  padding: 2rem;
+  display: none;
+  /* flex-direction: column;
+  padding: 2rem; */
 }
 
 .mobile-navigation.active {
   transform: translateX(0);
 }
 
-.mobile-nav-header {
+/* .mobile-nav-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 2rem;
   border-bottom: 1px solid #e2e8f0;
-}
+} */
 
 .mobile-logo-section {
   display: flex;
@@ -1523,17 +1527,17 @@ html {
 }
 
 .mobile-nav-menu {
-  padding: 2rem;
+  padding: 1rem;
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: 1rem;
 }
 
 .mobile-nav-link {
   font-size: 1.8rem;
   color: #1e293b;
   text-decoration: none;
-  padding: 1rem 0;
+  padding: 0.5rem 0;
   border-bottom: 1px solid #e2e8f0;
 }
 
@@ -1549,19 +1553,20 @@ html {
   transform: rotate(-45deg) translate(5px, -5px);
 }
 
-.mobile-navigation.active {
+/* .mobile-navigation.active {
   transform: translateX(0);
-}
+} */
 
 .mobile-nav-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding-bottom: 1rem;
+  padding: 1rem;
+
   border-bottom: 1px solid #e2e8f0;
 }
 
-.mobile-nav-menu {
+/* .mobile-nav-menu {
   padding: 2rem 0;
   display: flex;
   flex-direction: column;
@@ -1582,9 +1587,9 @@ html {
   font-size: 2.8rem;
   color: #64748b;
   cursor: pointer;
-}
+} */
 
-.mobile-menu-button.active .hamburger-line:nth-child(1) {
+/* .mobile-menu-button.active .hamburger-line:nth-child(1) {
   transform: translateY(6px) rotate(45deg);
 }
 .mobile-menu-button.active .hamburger-line:nth-child(2) {
@@ -1592,6 +1597,17 @@ html {
 }
 .mobile-menu-button.active .hamburger-line:nth-child(3) {
   transform: translateY(-6px) rotate(-45deg);
+} */
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 @media (max-width: 768px) {
@@ -1606,6 +1622,6 @@ html {
   }
 
   .mobile-navigation {
-    display: flex;
+    display: block;
   }
 }

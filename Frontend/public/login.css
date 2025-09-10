@@ -261,6 +261,7 @@ input[type="checkbox"]:checked {
 @media (max-width: 480px) {
   .login-details h2 {
     font-size: 2.4rem;
+    text-align: center;
   }
   .login-details p {
     font-size: 1.2rem;
@@ -271,5 +272,13 @@ input[type="checkbox"]:checked {
   }
   .remember-me-password {
     margin-bottom: 2rem;
+  }
+
+  .remember-me label {
+    font-size: 1.2rem;
+  }
+  input[type="text"],
+  input[type="password"] {
+    font-size: 1.2rem;
   }
 }

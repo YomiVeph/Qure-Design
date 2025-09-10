@@ -267,4 +267,13 @@ button:hover {
   .form-fill p {
     font-size: 1.2rem;
   }
+
+  /* .select-role {
+    flex-direction: column;
+    gap: 1.6rem;
+  } */
+
+  .select-role label {
+    font-size: 1.4rem;
+  }
 }
