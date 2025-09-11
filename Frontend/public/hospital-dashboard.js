@@ -183,37 +183,158 @@ function showCustomPopup(title, message, type = "info") {
 
 // Authentication Check
 document.addEventListener("DOMContentLoaded", () => {
-  // Check if user is logged in
-  const userData = localStorage.getItem("user");
-  const authToken = localStorage.getItem("authToken");
+  // Check if access code is validated
+  const staffAccessValidated = localStorage.getItem("staffAccessValidated");
+  const staffAccessCode = localStorage.getItem("staffAccessCode");
 
-  if (!userData || !authToken) {
-    // Redirect to login if not authenticated
-    window.location.href = "login.html";
+  if (!staffAccessValidated || !staffAccessCode) {
+    // Redirect to access page if not validated
+    window.location.href = "access.html";
     return;
   }
 
-  // Parse user data
-  try {
-    const user = JSON.parse(userData);
-    if (user.role !== "staff") {
-      // Redirect if not staff
-      window.location.href = "login.html";
-      return;
-    }
+  // Check if user is logged in (optional for staff dashboard)
+  const userData = localStorage.getItem("user");
+  const authToken = localStorage.getItem("authToken");
 
-    // Update any user-specific elements if needed
-    console.log("Hospital Dashboard loaded for:", user.firstName);
-  } catch (error) {
-    console.error("Error parsing user data:", error);
-    window.location.href = "login.html";
+  if (userData && authToken) {
+    // Parse user data if logged in
+    try {
+      const user = JSON.parse(userData);
+      if (user.role === "staff") {
+        console.log("Hospital Dashboard loaded for staff:", user.firstName);
+        // Update hospital name if available
+        if (user.hospitalName) {
+          updateHospitalInfo(user.hospitalName);
+        }
+      }
+    } catch (error) {
+      console.error("Error parsing user data:", error);
+    }
   }
+
+  // Load dashboard data
+  loadDashboardData();
 });
+
+// Update hospital information in the UI
+function updateHospitalInfo(hospitalName) {
+  // Update hospital dropdown if it exists
+  const hospitalDropdown = document.querySelector(".hosp-btn");
+  if (hospitalDropdown) {
+    hospitalDropdown.textContent = hospitalName;
+  }
+
+  // Update any other hospital-specific elements
+  console.log("Hospital set to:", hospitalName);
+}
+
+// Load dashboard data
+async function loadDashboardData() {
+  try {
+    // Load queue data
+    await loadQueueData();
+
+    // Load analytics data
+    await loadAnalyticsData();
+
+    // Load department status
+    await loadDepartmentStatus();
+
+    console.log("Dashboard data loaded successfully");
+  } catch (error) {
+    console.error("Error loading dashboard data:", error);
+    showCustomPopup(
+      "Error",
+      "Failed to load dashboard data. Please refresh the page.",
+      "error"
+    );
+  }
+}
+
+// Load queue data from backend
+async function loadQueueData() {
+  try {
+    const response = await fetch("http://localhost:4000/api/queues/all", {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      updateQueueTable(data.data || []);
+    } else {
+      console.log("No queue data available or not authenticated");
+    }
+  } catch (error) {
+    console.error("Error loading queue data:", error);
+  }
+}
+
+// Update queue table with real data
+function updateQueueTable(queues) {
+  const tableBody = document.querySelector(".queue-list tbody");
+  if (!tableBody) return;
+
+  // Clear existing rows
+  tableBody.innerHTML = "";
+
+  if (queues.length === 0) {
+    tableBody.innerHTML = `
+      <tr>
+        <td colspan="6" style="text-align: center; padding: 2rem; color: #6b7280;">
+          No patients in queue
+        </td>
+      </tr>
+    `;
+    return;
+  }
+
+  // Add queue rows
+  queues.forEach((queue) => {
+    const row = document.createElement("tr");
+    const action = getActionIcon(queue.status);
+
+    row.innerHTML = `
+      <td>${queue.patientName || "Unknown"}</td>
+      <td>${queue.queueNumber}</td>
+      <td>${queue.specialty}</td>
+      <td>${queue.status}</td>
+      <td>${queue.estimatedWaitTime || 0} mins</td>
+      <td><span class="material-symbols-outlined ${action.className}">${
+      action.icon
+    }</span></td>
+    `;
+
+    tableBody.appendChild(row);
+  });
+
+  // Update stats
+  updateStats();
+}
+
+// Load analytics data
+async function loadAnalyticsData() {
+  // This would typically fetch from analytics API
+  console.log("Loading analytics data...");
+  // For now, we'll use the existing chart data
+}
+
+// Load department status
+async function loadDepartmentStatus() {
+  // This would typically fetch from department status API
+  console.log("Loading department status...");
+  // For now, we'll use static data
+}
 
 // Logout functionality
 function handleLogout() {
   localStorage.removeItem("authToken");
   localStorage.removeItem("user");
+  localStorage.removeItem("staffAccessValidated");
+  localStorage.removeItem("staffAccessCode");
   window.location.href = "login.html";
 }
 
@@ -552,14 +673,43 @@ document.addEventListener("click", (e) => {
   });
 });
 
-/* ---------- Call Next: choose status randomly and dept from header list ---------- */
-callNextBtn.addEventListener("click", () => {
-  // Backend integration required to call next patient
-  showCustomPopup(
-    "Call Next Patient",
-    "Call Next functionality is not connected yet. Backend integration pending.",
-    "info"
-  );
+/* ---------- Call Next: call next patient in queue ---------- */
+callNextBtn.addEventListener("click", async () => {
+  try {
+    const response = await fetch("http://localhost:4000/api/queues/call-next", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      showCustomPopup(
+        "Patient Called",
+        `Patient ${data.patientName} (${data.queueNumber}) has been called.`,
+        "success"
+      );
+
+      // Refresh queue data
+      await loadQueueData();
+    } else {
+      const errorData = await response.json();
+      showCustomPopup(
+        "No Patients",
+        errorData.message || "No patients available to call.",
+        "info"
+      );
+    }
+  } catch (error) {
+    console.error("Error calling next patient:", error);
+    showCustomPopup(
+      "Error",
+      "Failed to call next patient. Please try again.",
+      "error"
+    );
+  }
 });
 
 /* ---------- Initialize: compute indexes and update stats ---------- */

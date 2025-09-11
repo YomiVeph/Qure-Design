@@ -33,7 +33,6 @@ const updateContactSchema = z.object({
 // Create contact message
 export const createContact = async (req, res) => {
   try {
-    console.log("=== Create Contact Message ===");
     console.log("Request body:", req.body);
     console.log("IP Address:", req.ip);
     console.log("User Agent:", req.get("User-Agent"));
@@ -105,7 +104,6 @@ export const createContact = async (req, res) => {
 // Get all contact messages (Admin/Staff only)
 export const getAllContacts = async (req, res) => {
   try {
-    console.log("=== Get All Contact Messages ===");
     console.log("User ID:", req.user.id);
     console.log("Query params:", req.query);
 
@@ -187,7 +185,6 @@ export const getAllContacts = async (req, res) => {
 // Get contact message by ID
 export const getContactById = async (req, res) => {
   try {
-    console.log("=== Get Contact by ID ===");
     console.log("Contact ID:", req.params.id);
     console.log("User ID:", req.user.id);
 
@@ -230,7 +227,6 @@ export const getContactById = async (req, res) => {
 // Update contact message
 export const updateContact = async (req, res) => {
   try {
-    console.log("=== Update Contact Message ===");
     console.log("Contact ID:", req.params.id);
     console.log("User ID:", req.user.id);
     console.log("Update data:", req.body);
@@ -281,7 +277,6 @@ export const updateContact = async (req, res) => {
 // Respond to contact message
 export const respondToContact = async (req, res) => {
   try {
-    console.log("=== Respond to Contact Message ===");
     console.log("Contact ID:", req.params.id);
     console.log("User ID:", req.user.id);
     console.log("Response:", req.body.response);
@@ -329,7 +324,6 @@ export const respondToContact = async (req, res) => {
 // Delete contact message
 export const deleteContact = async (req, res) => {
   try {
-    console.log("=== Delete Contact Message ===");
     console.log("Contact ID:", req.params.id);
     console.log("User ID:", req.user.id);
 
@@ -365,7 +359,6 @@ export const deleteContact = async (req, res) => {
 // Get contact statistics
 export const getContactStats = async (req, res) => {
   try {
-    console.log("=== Get Contact Statistics ===");
     console.log("User ID:", req.user.id);
 
     const stats = await Contact.getStats();
@@ -423,7 +416,6 @@ export const getContactStats = async (req, res) => {
 // Mark contact as read
 export const markContactAsRead = async (req, res) => {
   try {
-    console.log("=== Mark Contact as Read ===");
     console.log("Contact ID:", req.params.id);
     console.log("User ID:", req.user.id);
 

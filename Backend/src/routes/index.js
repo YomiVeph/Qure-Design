@@ -5,6 +5,7 @@ import { queueRouter } from "./queues.js";
 import { notificationRouter } from "./notifications.js";
 import feedbackRouter from "./feedback.js";
 import contactRouter from "./contact.js";
+import { accessCodeRouter } from "./accessCodes.js";
 
 export const router = Router();
 
@@ -14,3 +15,4 @@ router.use("/queues", queueRouter);
 router.use("/notifications", notificationRouter);
 router.use("/feedback", feedbackRouter);
 router.use("/contact", contactRouter);
+router.use("/access-codes", accessCodeRouter);

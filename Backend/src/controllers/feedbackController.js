@@ -16,7 +16,6 @@ const createFeedbackSchema = z.object({
 // Create feedback
 export const createFeedback = async (req, res) => {
   try {
-    console.log("=== Create Feedback ===");
     console.log("User ID:", req.user.id);
     console.log("Request body:", req.body);
 
@@ -92,7 +91,6 @@ export const createFeedback = async (req, res) => {
 // Get user's feedback
 export const getUserFeedback = async (req, res) => {
   try {
-    console.log("=== Get User Feedback ===");
     console.log("User ID:", req.user.id);
 
     const { page = 1, limit = 10 } = req.query;
@@ -146,7 +144,6 @@ export const getUserFeedback = async (req, res) => {
 // Get all feedback (for admin/staff)
 export const getAllFeedback = async (req, res) => {
   try {
-    console.log("=== Get All Feedback ===");
 
     const { page = 1, limit = 20, rating, status, hospitalName } = req.query;
     const skip = (page - 1) * limit;
@@ -206,7 +203,6 @@ export const getAllFeedback = async (req, res) => {
 // Get feedback statistics
 export const getFeedbackStats = async (req, res) => {
   try {
-    console.log("=== Get Feedback Stats ===");
 
     const stats = await Feedback.aggregate([
       {
@@ -278,7 +274,6 @@ export const getFeedbackStats = async (req, res) => {
 // Update feedback status (for admin/staff)
 export const updateFeedbackStatus = async (req, res) => {
   try {
-    console.log("=== Update Feedback Status ===");
     console.log("Feedback ID:", req.params.id);
     console.log("New status:", req.body.status);
 
@@ -328,7 +323,6 @@ export const updateFeedbackStatus = async (req, res) => {
 // Delete feedback
 export const deleteFeedback = async (req, res) => {
   try {
-    console.log("=== Delete Feedback ===");
     console.log("Feedback ID:", req.params.id);
     console.log("User ID:", req.user.id);
 

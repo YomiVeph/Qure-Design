@@ -272,76 +272,13 @@ export const getHospitalQueues = async (req, res) => {
   }
 };
 
-// Call next patient (for staff)
-export const callNextPatient = async (req, res) => {
-  try {
-    const { hospitalName, specialty } = req.body;
-
-    if (!hospitalName || !specialty) {
-      return res.status(400).json({
-        success: false,
-        message: "Hospital name and specialty are required",
-      });
-    }
-
-    // Find the next patient in queue
-    const nextPatient = await Queue.findOne({
-      hospitalName,
-      specialty,
-      status: "waiting",
-    }).populate("patient", "firstName lastName email phone");
-
-    if (!nextPatient) {
-      return res.status(404).json({
-        success: false,
-        message: "No patients in queue",
-      });
-    }
-
-    // Update patient status to called
-    nextPatient.status = "called";
-    nextPatient.calledAt = new Date();
-    await nextPatient.save();
-
-    // Create notification for patient
-    await Notification.create({
-      user: nextPatient.patient._id,
-      title: "You're Next!",
-      message: `You have been called for your ${specialty} appointment at ${hospitalName}. Please proceed to the consultation room.`,
-      type: "queue_update",
-      priority: "urgent",
-      relatedEntity: {
-        type: "queue",
-        id: nextPatient._id,
-      },
-    });
-
-    res.json({
-      success: true,
-      message: "Next patient called successfully",
-      data: nextPatient,
-    });
-  } catch (error) {
-    console.error("Call next patient error:", error);
-    res.status(500).json({
-      success: false,
-      message: "Internal server error",
-    });
-  }
-};
-
 // Get all queue data for public viewing (patients can see all queues)
 export const getAllQueues = async (req, res) => {
   try {
     const { hospitalName, specialty } = req.query;
 
-    console.log("=== GetAllQueues Debug ===");
-    console.log("Query params:", { hospitalName, specialty });
-
     // If no hospital specified, show all hospitals
-    const query = {
-      // Temporarily remove status filter to see all queues
-    };
+    const query = {};
 
     if (hospitalName) {
       query.hospitalName = hospitalName;
@@ -351,15 +288,10 @@ export const getAllQueues = async (req, res) => {
       query.specialty = specialty;
     }
 
-    console.log("MongoDB query:", query);
-
     const queues = await Queue.find(query)
       .populate("patient", "firstName lastName") // Only show first and last name for privacy
       .sort({ position: 1 })
       .lean();
-
-    console.log("Found queues:", queues.length);
-    console.log("Queue data:", queues);
 
     // Format the data for public display
     const formattedQueues = queues.map((queue) => ({
@@ -377,9 +309,6 @@ export const getAllQueues = async (req, res) => {
       // Don't expose sensitive patient data like email, phone, etc.
     }));
 
-    console.log("Formatted queues:", formattedQueues);
-    console.log("Response data length:", formattedQueues.length);
-
     res.json({
       success: true,
       data: formattedQueues,
@@ -393,19 +322,15 @@ export const getAllQueues = async (req, res) => {
   }
 };
 
-// Temporary debug endpoint to see all queues in database
+// Debug endpoint to see all queues in database
 export const debugAllQueues = async (req, res) => {
   try {
-    console.log("=== Debug All Queues ===");
 
     // Get all queues without any filters
     const allQueues = await Queue.find({})
       .populate("patient", "firstName lastName email")
       .sort({ createdAt: -1 })
       .lean();
-
-    console.log("Total queues in database:", allQueues.length);
-    console.log("All queues:", allQueues);
 
     res.json({
       success: true,
@@ -414,6 +339,75 @@ export const debugAllQueues = async (req, res) => {
     });
   } catch (error) {
     console.error("Debug all queues error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+};
+
+// Call next patient in queue (for staff)
+export const callNextPatient = async (req, res) => {
+  try {
+    const { hospitalName, specialty } = req.body;
+
+    // Find the next patient in queue (waiting status, earliest joined)
+    const nextPatient = await Queue.findOne({
+      status: "waiting",
+      ...(hospitalName && { hospitalName }),
+      ...(specialty && { specialty }),
+    })
+      .populate("patient", "firstName lastName email")
+      .sort({ joinedAt: 1 }) // First come, first served
+      .lean();
+
+    if (!nextPatient) {
+      return res.status(404).json({
+        success: false,
+        message: "No patients waiting in queue",
+      });
+    }
+
+    // Update the patient's status to "called"
+    await Queue.findByIdAndUpdate(nextPatient._id, {
+      status: "called",
+      calledAt: new Date(),
+    });
+
+    // Create notification for the patient
+    try {
+      const { Notification } = await import("../models/Notification.js");
+      await Notification.create({
+        user: nextPatient.patient._id,
+        type: "queue_update",
+        title: "You've been called!",
+        message: `Please proceed to ${nextPatient.specialty} department. Your queue number is ${nextPatient.queueNumber}.`,
+        priority: "high",
+        data: {
+          queueId: nextPatient._id,
+          queueNumber: nextPatient.queueNumber,
+          specialty: nextPatient.specialty,
+          hospitalName: nextPatient.hospitalName,
+        },
+      });
+    } catch (notificationError) {
+      console.error("Failed to create notification:", notificationError);
+      // Don't fail the call next operation if notification fails
+    }
+
+    res.json({
+      success: true,
+      message: "Patient called successfully",
+      data: {
+        patientName: `${nextPatient.patient.firstName} ${nextPatient.patient.lastName}`,
+        queueNumber: nextPatient.queueNumber,
+        specialty: nextPatient.specialty,
+        hospitalName: nextPatient.hospitalName,
+        calledAt: new Date(),
+      },
+    });
+  } catch (error) {
+    console.error("Call next patient error:", error);
     res.status(500).json({
       success: false,
       message: "Internal server error",

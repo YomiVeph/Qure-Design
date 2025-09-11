@@ -3,7 +3,11 @@ import { z } from "zod";
 import crypto from "crypto";
 import { User } from "../models/User.js";
 import { signAuthToken } from "../utils/jwt.js";
-import { sendPasswordResetEmail, sendWelcomeEmail } from "../utils/email.js";
+import {
+  sendPasswordResetEmail,
+  sendWelcomeEmail,
+  sendAccessCodeEmail,
+} from "../utils/email.js";
 
 const registerSchema = z.object({
   firstName: z.string().min(1),
@@ -30,6 +34,83 @@ const resetPasswordSchema = z.object({
   token: z.string().min(1),
   password: z.string().min(8),
 });
+
+const accessCodeSchema = z.object({
+  accessCode: z.string().min(4),
+});
+
+// Function to get or create access code for hospital
+async function getOrCreateHospitalAccessCode(user, hospitalName) {
+  try {
+    // Import AccessCode model dynamically to avoid circular imports
+    const { AccessCode } = await import("../models/AccessCode.js");
+
+    // First, check if this hospital already has an active access code
+    let existingAccessCode = await AccessCode.findOne({
+      hospitalName: hospitalName,
+      isActive: true,
+    });
+
+    if (existingAccessCode) {
+      // Hospital already has an access code, send it to the new staff member
+      console.log(
+        `Hospital ${hospitalName} already has access code: ${existingAccessCode.code}`
+      );
+
+      // Send the existing access code via email
+      await sendAccessCodeEmail(
+        user.email,
+        user.firstName,
+        existingAccessCode.code,
+        hospitalName
+      );
+
+      console.log(
+        `Existing access code sent to ${user.email}: ${existingAccessCode.code}`
+      );
+      return existingAccessCode;
+    }
+
+    // Hospital doesn't have an access code yet, generate a new one
+    console.log(`Creating new access code for hospital: ${hospitalName}`);
+
+    let code;
+    let attempts = 0;
+    do {
+      const prefix = "QURE";
+      const randomPart = crypto.randomBytes(3).toString("hex").toUpperCase();
+      code = `${prefix}${randomPart}`;
+      attempts++;
+      if (attempts > 10) {
+        throw new Error("Failed to generate unique access code");
+      }
+    } while (await AccessCode.findOne({ code }));
+
+    // Create new access code record for this hospital
+    const newAccessCode = await AccessCode.create({
+      code,
+      hospitalName,
+      permissions: [
+        "queue_management",
+        "appointments",
+        "analytics",
+        "staff_management",
+      ],
+      createdBy: user._id,
+      description: `Auto-generated access code for ${hospitalName} staff`,
+      expiresAt: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000), // 1 year from now
+    });
+
+    // Send the new access code via email
+    await sendAccessCodeEmail(user.email, user.firstName, code, hospitalName);
+
+    console.log(`New access code generated and sent to ${user.email}: ${code}`);
+    return newAccessCode;
+  } catch (error) {
+    console.error("Error getting/creating access code:", error);
+    throw error;
+  }
+}
 
 export async function register(req, res) {
   try {
@@ -64,6 +145,17 @@ export async function register(req, res) {
     } catch (emailError) {
       console.error("Failed to send welcome email:", emailError);
       // Don't fail registration if email fails
+    }
+
+    // Get or create access code for staff
+    if (data.role === "staff" && data.hospitalName) {
+      try {
+        await getOrCreateHospitalAccessCode(user, data.hospitalName);
+        console.log(`Access code processed for staff: ${user.email}`);
+      } catch (accessCodeError) {
+        console.error("Failed to process access code:", accessCodeError);
+        // Don't fail registration if access code generation fails
+      }
     }
 
     return res.status(201).json({
@@ -208,5 +300,60 @@ export async function resetPassword(req, res) {
         .json({ message: "Invalid input", errors: err.errors });
     }
     return res.status(500).json({ message: "Password reset failed" });
+  }
+}
+
+export async function validateAccessCode(req, res) {
+  try {
+    const { accessCode } = accessCodeSchema.parse(req.body);
+
+    // Import AccessCode model
+    const { AccessCode } = await import("../models/AccessCode.js");
+
+    // Find access code in database
+    const codeRecord = await AccessCode.findOne({
+      code: accessCode.toUpperCase(),
+      isActive: true,
+    });
+
+    if (!codeRecord) {
+      return res.status(401).json({
+        message:
+          "Invalid access code. Please check your email for the correct access code or contact your administrator.",
+      });
+    }
+
+    // Check if code is expired
+    if (codeRecord.expiresAt && new Date() > codeRecord.expiresAt) {
+      return res.status(401).json({
+        message: "Access code has expired. Please contact your administrator.",
+      });
+    }
+
+    // Increment usage count
+    await codeRecord.incrementUsage();
+
+    // Log access code usage for security
+    console.log(
+      `Access code validated: ${accessCode} for ${
+        codeRecord.hospitalName
+      } (Usage: ${codeRecord.usageCount + 1})`
+    );
+
+    return res.json({
+      message: "Access code validated successfully",
+      hospitalName: codeRecord.hospitalName,
+      permissions: codeRecord.permissions,
+      accessCode: accessCode,
+      expiresAt: codeRecord.expiresAt,
+    });
+  } catch (err) {
+    if (err instanceof z.ZodError) {
+      return res
+        .status(400)
+        .json({ message: "Invalid access code format", errors: err.errors });
+    }
+    console.error("Access code validation error:", err);
+    return res.status(500).json({ message: "Access code validation failed" });
   }
 }
