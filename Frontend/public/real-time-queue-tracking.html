@@ -26,9 +26,11 @@
         </div>
 
         <nav class="navigation-menu">
-          <a href="#" class="nav-link">Home</a>
+          <a href="patient-dashboard.html" class="nav-link">Home</a>
           <a href="#" class="nav-link">Features</a>
-          <a href="#" class="nav-link dashboard-link">Go to Dashboard</a>
+          <a href="patient-dashboard.html" class="nav-link dashboard-link"
+            >Go to Dashboard</a
+          >
         </nav>
 
         <!-- Mobile Menu Button -->
@@ -46,7 +48,10 @@
         <!-- Page Header -->
         <div class="page-header-section">
           <div class="title-section">
-            <h1 class="page-title">Real-Time Queue Tracking</h1>
+            <h1 class="page-title">Live Queue Status</h1>
+            <p class="page-description">
+              View all patients currently in the queue and track your position
+            </p>
             <div class="update-status">
               <span class="update-text">Updated</span>
               <span class="update-time" id="update-time">10 secs ago</span>
@@ -89,12 +94,28 @@
           </button>
         </div>
 
+        <!-- Your Queue Status -->
+        <div
+          class="your-queue-status"
+          id="your-queue-status"
+          style="display: none"
+        >
+          <div class="status-card">
+            <h3>Your Queue Status</h3>
+            <div class="status-info">
+              <div class="queue-number-display" id="queue-number-display"></div>
+              <div class="position-info" id="position-info"></div>
+              <div class="eta-info" id="eta-info"></div>
+            </div>
+          </div>
+        </div>
+
         <!-- Queue Table -->
         <div class="queue-table-container">
           <div class="queue-table-header">
-            <div class="table-header-cell patient-header">Patient</div>
-            <div class="table-header-cell service-header">Service</div>
-            <div class="table-header-cell status-header">Status</div>
+            <div class="table-header-cell patient-header">Patient Name</div>
+            <div class="table-header-cell service-header">Queue Number</div>
+            <div class="table-header-cell status-header">Position & Status</div>
           </div>
 
           <div class="queue-table-body" id="queue-table-body">

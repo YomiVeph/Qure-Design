@@ -42,3 +42,83 @@ Base path: `/api`
   - returns: `{ message }`
 
 Use the returned `token` as `Authorization: Bearer <token>` for protected routes.
+
+### Appointments
+
+- `POST /api/appointments` (Patient only)
+
+  - body: `{ doctor, specialty, appointmentDate, appointmentTime, notes?, hospitalName? }`
+  - returns: `{ success, message, data }`
+
+- `GET /api/appointments` (Patient only)
+
+  - query: `{ status?, page?, limit? }`
+  - returns: `{ success, data: { appointments, pagination } }`
+
+- `GET /api/appointments/:id` (Patient only)
+
+  - returns: `{ success, data }`
+
+- `PUT /api/appointments/:id` (Patient only)
+
+  - body: `{ doctor?, specialty?, appointmentDate?, appointmentTime?, notes?, hospitalName? }`
+  - returns: `{ success, message, data }`
+
+- `DELETE /api/appointments/:id` (Patient only)
+  - returns: `{ success, message, data }`
+
+### Queue Management
+
+- `POST /api/queues/join` (Patient only)
+
+  - body: `{ hospitalName, specialty, notes?, priority? }`
+  - returns: `{ success, message, data }`
+
+- `GET /api/queues/status` (Patient only)
+
+  - returns: `{ success, data }`
+
+- `DELETE /api/queues/leave` (Patient only)
+
+  - returns: `{ success, message, data }`
+
+- `GET /api/queues/history` (Patient only)
+
+  - query: `{ page?, limit? }`
+  - returns: `{ success, data: { queues, pagination } }`
+
+- `GET /api/queues/hospital` (Staff only)
+
+  - query: `{ hospitalName, specialty? }`
+  - returns: `{ success, data }`
+
+- `POST /api/queues/call-next` (Staff only)
+  - body: `{ hospitalName, specialty }`
+  - returns: `{ success, message, data }`
+
+### Notifications
+
+- `GET /api/notifications` (All users)
+
+  - query: `{ page?, limit?, unreadOnly? }`
+  - returns: `{ success, data: { notifications, unreadCount, pagination } }`
+
+- `PUT /api/notifications/:id/read` (All users)
+
+  - returns: `{ success, message, data }`
+
+- `PUT /api/notifications/read-all` (All users)
+
+  - returns: `{ success, message }`
+
+- `DELETE /api/notifications/:id` (All users)
+
+  - returns: `{ success, message }`
+
+- `GET /api/notifications/preferences` (All users)
+
+  - returns: `{ success, data }`
+
+- `PUT /api/notifications/preferences` (All users)
+  - body: `{ email?, sms?, push?, inApp?, queueUpdates?, appointmentReminders?, generalNotifications? }`
+  - returns: `{ success, message, data }`

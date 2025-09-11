@@ -15,6 +15,13 @@ const userSchema = new mongoose.Schema(
     passwordHash: { type: String, required: true },
     role: { type: String, enum: ["patient", "staff"], required: true },
     hospitalName: { type: String, trim: true }, // only for staff
+    // Patient-specific fields
+    gender: {
+      type: String,
+      enum: ["male", "female", "other", "prefer-not-to-say"],
+      trim: true,
+    },
+    dateOfBirth: { type: Date },
     resetPasswordToken: { type: String },
     resetPasswordExpiry: { type: Date },
   },

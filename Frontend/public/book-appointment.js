@@ -1,5 +1,225 @@
 "use strict";
 
+// API Configuration
+const API_BASE_URL = "http://localhost:4000/api";
+
+// Utility Functions
+const getAuthHeaders = () => {
+  const token = localStorage.getItem("authToken");
+  return {
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${token}`,
+  };
+};
+
+const handleApiError = (error, defaultMessage = "An error occurred") => {
+  console.error("API Error:", error);
+  if (error.response) {
+    return error.response.data?.message || defaultMessage;
+  }
+  return error.message || defaultMessage;
+};
+
+const makeApiCall = async (endpoint, options = {}) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+      headers: getAuthHeaders(),
+      ...options,
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || `HTTP ${response.status}`);
+    }
+
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+// Custom Popup Function
+function showCustomPopup(title, message, type = "info") {
+  // Remove any existing popup
+  const existingPopup = document.querySelector(".custom-popup");
+  if (existingPopup) {
+    existingPopup.remove();
+  }
+
+  // Create popup overlay
+  const overlay = document.createElement("div");
+  overlay.className = "custom-popup-overlay";
+  overlay.style.cssText = `
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+    animation: fadeIn 0.3s ease;
+  `;
+
+  // Create popup content
+  const popup = document.createElement("div");
+  popup.className = "custom-popup";
+
+  // Set colors based on type
+  let iconColor, bgColor, borderColor;
+  switch (type) {
+    case "error":
+      iconColor = "#ef4444";
+      bgColor = "#fef2f2";
+      borderColor = "#fecaca";
+      break;
+    case "success":
+      iconColor = "#10b981";
+      bgColor = "#f0fdf4";
+      borderColor = "#bbf7d0";
+      break;
+    case "warning":
+      iconColor = "#f59e0b";
+      bgColor = "#fffbeb";
+      borderColor = "#fed7aa";
+      break;
+    default: // info
+      iconColor = "#3b82f6";
+      bgColor = "#eff6ff";
+      borderColor = "#bfdbfe";
+  }
+
+  popup.style.cssText = `
+    background: white;
+    border-radius: 12px;
+    padding: 2rem;
+    max-width: 400px;
+    width: 90%;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    border: 2px solid ${borderColor};
+    animation: slideIn 0.3s ease;
+    position: relative;
+  `;
+
+  // Create icon
+  const icon = document.createElement("div");
+  icon.style.cssText = `
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background-color: ${bgColor};
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+    border: 2px solid ${borderColor};
+  `;
+
+  const iconSymbol = document.createElement("span");
+  iconSymbol.style.cssText = `
+    font-size: 24px;
+    color: ${iconColor};
+    font-weight: bold;
+  `;
+
+  // Set icon based on type
+  switch (type) {
+    case "error":
+      iconSymbol.textContent = "!";
+      break;
+    case "success":
+      iconSymbol.textContent = "✓";
+      break;
+    case "warning":
+      iconSymbol.textContent = "⚠";
+      break;
+    default:
+      iconSymbol.textContent = "i";
+  }
+
+  icon.appendChild(iconSymbol);
+
+  // Create title
+  const titleEl = document.createElement("h3");
+  titleEl.textContent = title;
+  titleEl.style.cssText = `
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0 0 0.5rem 0;
+    text-align: center;
+  `;
+
+  // Create message
+  const messageEl = document.createElement("p");
+  messageEl.textContent = message;
+  messageEl.style.cssText = `
+    color: #6b7280;
+    margin: 0 0 1.5rem 0;
+    text-align: center;
+    line-height: 1.5;
+  `;
+
+  // Create close button
+  const closeBtn = document.createElement("button");
+  closeBtn.textContent = "OK";
+  closeBtn.style.cssText = `
+    background-color: ${iconColor};
+    color: white;
+    border: none;
+    padding: 0.75rem 2rem;
+    border-radius: 8px;
+    font-weight: 500;
+    cursor: pointer;
+    width: 100%;
+    font-size: 1rem;
+    transition: all 0.2s ease;
+  `;
+
+  closeBtn.addEventListener("mouseenter", () => {
+    closeBtn.style.opacity = "0.9";
+    closeBtn.style.transform = "translateY(-1px)";
+  });
+
+  closeBtn.addEventListener("mouseleave", () => {
+    closeBtn.style.opacity = "1";
+    closeBtn.style.transform = "translateY(0)";
+  });
+
+  closeBtn.addEventListener("click", () => {
+    overlay.remove();
+  });
+
+  // Assemble popup
+  popup.appendChild(icon);
+  popup.appendChild(titleEl);
+  popup.appendChild(messageEl);
+  popup.appendChild(closeBtn);
+  overlay.appendChild(popup);
+
+  // Add to document
+  document.body.appendChild(overlay);
+
+  // Close on overlay click
+  overlay.addEventListener("click", (e) => {
+    if (e.target === overlay) {
+      overlay.remove();
+    }
+  });
+
+  // Close on Escape key
+  const handleEscape = (e) => {
+    if (e.key === "Escape") {
+      overlay.remove();
+      document.removeEventListener("keydown", handleEscape);
+    }
+  };
+  document.addEventListener("keydown", handleEscape);
+}
+
 // DOM Elements
 const mobileMenuToggle = document.getElementById("mobile-menu-toggle");
 const mobileNavigation = document.getElementById("mobile-navigation");
@@ -8,7 +228,6 @@ const bookingForm = document.getElementById("booking-form");
 const successModal = document.getElementById("success-modal");
 const modalClose = document.getElementById("modal-close");
 const goToDashboardBtn = document.getElementById("go-to-dashboard");
-const joinQueueBtn = document.getElementById("join-queue-btn");
 
 // Form Elements
 const serviceDepartmentSelect = document.getElementById("service-department");
@@ -18,6 +237,8 @@ const phoneNumberInput = document.getElementById("phone-number");
 const reasonVisitSelect = document.getElementById("reason-visit");
 const otherSpecifyTextarea = document.getElementById("other-specify");
 const reviewSmsToggle = document.getElementById("review-sms");
+const patientGenderSelect = document.getElementById("patient-gender");
+const patientDobInput = document.getElementById("patient-dob");
 
 // Display Elements
 const displayDate = document.getElementById("display-date");
@@ -191,6 +412,34 @@ const validateForm = () => {
     errors.push("Other reason specification required");
   }
 
+  // Validate Gender
+  if (!patientGenderSelect.value) {
+    showFieldError(patientGenderSelect, "Please select your gender");
+    isValid = false;
+    errors.push("Gender selection required");
+  }
+
+  // Validate Date of Birth
+  if (!patientDobInput.value) {
+    showFieldError(patientDobInput, "Please enter your date of birth");
+    isValid = false;
+    errors.push("Date of birth required");
+  } else {
+    const dob = new Date(patientDobInput.value);
+    const today = new Date();
+    const age = today.getFullYear() - dob.getFullYear();
+
+    if (dob > today) {
+      showFieldError(patientDobInput, "Date of birth cannot be in the future");
+      isValid = false;
+      errors.push("Invalid date of birth");
+    } else if (age > 120) {
+      showFieldError(patientDobInput, "Please enter a valid date of birth");
+      isValid = false;
+      errors.push("Invalid date of birth");
+    }
+  }
+
   return { isValid, errors };
 };
 
@@ -232,7 +481,7 @@ const clearFormErrors = () => {
 };
 
 // Handle form submission
-const handleFormSubmit = (e) => {
+const handleFormSubmit = async (e) => {
   e.preventDefault();
 
   const validation = validateForm();
@@ -248,15 +497,62 @@ const handleFormSubmit = (e) => {
   submitBtn.disabled = true;
   submitBtn.textContent = "Booking...";
 
-  // Simulate API call
-  setTimeout(() => {
+  try {
+    // Get user data for full name
+    const userData = localStorage.getItem("user");
+    const user = userData ? JSON.parse(userData) : null;
+    const fullName = user
+      ? `${user.firstName} ${user.lastName}`
+      : "Unknown Patient";
+
+    // Prepare appointment data
+    const appointmentData = {
+      doctor:
+        "Dr. " +
+        serviceDepartmentSelect.options[serviceDepartmentSelect.selectedIndex]
+          .text,
+      specialty:
+        serviceDepartmentSelect.options[serviceDepartmentSelect.selectedIndex]
+          .text,
+      appointmentDate: appointmentDateInput.value,
+      appointmentTime: appointmentTimeInput.value,
+      notes:
+        reasonVisitSelect.value === "other"
+          ? otherSpecifyTextarea.value.trim()
+          : reasonVisitSelect.options[reasonVisitSelect.selectedIndex].text,
+      hospitalName: "Qure Medical Center", // Default hospital name
+      patientInfo: {
+        fullName: fullName,
+        phoneNumber: phoneNumberInput.value,
+        gender: patientGenderSelect.value,
+        dateOfBirth: patientDobInput.value,
+      },
+    };
+
+    // Make API call to create appointment
+    const response = await makeApiCall("/appointments", {
+      method: "POST",
+      body: JSON.stringify(appointmentData),
+    });
+
     // Reset button
     submitBtn.disabled = false;
     submitBtn.textContent = originalText;
 
     // Show success modal
     showSuccessModal();
-  }, 2000);
+  } catch (error) {
+    // Reset button
+    submitBtn.disabled = false;
+    submitBtn.textContent = originalText;
+
+    // Show error popup
+    showCustomPopup(
+      "Booking Failed",
+      handleApiError(error, "Failed to book appointment. Please try again."),
+      "error"
+    );
+  }
 };
 
 // Show success modal
@@ -286,34 +582,6 @@ successModal.addEventListener("click", (e) => {
   }
 });
 
-// Handle Join Queue button
-const handleJoinQueue = () => {
-  // Validate required fields for queue joining
-  if (!serviceDepartmentSelect.value || !reasonVisitSelect.value) {
-    alert("Please fill in the required fields before joining the queue");
-    return;
-  }
-
-  // Show loading state
-  const originalText = joinQueueBtn.textContent;
-  joinQueueBtn.disabled = true;
-  joinQueueBtn.textContent = "Joining...";
-
-  // Simulate API call
-  setTimeout(() => {
-    joinQueueBtn.disabled = false;
-    joinQueueBtn.textContent = originalText;
-
-    // Show success message
-    alert(
-      "Successfully joined the queue! You will be notified when it's your turn."
-    );
-
-    // Optionally redirect to queue tracking page
-    // window.location.href = "real-time-queue-tracking.html";
-  }, 1500);
-};
-
 // Handle reason for visit change
 const handleReasonChange = () => {
   const selectedReason = reasonVisitSelect.value;
@@ -331,12 +599,38 @@ const handleReasonChange = () => {
 
 // Event listeners
 bookingForm.addEventListener("submit", handleFormSubmit);
-joinQueueBtn.addEventListener("click", handleJoinQueue);
 reasonVisitSelect.addEventListener("change", handleReasonChange);
 
 // Initialize page
 document.addEventListener("DOMContentLoaded", () => {
   console.log("Book Appointment page loaded successfully");
+
+  // Check if user is logged in
+  const userData = localStorage.getItem("user");
+  const authToken = localStorage.getItem("authToken");
+
+  if (!userData || !authToken) {
+    // Redirect to login if not authenticated
+    window.location.href = "login.html";
+    return;
+  }
+
+  // Parse user data and update patient details
+  try {
+    const user = JSON.parse(userData);
+    if (user.role !== "patient") {
+      // Redirect if not a patient
+      window.location.href = "login.html";
+      return;
+    }
+
+    // Update patient details with real user data
+    updatePatientDetails(user);
+  } catch (error) {
+    console.error("Error parsing user data:", error);
+    window.location.href = "login.html";
+    return;
+  }
 
   // Set initial values
   updateAppointmentDetails();
@@ -349,13 +643,34 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Update display immediately
   updateAppointmentDetails();
-
-  // Add some sample data for demonstration
-  if (!serviceDepartmentSelect.value) {
-    serviceDepartmentSelect.value = "cardiology";
-    updateAppointmentDetails();
-  }
 });
+
+// Update patient details with real user data
+const updatePatientDetails = (user) => {
+  // Update patient name
+  const nameInput = document.querySelector(
+    ".patient-info .form-input[readonly]"
+  );
+  if (nameInput && user.firstName && user.lastName) {
+    nameInput.value = `${user.firstName.toUpperCase()} ${user.lastName.toUpperCase()}`;
+  }
+
+  // Update phone number in the form
+  if (phoneNumberInput && user.phone) {
+    phoneNumberInput.value = user.phone;
+  }
+
+  // Update gender if available
+  if (patientGenderSelect && user.gender) {
+    patientGenderSelect.value = user.gender;
+  }
+
+  // Update date of birth if available
+  if (patientDobInput && user.dateOfBirth) {
+    const dob = new Date(user.dateOfBirth);
+    patientDobInput.value = dob.toISOString().split("T")[0];
+  }
+};
 
 // Handle window resize for responsive behavior
 window.addEventListener("resize", () => {
@@ -425,5 +740,34 @@ document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
     }
   });
 });
+
+// Add CSS animations for popup
+const style = document.createElement("style");
+style.textContent = `
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  
+  @keyframes slideIn {
+    from {
+      transform: translateY(-20px) scale(0.95);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0) scale(1);
+      opacity: 1;
+    }
+  }
+  
+  .custom-popup {
+    animation: slideIn 0.3s ease !important;
+  }
+`;
+document.head.appendChild(style);
 
 // Removed localStorage autosave/restore. Backend should provide draft persistence if needed.

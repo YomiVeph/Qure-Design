@@ -145,7 +145,7 @@ async function loginUser(emailOrPhone, password) {
 
     // Store token and user data
     localStorage.setItem("authToken", data.token);
-    localStorage.setItem("userData", JSON.stringify(data.user));
+    localStorage.setItem("user", JSON.stringify(data.user));
 
     return data;
   } catch (error) {

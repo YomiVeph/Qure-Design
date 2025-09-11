@@ -378,11 +378,112 @@ body {
   font-size: 1.4rem;
 }
 
+/* Enhanced Notification Styles */
+.notification-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-left: auto;
+}
+
+.notification-action-btn {
+  background: none;
+  border: none;
+  padding: 0.5rem;
+  border-radius: 0.4rem;
+  cursor: pointer;
+  color: #64748b;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.notification-action-btn:hover {
+  background-color: #f1f5f9;
+  color: #1e3a8a;
+}
+
+.notification-action-btn svg {
+  width: 1.6rem;
+  height: 1.6rem;
+}
+
+.notification-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 2rem;
+  color: #64748b;
+}
+
+.loading-spinner {
+  width: 2rem;
+  height: 2rem;
+  border: 2px solid #e2e8f0;
+  border-top: 2px solid #1e3a8a;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.notification-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 2rem;
+  color: #94a3b8;
+  text-align: center;
+}
+
+.notification-empty svg {
+  width: 3rem;
+  height: 3rem;
+}
+
+.notification-empty p {
+  font-size: 1.4rem;
+  font-weight: 500;
+}
+
+.notifications-list {
+  max-height: 40rem;
+  overflow-y: auto;
+}
+
 /* Notification Item */
 .notification-item {
   display: flex;
   align-items: flex-start;
   gap: 1.2rem;
+  padding: 1.2rem;
+  border-radius: 0.8rem;
+  margin-bottom: 0.8rem;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  position: relative;
+}
+
+.notification-item:hover {
+  background-color: #f8fafc;
+}
+
+.notification-item.unread {
+  background-color: #fef3c7;
+  border-left: 3px solid #f59e0b;
+}
+
+.notification-item.read {
+  opacity: 0.7;
 }
 
 .notification-dot {
@@ -394,14 +495,127 @@ body {
   flex-shrink: 0;
 }
 
-.notification-text p {
-  margin-bottom: 0.5rem;
+.notification-item.read .notification-dot {
+  background-color: #d1d5db;
+}
+
+.notification-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.notification-title {
+  font-weight: 600;
   color: #1e293b;
+  margin-bottom: 0.4rem;
+  font-size: 1.4rem;
+}
+
+.notification-message {
+  color: #64748b;
+  margin-bottom: 0.4rem;
+  font-size: 1.3rem;
+  line-height: 1.4;
+}
+
+.notification-meta {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-size: 1.2rem;
+  color: #94a3b8;
 }
 
 .notification-time {
   font-size: 1.2rem;
   color: #94a3b8;
+}
+
+.notification-type {
+  background-color: #e2e8f0;
+  color: #64748b;
+  padding: 0.2rem 0.6rem;
+  border-radius: 1.2rem;
+  font-size: 1.1rem;
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
+.notification-priority {
+  padding: 0.2rem 0.6rem;
+  border-radius: 1.2rem;
+  font-size: 1.1rem;
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
+.notification-priority.high {
+  background-color: #fef2f2;
+  color: #dc2626;
+}
+
+.notification-priority.medium {
+  background-color: #fef3c7;
+  color: #d97706;
+}
+
+.notification-priority.low {
+  background-color: #f0fdf4;
+  color: #16a34a;
+}
+
+.notification-priority.urgent {
+  background-color: #fef2f2;
+  color: #dc2626;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+.notification-actions-item {
+  display: flex;
+  gap: 0.5rem;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.notification-item:hover .notification-actions-item {
+  opacity: 1;
+}
+
+.notification-action-item-btn {
+  background: none;
+  border: none;
+  padding: 0.4rem;
+  border-radius: 0.4rem;
+  cursor: pointer;
+  color: #64748b;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.notification-action-item-btn:hover {
+  background-color: #f1f5f9;
+  color: #1e3a8a;
+}
+
+.notification-action-item-btn.delete:hover {
+  color: #dc2626;
+}
+
+.notification-action-item-btn svg {
+  width: 1.4rem;
+  height: 1.4rem;
 }
 
 /* SMS Instruction */

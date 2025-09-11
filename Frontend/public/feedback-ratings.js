@@ -215,7 +215,7 @@ const clearFormErrors = () => {
 };
 
 // Handle form submission
-const handleFormSubmit = (e) => {
+const handleFormSubmit = async (e) => {
   e.preventDefault();
 
   const validation = validateForm();
@@ -225,22 +225,60 @@ const handleFormSubmit = (e) => {
     return;
   }
 
+  // Check authentication
+  const token = localStorage.getItem("authToken");
+  if (!token) {
+    showFormErrors(["Please log in to submit feedback"]);
+    return;
+  }
+
   // Show loading state
   submitFeedbackBtn.disabled = true;
   submitFeedbackBtn.textContent = "Submitting...";
 
-  // Simulate API call
-  setTimeout(() => {
+  try {
+    // Prepare feedback data
+    const feedbackData = {
+      rating: selectedRating,
+      comments: feedbackComments.value.trim(),
+      visitType: "general", // Default for now
+      isAnonymous: false,
+    };
+
+    console.log("Submitting feedback:", feedbackData);
+
+    // Submit to API
+    const response = await fetch("http://localhost:4000/api/feedback", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(feedbackData),
+    });
+
+    const result = await response.json();
+
+    if (response.ok && result.success) {
+      // Show success modal
+      showSuccessModal();
+
+      // Reset form
+      resetForm();
+
+      // Refresh feedback list
+      loadUserFeedback();
+    } else {
+      throw new Error(result.message || "Failed to submit feedback");
+    }
+  } catch (error) {
+    console.error("Error submitting feedback:", error);
+    showFormErrors([`Failed to submit feedback: ${error.message}`]);
+  } finally {
     // Reset button
     submitFeedbackBtn.disabled = false;
     submitFeedbackBtn.textContent = "Submit";
-
-    // Show success modal
-    showSuccessModal();
-
-    // Reset form
-    resetForm();
-  }, 1500);
+  }
 };
 
 // Reset form
@@ -323,7 +361,60 @@ const generateFeedbackItem = (feedback) => {
   `;
 };
 
-// Populate feedback list
+// Load user feedback from API
+const loadUserFeedback = async () => {
+  const token = localStorage.getItem("authToken");
+  if (!token) {
+    console.log("No token found, showing sample feedback");
+    populateFeedbackList();
+    return;
+  }
+
+  try {
+    const response = await fetch(
+      "http://localhost:4000/api/feedback/my-feedback",
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    const result = await response.json();
+
+    if (response.ok && result.success) {
+      const userFeedback = result.data.feedback;
+      if (userFeedback.length > 0) {
+        feedbackList.innerHTML = userFeedback
+          .map((feedback) => ({
+            id: feedback.id,
+            patientName: feedback.patientName || "You",
+            rating: feedback.rating,
+            visitDate: new Date(feedback.visitDate).toLocaleDateString(),
+            visitType: feedback.visitType,
+            doctorName: feedback.doctorName || "N/A",
+            specialty: feedback.specialty || "General",
+          }))
+          .map(generateFeedbackItem)
+          .join("");
+      } else {
+        feedbackList.innerHTML = `
+          <div class="no-feedback">
+            <p>No feedback submitted yet. Be the first to share your experience!</p>
+          </div>
+        `;
+      }
+    } else {
+      throw new Error(result.message || "Failed to load feedback");
+    }
+  } catch (error) {
+    console.error("Error loading user feedback:", error);
+    // Fallback to sample feedback
+    populateFeedbackList();
+  }
+};
+
+// Populate feedback list with sample data
 const populateFeedbackList = () => {
   feedbackList.innerHTML = sampleFeedback.map(generateFeedbackItem).join("");
 };
@@ -332,8 +423,8 @@ const populateFeedbackList = () => {
 document.addEventListener("DOMContentLoaded", () => {
   console.log("Feedback & Ratings page loaded successfully");
 
-  // Populate sample feedback
-  populateFeedbackList();
+  // Load user feedback from API
+  loadUserFeedback();
 
   // Set initial character count
   updateCharCount();

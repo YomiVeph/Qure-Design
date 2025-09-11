@@ -131,7 +131,7 @@ const clearFormErrors = () => {
 };
 
 // Handle form submission
-const handleFormSubmit = (e) => {
+const handleFormSubmit = async (e) => {
   e.preventDefault();
 
   const validation = validateForm();
@@ -145,18 +145,55 @@ const handleFormSubmit = (e) => {
   submitContactBtn.disabled = true;
   submitContactBtn.textContent = "Sending...";
 
-  // Simulate API call
-  setTimeout(() => {
+  try {
+    // Prepare contact data
+    const contactData = {
+      name: contactName.value.trim(),
+      email: contactEmail.value.trim(),
+      message: contactMessage.value.trim(),
+      subject: "Contact Form Submission",
+      category: "general",
+      source: "website",
+    };
+
+    console.log("Submitting contact message:", contactData);
+
+    // Submit to API
+    const response = await fetch("http://localhost:4000/api/contact", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(contactData),
+    });
+
+    const result = await response.json();
+
+    if (response.ok && result.success) {
+      // Show success modal
+      showSuccessModal();
+
+      // Reset form
+      resetForm();
+
+      console.log("Contact message sent successfully:", result.data);
+    } else {
+      // Show error message
+      showFormErrors([
+        result.message || "Failed to send message. Please try again.",
+      ]);
+      console.error("Contact submission error:", result);
+    }
+  } catch (error) {
+    console.error("Error submitting contact message:", error);
+    showFormErrors([
+      "Network error. Please check your connection and try again.",
+    ]);
+  } finally {
     // Reset button
     submitContactBtn.disabled = false;
     submitContactBtn.textContent = "Submit";
-
-    // Show success modal
-    showSuccessModal();
-
-    // Reset form
-    resetForm();
-  }, 1500);
+  }
 };
 
 // Reset form

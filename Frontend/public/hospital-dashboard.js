@@ -184,7 +184,7 @@ function showCustomPopup(title, message, type = "info") {
 // Authentication Check
 document.addEventListener("DOMContentLoaded", () => {
   // Check if user is logged in
-  const userData = localStorage.getItem("userData");
+  const userData = localStorage.getItem("user");
   const authToken = localStorage.getItem("authToken");
 
   if (!userData || !authToken) {
@@ -213,7 +213,7 @@ document.addEventListener("DOMContentLoaded", () => {
 // Logout functionality
 function handleLogout() {
   localStorage.removeItem("authToken");
-  localStorage.removeItem("userData");
+  localStorage.removeItem("user");
   window.location.href = "login.html";
 }
 

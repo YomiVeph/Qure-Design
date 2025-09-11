@@ -13,6 +13,8 @@ const registerSchema = z.object({
   password: z.string().min(8),
   role: z.enum(["patient", "staff"]),
   hospitalName: z.string().optional(),
+  gender: z.enum(["male", "female", "other", "prefer-not-to-say"]).optional(),
+  dateOfBirth: z.string().optional(),
 });
 
 const loginSchema = z.object({
@@ -46,6 +48,8 @@ export async function register(req, res) {
       passwordHash,
       role: data.role,
       hospitalName: data.role === "staff" ? data.hospitalName : undefined,
+      gender: data.gender,
+      dateOfBirth: data.dateOfBirth ? new Date(data.dateOfBirth) : undefined,
     });
 
     const token = signAuthToken(
@@ -72,6 +76,8 @@ export async function register(req, res) {
         phone: user.phone,
         role: user.role,
         hospitalName: user.hospitalName,
+        gender: user.gender,
+        dateOfBirth: user.dateOfBirth,
       },
     });
   } catch (err) {
@@ -109,6 +115,8 @@ export async function login(req, res) {
         phone: user.phone,
         role: user.role,
         hospitalName: user.hospitalName,
+        gender: user.gender,
+        dateOfBirth: user.dateOfBirth,
       },
     });
   } catch (err) {
