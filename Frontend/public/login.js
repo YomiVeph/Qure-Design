@@ -1,5 +1,9 @@
 "use strict";
 
+// API Configuration
+const API_BASE_URL = "http://localhost:4000/api";
+
+// DOM Elements
 const loginForm = document.getElementById("login-form");
 const emailInput = document.getElementById("email");
 const passwordInput = document.getElementById("password");
@@ -8,7 +12,7 @@ const patientBtn = document.getElementById("login-patient-btn");
 const staffBtn = document.getElementById("login-staff-btn");
 const rememberCheckbox = document.getElementById("remember-me");
 
-// --- Local helpers (replacing removed shared helpers) ---
+// Utility Functions
 function togglePassword(input, icon) {
   if (input.type === "password") {
     input.type = "text";
@@ -43,6 +47,58 @@ function clearErrors(form) {
   });
 }
 
+function showSuccessMessage(message) {
+  const successDiv = document.createElement("div");
+  successDiv.className = "success-message";
+  successDiv.textContent = message;
+  successDiv.style.cssText = `
+    position: fixed;
+    top: 2rem;
+    right: 2rem;
+    background-color: #10b981;
+    color: white;
+    padding: 1rem 2rem;
+    border-radius: 0.5rem;
+    font-size: 1.4rem;
+    z-index: 1001;
+    animation: slideIn 0.3s ease;
+  `;
+  document.body.appendChild(successDiv);
+  setTimeout(() => successDiv.remove(), 3000);
+}
+
+function showErrorMessage(message) {
+  const errorDiv = document.createElement("div");
+  errorDiv.className = "error-message";
+  errorDiv.textContent = message;
+  errorDiv.style.cssText = `
+    position: fixed;
+    top: 2rem;
+    right: 2rem;
+    background-color: #ef4444;
+    color: white;
+    padding: 1rem 2rem;
+    border-radius: 0.5rem;
+    font-size: 1.4rem;
+    z-index: 1001;
+    animation: slideIn 0.3s ease;
+  `;
+  document.body.appendChild(errorDiv);
+  setTimeout(() => errorDiv.remove(), 5000);
+}
+
+function setLoadingState(button, isLoading, originalText) {
+  if (isLoading) {
+    button.disabled = true;
+    button.textContent = "Signing in...";
+    button.style.opacity = "0.7";
+  } else {
+    button.disabled = false;
+    button.textContent = originalText;
+    button.style.opacity = "1";
+  }
+}
+
 function isValidEmail(email) {
   email = email.trim();
   const atIndex = email.indexOf("@");
@@ -67,27 +123,37 @@ function isValidEmailOrPhone(value) {
   return isValidEmail(value) || isValidPhone(value);
 }
 
-function strongPassword(password) {
-  if (password.length < 8) return false;
-  let hasLower = false;
-  let hasUpper = false;
-  let hasNumber = false;
-  let hasSpecial = false;
-  for (let i = 0; i < password.length; i++) {
-    const char = password[i];
-    if (char >= "a" && char <= "z") hasLower = true;
-    else if (char >= "A" && char <= "Z") hasUpper = true;
-    else if (char >= "0" && char <= "9") hasNumber = true;
-    else hasSpecial = true;
+// API Functions
+async function loginUser(emailOrPhone, password) {
+  try {
+    const response = await fetch(`${API_BASE_URL}/auth/login`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        emailOrPhone: emailOrPhone,
+        password: password,
+      }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || "Login failed");
+    }
+
+    // Store token and user data
+    localStorage.setItem("authToken", data.token);
+    localStorage.setItem("userData", JSON.stringify(data.user));
+
+    return data;
+  } catch (error) {
+    throw error;
   }
-  return hasLower && hasUpper && hasNumber && hasSpecial;
 }
 
-toggleIcon.addEventListener("click", () => {
-  togglePassword(passwordInput, toggleIcon);
-});
-
-function validateForm() {
+function validateLoginForm() {
   clearErrors(loginForm);
   let valid = true;
 
@@ -105,25 +171,56 @@ function validateForm() {
   if (!password) {
     showError(passwordInput, "Password is required");
     valid = false;
-  } else if (!strongPassword(password)) {
-    showError(
-      passwordInput,
-      "Password must have upper, lower, number & symbol"
-    );
-    valid = false;
   }
 
   return valid;
 }
 
-function handleLogin(expectedRole) {
-  // Relaxed: skip validation and backend for now, just navigate
-  if (expectedRole === "patient") {
-    window.location.href = "patient-dashboard.html";
-  } else {
-    window.location.href = "access.html";
+// Login Handlers
+async function handleLogin(expectedRole) {
+  if (!validateLoginForm()) {
+    return;
+  }
+
+  const emailOrPhone = emailInput.value.trim();
+  const password = passwordInput.value.trim();
+
+  const button = expectedRole === "patient" ? patientBtn : staffBtn;
+  const originalText = button.textContent;
+
+  setLoadingState(button, true, originalText);
+
+  try {
+    const data = await loginUser(emailOrPhone, password);
+
+    // Check if user role matches expected role
+    if (data.user.role !== expectedRole) {
+      throw new Error(
+        `Please login as ${expectedRole === "patient" ? "Patient" : "Staff"}`
+      );
+    }
+
+    showSuccessMessage("Login successful! Redirecting...");
+
+    setTimeout(() => {
+      if (data.user.role === "patient") {
+        window.location.href = "patient-dashboard.html";
+      } else {
+        window.location.href = "hospital-dashboard.html";
+      }
+    }, 1500);
+  } catch (error) {
+    console.error("Login error:", error);
+    showErrorMessage(error.message);
+  } finally {
+    setLoadingState(button, false, originalText);
   }
 }
+
+// Event Listeners
+toggleIcon.addEventListener("click", () => {
+  togglePassword(passwordInput, toggleIcon);
+});
 
 patientBtn.addEventListener("click", (e) => {
   e.preventDefault();
@@ -134,3 +231,19 @@ staffBtn.addEventListener("click", (e) => {
   e.preventDefault();
   handleLogin("staff");
 });
+
+// Add CSS animation
+const style = document.createElement("style");
+style.textContent = `
+  @keyframes slideIn {
+    from {
+      transform: translateX(100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+`;
+document.head.appendChild(style);

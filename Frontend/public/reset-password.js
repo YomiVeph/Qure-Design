@@ -3,8 +3,16 @@
 // API Configuration
 const API_BASE_URL = "http://localhost:4000/api";
 
-// Custom Popup Function
-function showCustomPopup(title, message, type = "info") {
+// Get reset token from URL
+function getResetToken() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const tokenFromUrl = urlParams.get("token");
+  console.log("Token from URL:", tokenFromUrl);
+  return tokenFromUrl;
+}
+
+// Custom Popup Function with Beautiful UI
+function showPopup(title, message, type = "info") {
   // Remove any existing popup
   const existingPopup = document.querySelector(".custom-popup");
   if (existingPopup) {
@@ -184,39 +192,21 @@ function showCustomPopup(title, message, type = "info") {
   document.addEventListener("keydown", handleEscape);
 }
 
-// Utility Functions
-function isValidEmail(email) {
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return emailRegex.test(email);
-}
-
-function setLoadingState(button, isLoading) {
-  if (isLoading) {
-    button.disabled = true;
-    button.textContent = "Sending...";
-    button.style.opacity = "0.7";
-  } else {
-    button.disabled = false;
-    button.textContent = "Send Reset Link";
-    button.style.opacity = "1";
-  }
-}
-
 // API Function
-async function sendForgotPasswordRequest(email) {
+async function resetPasswordRequest(token, password) {
   try {
-    const response = await fetch(`${API_BASE_URL}/auth/forgot-password`, {
+    const response = await fetch(`${API_BASE_URL}/auth/reset-password`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ email }),
+      body: JSON.stringify({ token, password }),
     });
 
     const data = await response.json();
 
     if (!response.ok) {
-      throw new Error(data.message || "Failed to send reset link");
+      throw new Error(data.message || "Failed to reset password");
     }
 
     return data;
@@ -226,55 +216,77 @@ async function sendForgotPasswordRequest(email) {
 }
 
 // Form Handler
-document
-  .getElementById("forget-password-form")
-  .addEventListener("submit", async function (event) {
-    event.preventDefault();
+document.addEventListener("DOMContentLoaded", () => {
+  console.log("Reset password page loaded");
+  const resetToken = getResetToken();
 
-    const email = document.getElementById("email").value.trim();
-    const emailError = document.getElementById("email-error");
-    const submitButton = document.getElementById("reset-btn");
+  if (!resetToken) {
+    showPopup(
+      "Error",
+      "No valid reset token found. Please request a new password reset."
+    );
+    return;
+  }
 
-    // Clear previous errors
-    emailError.textContent = "";
+  // Form submission
+  document
+    .getElementById("reset-password-form")
+    .addEventListener("submit", async function (event) {
+      event.preventDefault(); // Prevent default form submission
 
-    // Validation
-    if (email === "") {
-      emailError.textContent = "Please enter an email address.";
-      emailError.style.color = "red";
-      return;
-    }
+      const password = document.getElementById("password").value.trim();
+      const confirmPassword = document
+        .getElementById("confirm-password")
+        .value.trim();
+      const submitButton = document.getElementById("reset-btn");
 
-    if (!isValidEmail(email)) {
-      emailError.textContent = "Please enter a valid email address.";
-      emailError.style.color = "red";
-      return;
-    }
+      // Basic validation
+      if (!password) {
+        showPopup("Error", "Password is required");
+        return;
+      }
 
-    // Set loading state
-    setLoadingState(submitButton, true);
+      if (password.length < 8) {
+        showPopup("Error", "Password must be at least 8 characters");
+        return;
+      }
 
-    try {
-      const data = await sendForgotPasswordRequest(email);
+      if (!confirmPassword) {
+        showPopup("Error", "Please confirm your password");
+        return;
+      }
 
-      // Show success popup
-      showCustomPopup(
-        "Reset Link Sent",
-        data.message + " Please check your email inbox and spam folder.",
-        "success"
-      );
+      if (password !== confirmPassword) {
+        showPopup("Error", "Passwords do not match");
+        return;
+      }
 
-      // Clear form
-      document.getElementById("email").value = "";
-    } catch (error) {
-      console.error("Forgot password error:", error);
-      showCustomPopup("Error", error.message, "error");
-    } finally {
-      setLoadingState(submitButton, false);
-    }
-  });
+      // Set loading state
+      submitButton.disabled = true;
+      submitButton.textContent = "Resetting...";
 
-// Add CSS animations
+      try {
+        const data = await resetPasswordRequest(resetToken, password);
+
+        // Show success
+        showPopup(
+          "Success",
+          data.message + " You can now login with your new password."
+        );
+
+        // Redirect to login
+        window.location.href = "login.html";
+      } catch (error) {
+        console.error("Reset password error:", error);
+        showPopup("Error", error.message);
+      } finally {
+        submitButton.disabled = false;
+        submitButton.textContent = "Reset Password";
+      }
+    });
+});
+
+// Add CSS animations for popup
 const style = document.createElement("style");
 style.textContent = `
   @keyframes fadeIn {

@@ -1,5 +1,235 @@
 "use strict";
 
+// Custom Popup Function
+function showCustomPopup(title, message, type = "info") {
+  // Remove any existing popup
+  const existingPopup = document.querySelector(".custom-popup");
+  if (existingPopup) {
+    existingPopup.remove();
+  }
+
+  // Create popup overlay
+  const overlay = document.createElement("div");
+  overlay.className = "custom-popup-overlay";
+  overlay.style.cssText = `
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+    animation: fadeIn 0.3s ease;
+  `;
+
+  // Create popup content
+  const popup = document.createElement("div");
+  popup.className = "custom-popup";
+
+  // Set colors based on type
+  let iconColor, bgColor, borderColor;
+  switch (type) {
+    case "error":
+      iconColor = "#ef4444";
+      bgColor = "#fef2f2";
+      borderColor = "#fecaca";
+      break;
+    case "success":
+      iconColor = "#10b981";
+      bgColor = "#f0fdf4";
+      borderColor = "#bbf7d0";
+      break;
+    case "warning":
+      iconColor = "#f59e0b";
+      bgColor = "#fffbeb";
+      borderColor = "#fed7aa";
+      break;
+    default: // info
+      iconColor = "#3b82f6";
+      bgColor = "#eff6ff";
+      borderColor = "#bfdbfe";
+  }
+
+  popup.style.cssText = `
+    background: white;
+    border-radius: 12px;
+    padding: 2rem;
+    max-width: 400px;
+    width: 90%;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    border: 2px solid ${borderColor};
+    animation: slideIn 0.3s ease;
+    position: relative;
+  `;
+
+  // Create icon
+  const icon = document.createElement("div");
+  icon.style.cssText = `
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background-color: ${bgColor};
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+    border: 2px solid ${borderColor};
+  `;
+
+  const iconSymbol = document.createElement("span");
+  iconSymbol.style.cssText = `
+    font-size: 24px;
+    color: ${iconColor};
+    font-weight: bold;
+  `;
+
+  // Set icon based on type
+  switch (type) {
+    case "error":
+      iconSymbol.textContent = "!";
+      break;
+    case "success":
+      iconSymbol.textContent = "✓";
+      break;
+    case "warning":
+      iconSymbol.textContent = "⚠";
+      break;
+    default:
+      iconSymbol.textContent = "i";
+  }
+
+  icon.appendChild(iconSymbol);
+
+  // Create title
+  const titleEl = document.createElement("h3");
+  titleEl.textContent = title;
+  titleEl.style.cssText = `
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0 0 0.5rem 0;
+    text-align: center;
+  `;
+
+  // Create message
+  const messageEl = document.createElement("p");
+  messageEl.textContent = message;
+  messageEl.style.cssText = `
+    color: #6b7280;
+    margin: 0 0 1.5rem 0;
+    text-align: center;
+    line-height: 1.5;
+  `;
+
+  // Create close button
+  const closeBtn = document.createElement("button");
+  closeBtn.textContent = "OK";
+  closeBtn.style.cssText = `
+    background-color: ${iconColor};
+    color: white;
+    border: none;
+    padding: 0.75rem 2rem;
+    border-radius: 8px;
+    font-weight: 500;
+    cursor: pointer;
+    width: 100%;
+    font-size: 1rem;
+    transition: all 0.2s ease;
+  `;
+
+  closeBtn.addEventListener("mouseenter", () => {
+    closeBtn.style.opacity = "0.9";
+    closeBtn.style.transform = "translateY(-1px)";
+  });
+
+  closeBtn.addEventListener("mouseleave", () => {
+    closeBtn.style.opacity = "1";
+    closeBtn.style.transform = "translateY(0)";
+  });
+
+  closeBtn.addEventListener("click", () => {
+    overlay.remove();
+  });
+
+  // Assemble popup
+  popup.appendChild(icon);
+  popup.appendChild(titleEl);
+  popup.appendChild(messageEl);
+  popup.appendChild(closeBtn);
+  overlay.appendChild(popup);
+
+  // Add to document
+  document.body.appendChild(overlay);
+
+  // Close on overlay click
+  overlay.addEventListener("click", (e) => {
+    if (e.target === overlay) {
+      overlay.remove();
+    }
+  });
+
+  // Close on Escape key
+  const handleEscape = (e) => {
+    if (e.key === "Escape") {
+      overlay.remove();
+      document.removeEventListener("keydown", handleEscape);
+    }
+  };
+  document.addEventListener("keydown", handleEscape);
+}
+
+// Authentication Check
+document.addEventListener("DOMContentLoaded", () => {
+  // Check if user is logged in
+  const userData = localStorage.getItem("userData");
+  const authToken = localStorage.getItem("authToken");
+
+  if (!userData || !authToken) {
+    // Redirect to login if not authenticated
+    window.location.href = "login.html";
+    return;
+  }
+
+  // Parse user data
+  try {
+    const user = JSON.parse(userData);
+    if (user.role !== "staff") {
+      // Redirect if not staff
+      window.location.href = "login.html";
+      return;
+    }
+
+    // Update any user-specific elements if needed
+    console.log("Hospital Dashboard loaded for:", user.firstName);
+  } catch (error) {
+    console.error("Error parsing user data:", error);
+    window.location.href = "login.html";
+  }
+});
+
+// Logout functionality
+function handleLogout() {
+  localStorage.removeItem("authToken");
+  localStorage.removeItem("userData");
+  window.location.href = "login.html";
+}
+
+// Add logout to logout link
+document.addEventListener("DOMContentLoaded", () => {
+  const logoutLink = document.querySelector('.log-out a[href="login.html"]');
+  if (logoutLink) {
+    logoutLink.addEventListener("click", (e) => {
+      e.preventDefault();
+      if (confirm("Are you sure you want to logout?")) {
+        handleLogout();
+      }
+    });
+  }
+});
+
 /* ---------- DOM refs ---------- */
 const wrapper = document.getElementById("dateMeter");
 const button = document.querySelector(".date-btn");
@@ -325,7 +555,11 @@ document.addEventListener("click", (e) => {
 /* ---------- Call Next: choose status randomly and dept from header list ---------- */
 callNextBtn.addEventListener("click", () => {
   // Backend integration required to call next patient
-  alert("Call Next is not connected. Backend integration pending.");
+  showCustomPopup(
+    "Call Next Patient",
+    "Call Next functionality is not connected yet. Backend integration pending.",
+    "info"
+  );
 });
 
 /* ---------- Initialize: compute indexes and update stats ---------- */
