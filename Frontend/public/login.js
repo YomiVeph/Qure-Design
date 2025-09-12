@@ -1,6 +1,6 @@
 "use strict";
 
-// API Configuration - Production v2 - Updated: 2025-09-12 22:58
+// API Configuration - Production v3 - Cache Buster: 2025-09-13-01-10
 const API_BASE_URL = "https://qure-design.onrender.com/api";
 
 // DOM Elements
