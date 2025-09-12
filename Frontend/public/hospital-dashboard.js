@@ -310,10 +310,10 @@ async function loadQueueData() {
       hospitalName.toLowerCase() !== "select hospital" &&
       hospitalName !== "Hospital";
     const url = isValidHospital
-      ? `http://localhost:4000/api/queues/hospital?hospitalName=${encodeURIComponent(
+      ? `https://qure-design.onrender.com/api/queues/hospital?hospitalName=${encodeURIComponent(
           hospitalName
         )}`
-      : `http://localhost:4000/api/queues/all`;
+      : `https://qure-design.onrender.com/api/queues/all`;
 
     const response = await fetch(url, {
       headers: {
@@ -476,7 +476,7 @@ function openAnnouncementModal() {
   const hospitalName =
     user?.hospitalName ||
     document.getElementById("hospitalNameLabel")?.textContent?.trim();
-  fetch("http://localhost:4000/api/notifications", {
+  fetch("https://qure-design.onrender.com/api/notifications", {
     method: "POST",
     headers: {
       Authorization: `Bearer ${localStorage.getItem("authToken")}`,
@@ -513,7 +513,7 @@ function openAddStaffModal() {
   const hospitalName =
     user?.hospitalName ||
     document.getElementById("hospitalNameLabel")?.textContent?.trim();
-  fetch("http://localhost:4000/api/auth/register", {
+  fetch("https://qure-design.onrender.com/api/auth/register", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -548,7 +548,7 @@ document.addEventListener("click", async (e) => {
     e.preventDefault();
     try {
       const response = await fetch(
-        "http://localhost:4000/api/queues/call-next",
+        "https://qure-design.onrender.com/api/queues/call-next",
         {
           method: "POST",
           headers: {
@@ -587,7 +587,7 @@ document.addEventListener("click", async (e) => {
     const queueId = completeBtn.getAttribute("data-id");
     try {
       const response = await fetch(
-        "http://localhost:4000/api/queues/complete",
+        "https://qure-design.onrender.com/api/queues/complete",
         {
           method: "POST",
           headers: {
@@ -642,10 +642,10 @@ async function loadAnalyticsData() {
       hospitalName.toLowerCase() !== "select hospital" &&
       hospitalName !== "Hospital";
     const url = isValidHospital
-      ? `http://localhost:4000/api/queues/hospital?hospitalName=${encodeURIComponent(
+      ? `https://qure-design.onrender.com/api/queues/hospital?hospitalName=${encodeURIComponent(
           hospitalName
         )}`
-      : `http://localhost:4000/api/queues/all`;
+      : `https://qure-design.onrender.com/api/queues/all`;
 
     const response = await fetch(url, {
       headers: {
@@ -1032,7 +1032,7 @@ function handleCallIndividualPatient(queueId, patientName, ticket) {
   console.log("Making API call to call-specific with queueId:", queueId);
 
   // Call the specific patient
-  fetch("http://localhost:4000/api/queues/call-specific", {
+  fetch("https://qure-design.onrender.com/api/queues/call-specific", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -1079,7 +1079,7 @@ function handleCompleteIndividualPatient(queueId, patientName, ticket) {
   console.log("Making API call to complete-specific with queueId:", queueId);
 
   // Complete the specific patient
-  fetch("http://localhost:4000/api/queues/complete-specific", {
+  fetch("https://qure-design.onrender.com/api/queues/complete-specific", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -1312,13 +1312,16 @@ document.addEventListener("click", (e) => {
 /* ---------- Call Next: call next patient in queue ---------- */
 callNextBtn.addEventListener("click", async () => {
   try {
-    const response = await fetch("http://localhost:4000/api/queues/call-next", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("authToken")}`,
-        "Content-Type": "application/json",
-      },
-    });
+    const response = await fetch(
+      "https://qure-design.onrender.com/api/queues/call-next",
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
 
     if (response.ok) {
       const data = await response.json();

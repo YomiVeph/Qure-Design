@@ -209,7 +209,7 @@ function closeSideBar() {
 async function validateAccessCode(code) {
   try {
     const response = await fetch(
-      "http://localhost:4000/api/auth/validate-access-code",
+      "https://qure-design.onrender.com/api/auth/validate-access-code",
       {
         method: "POST",
         headers: {

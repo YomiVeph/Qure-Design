@@ -24,10 +24,13 @@ async function makeApiCall(endpoint, options = {}) {
     },
   };
 
-  const response = await fetch(`http://localhost:4000/api${endpoint}`, {
-    ...defaultOptions,
-    ...options,
-  });
+  const response = await fetch(
+    `https://qure-design.onrender.com/api${endpoint}`,
+    {
+      ...defaultOptions,
+      ...options,
+    }
+  );
 
   if (!response.ok) {
     throw new Error(`API Error: ${response.status} ${response.statusText}`);

@@ -478,9 +478,12 @@ async function loadMyHospitalQueues() {
   const role = user?.role;
 
   if (role === "patient") {
-    const statusRes = await fetch("http://localhost:4000/api/queues/status", {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    const statusRes = await fetch(
+      "https://qure-design.onrender.com/api/queues/status",
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
     if (statusRes.ok) {
       const statusData = await statusRes.json();
       const q = statusData.data || {};
@@ -506,7 +509,7 @@ async function loadMyHospitalQueues() {
       user?.hospitalName || localStorage.getItem("lastHospitalName") || "";
     if (hosp) {
       const res = await fetch(
-        `http://localhost:4000/api/queues/hospital?hospitalName=${encodeURIComponent(
+        `https://qure-design.onrender.com/api/queues/hospital?hospitalName=${encodeURIComponent(
           hosp
         )}`,
         { headers: { Authorization: `Bearer ${token}` } }
@@ -571,7 +574,7 @@ function handleCallNext() {
     return;
   }
 
-  fetch("http://localhost:4000/api/queues/call-next", {
+  fetch("https://qure-design.onrender.com/api/queues/call-next", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -622,7 +625,7 @@ function handleCallIndividualPatient(queueId, patientName, ticket) {
   console.log("Making API call to call-specific with queueId:", queueId);
 
   // Call the specific patient
-  fetch("http://localhost:4000/api/queues/call-specific", {
+  fetch("https://qure-design.onrender.com/api/queues/call-specific", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -661,7 +664,7 @@ function handleCompleteIndividualPatient(queueId, patientName, ticket) {
   }
 
   // Complete the specific patient
-  fetch("http://localhost:4000/api/queues/complete-specific", {
+  fetch("https://qure-design.onrender.com/api/queues/complete-specific", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -803,7 +806,7 @@ function sendNotification(
     return;
   }
 
-  fetch("http://localhost:4000/api/queues/notify", {
+  fetch("https://qure-design.onrender.com/api/queues/notify", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -864,9 +867,12 @@ async function showAssignRoomModal(selectedPatients, selectedCheckboxes) {
   }
 
   try {
-    const response = await fetch("http://localhost:4000/api/waiting-rooms", {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    const response = await fetch(
+      "https://qure-design.onrender.com/api/waiting-rooms",
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
 
     if (!response.ok) {
       throw new Error("Failed to load waiting rooms");
@@ -969,7 +975,7 @@ function performRoomAssignment(selectedPatients, roomId, selectedCheckboxes) {
     return;
   }
 
-  fetch("http://localhost:4000/api/queues/assign-room", {
+  fetch("https://qure-design.onrender.com/api/queues/assign-room", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -1094,7 +1100,7 @@ function performNoShow(selectedPatients, selectedCheckboxes) {
     return;
   }
 
-  fetch("http://localhost:4000/api/queues/no-show", {
+  fetch("https://qure-design.onrender.com/api/queues/no-show", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

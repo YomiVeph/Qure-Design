@@ -159,13 +159,16 @@ const handleFormSubmit = async (e) => {
     console.log("Submitting contact message:", contactData);
 
     // Submit to API
-    const response = await fetch("http://localhost:4000/api/contact", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(contactData),
-    });
+    const response = await fetch(
+      "https://qure-design.onrender.com/api/contact",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(contactData),
+      }
+    );
 
     const result = await response.json();
 

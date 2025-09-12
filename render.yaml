@@ -16,13 +16,21 @@ services:
       - key: JWT_SECRET
         sync: false
       - key: CORS_ORIGIN
-        value: https://your-frontend-domain.com
+        value: https://qure-design-dusky.vercel.app
       - key: EMAIL_USER
         sync: false
       - key: EMAIL_PASS
         sync: false
       - key: EMAIL_FROM
         sync: false
+      - key: FRONTEND_URL
+        value: https://qure-design-dusky.vercel.app
+      - key: EMAIL_SERVICE
+        value: gmail
+      - key: EMAIL_HOST
+        value: smtp.gmail.com
+      - key: EMAIL_PORT
+        value: 587
     regions:
       - oregon
     branch: main

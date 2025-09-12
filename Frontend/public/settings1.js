@@ -1,7 +1,7 @@
 "use strict";
 
 // API Configuration
-const API_BASE_URL = "http://localhost:4000/api";
+const API_BASE_URL = "https://qure-design.onrender.com/api";
 
 // Utility Functions
 const getAuthHeaders = () => {
@@ -14,15 +14,17 @@ const getAuthHeaders = () => {
 
 const showNotification = (message, type = "success") => {
   // Remove any existing notifications
-  const existingNotifications = document.querySelectorAll('.notification-popup');
-  existingNotifications.forEach(notif => notif.remove());
+  const existingNotifications = document.querySelectorAll(
+    ".notification-popup"
+  );
+  existingNotifications.forEach((notif) => notif.remove());
 
   const notification = document.createElement("div");
   notification.className = `notification-popup ${type}`;
-  
+
   const icon = type === "success" ? "✓" : "⚠";
   const title = type === "success" ? "Success" : "Error";
-  
+
   notification.innerHTML = `
     <div class="notification-content">
       <div class="notification-icon">${icon}</div>
@@ -33,7 +35,7 @@ const showNotification = (message, type = "success") => {
       <button class="notification-close" onclick="this.parentElement.parentElement.remove()">×</button>
     </div>
   `;
-  
+
   notification.style.cssText = `
     position: fixed;
     top: 20px;
@@ -48,9 +50,9 @@ const showNotification = (message, type = "success") => {
     min-width: 300px;
     max-width: 400px;
   `;
-  
+
   document.body.appendChild(notification);
-  
+
   // Auto remove after 5 seconds
   setTimeout(() => {
     if (notification.parentElement) {
@@ -425,7 +427,7 @@ saveAllBtn.addEventListener("click", () => {
 // Load departments when page loads
 document.addEventListener("DOMContentLoaded", () => {
   loadDepartments();
-  
+
   // Add CSS for notification popup
   const style = document.createElement("style");
   style.textContent = `

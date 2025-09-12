@@ -248,14 +248,17 @@ const handleFormSubmit = async (e) => {
     console.log("Submitting feedback:", feedbackData);
 
     // Submit to API
-    const response = await fetch("http://localhost:4000/api/feedback", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(feedbackData),
-    });
+    const response = await fetch(
+      "https://qure-design.onrender.com/api/feedback",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(feedbackData),
+      }
+    );
 
     const result = await response.json();
 
@@ -372,7 +375,7 @@ const loadUserFeedback = async () => {
 
   try {
     const response = await fetch(
-      "http://localhost:4000/api/feedback/my-feedback",
+      "https://qure-design.onrender.com/api/feedback/my-feedback",
       {
         headers: {
           Authorization: `Bearer ${token}`,

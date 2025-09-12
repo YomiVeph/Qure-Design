@@ -1,7 +1,7 @@
 "use strict";
 
 // API Configuration
-const API_BASE_URL = "http://localhost:4000/api";
+const API_BASE_URL = "https://qure-design.onrender.com/api";
 
 // Custom Popup Function
 function showCustomPopup(title, message, type = "info") {
