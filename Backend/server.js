@@ -5,6 +5,7 @@ import helmet from "helmet";
 import morgan from "morgan";
 import { router as apiRouter } from "./src/routes/index.js";
 import { connectDatabase } from "./src/config/db.js";
+import { setupAppointmentReminderCron } from "./src/controllers/notificationSettingsController.js";
 
 const app = express();
 app.use(helmet());
@@ -23,6 +24,10 @@ const port = process.env.PORT || 4000;
 async function start() {
   try {
     await connectDatabase(process.env.MONGODB_URI);
+
+    // Setup appointment reminder cron job
+    setupAppointmentReminderCron();
+
     app.listen(port, () => {
       console.log(`API listening on port ${port}`);
     });

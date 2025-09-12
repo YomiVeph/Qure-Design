@@ -217,6 +217,33 @@ export async function login(req, res) {
       },
       process.env.JWT_SECRET
     );
+
+    // Track staff login if user is staff
+    if (user.role === "staff" && user.hospitalName) {
+      try {
+        const { StaffActivity } = await import("../models/StaffActivity.js");
+        const ipAddress = req.ip || req.connection.remoteAddress;
+        const userAgent = req.get("User-Agent");
+
+        await StaffActivity.findOneAndUpdate(
+          { staff: user._id, hospitalName: user.hospitalName },
+          {
+            $set: {
+              activity: "login",
+              isActive: true,
+              lastActivityAt: new Date(),
+              ipAddress,
+              userAgent,
+            },
+          },
+          { upsert: true, new: true }
+        );
+      } catch (error) {
+        console.error("Error tracking staff login:", error);
+        // Don't fail login if tracking fails
+      }
+    }
+
     return res.json({
       token,
       user: {

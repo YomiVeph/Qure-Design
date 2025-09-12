@@ -80,25 +80,57 @@
 
           <form class="form">
             <div class="form-left">
-              <label>Hospital Name</label>
-              <input type="text" placeholder="General Hospital Abuja" />
+              <label>Hospital Name *</label>
+              <input
+                type="text"
+                id="hospital-name"
+                placeholder="Enter hospital name"
+                required
+              />
 
-              <label>Address</label>
-              <input type="text" placeholder="1234 Main St., Abuja" />
-
-              <div class="upload-box" id="upload-box">Upload Logo</div>
+              <label>Address *</label>
+              <textarea
+                id="address"
+                placeholder="Enter complete hospital address"
+                rows="3"
+                required
+              ></textarea>
             </div>
-            <input
-              type="file"
-              id="logo-input"
-              accept="image/*"
-              style="display: none"
-            />
 
             <div class="form-right">
-              <label>Time zone</label>
-              <select>
-                <option>(GMT+1:00) West Africa Time</option>
+              <label>Time Zone *</label>
+              <select id="timezone" required>
+                <option value="">Select timezone</option>
+                <option value="Africa/Lagos">
+                  (GMT+1:00) West Africa Time (Lagos)
+                </option>
+                <option value="Africa/Cairo">
+                  (GMT+2:00) Eastern European Time (Cairo)
+                </option>
+                <option value="Africa/Johannesburg">
+                  (GMT+2:00) South Africa Standard Time
+                </option>
+                <option value="Europe/London">
+                  (GMT+0:00) Greenwich Mean Time (London)
+                </option>
+                <option value="America/New_York">
+                  (GMT-5:00) Eastern Time (New York)
+                </option>
+                <option value="America/Los_Angeles">
+                  (GMT-8:00) Pacific Time (Los Angeles)
+                </option>
+                <option value="Asia/Tokyo">
+                  (GMT+9:00) Japan Standard Time
+                </option>
+                <option value="Asia/Shanghai">
+                  (GMT+8:00) China Standard Time
+                </option>
+                <option value="Asia/Dubai">
+                  (GMT+4:00) Gulf Standard Time (Dubai)
+                </option>
+                <option value="Australia/Sydney">
+                  (GMT+10:00) Australian Eastern Time
+                </option>
               </select>
 
               <div class="capacity">
@@ -127,7 +159,6 @@
           <button class="btn save">Save</button>
         </div>
 
-        
         <div id="popup-save-confirm" class="popup">
           <div class="popup-content">
             <p>Do you want to save changes?</p>
@@ -147,7 +178,9 @@
 
         <div id="popup-error" class="popup">
           <div class="popup-content">
-            <p>Please fill Hospital Name, Address, and upload a Logo.</p>
+            <p>
+              Please fill in Hospital Name, Address, and select a Time Zone.
+            </p>
             <button id="close-error" class="btn save">OK</button>
           </div>
         </div>

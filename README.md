@@ -26,6 +26,7 @@ Qure is a full-stack web application that provides healthcare facilities with a 
 - **Real-time Analytics**: Live charts showing queue trends, peak hours, and department activity
 - **Waiting Room Management**: Organize patients by rooms and specialties
 - **Access Code System**: Secure staff registration with hospital-specific access codes
+- **Settings Management**: Comprehensive hospital administration panel
 
 ### System Features
 
@@ -35,6 +36,7 @@ Qure is a full-stack web application that provides healthcare facilities with a 
 - **Responsive Design**: Works seamlessly on desktop, tablet, and mobile devices
 - **Analytics Dashboard**: Comprehensive insights into hospital operations
 - **Multi-hospital Support**: Manage multiple healthcare facilities
+- **Settings Management**: Complete hospital administration and configuration
 
 ## 🛠️ Tech Stack
 
@@ -49,6 +51,7 @@ Qure is a full-stack web application that provides healthcare facilities with a 
 - **bcrypt** - Password hashing
 - **Helmet** - Security middleware
 - **Morgan** - HTTP request logging
+- **node-cron** - Scheduled tasks and automation
 
 ### Frontend
 
@@ -173,6 +176,9 @@ The Backend includes powerful scripts for development and testing:
 - **`populate-bera-queue.js`** - Populates Bera Clinic with realistic queue data
 - **`seed-waiting-rooms.js`** - Sets up waiting room configurations
 - **`debug-appointments.js`** - Troubleshoots appointment data issues
+- **`create-test-staff.js`** - Creates multiple test staff accounts with activity tracking
+- **`update-existing-staff.js`** - Updates existing staff with activity records
+- **`create-bera-staff.js`** - Creates Bera Clinic staff with proper authentication
 
 See [Backend/README.md](Backend/README.md) for complete script documentation.
 
@@ -183,6 +189,11 @@ See [Backend/README.md](Backend/README.md) for complete script documentation.
 - **Queue Management**: `/api/queues/*`
 - **Messages**: `/api/messages/*`
 - **Notifications**: `/api/notifications/*`
+- **Settings**: `/api/settings/*`
+  - **Organization**: `/api/settings/organization` - Hospital information and configuration
+  - **Departments**: `/api/settings/departments` - Department CRUD operations
+  - **Staff**: `/api/settings/staff` - Staff activity and role management
+  - **Notifications**: `/api/settings/notifications` - Email and notification settings
 - **Analytics**: Real-time data via queue endpoints
 
 ## 👥 User Roles
@@ -204,6 +215,52 @@ See [Backend/README.md](Backend/README.md) for complete script documentation.
 - Send messages to patients
 - View analytics
 - Manage waiting rooms
+- Configure hospital settings
+
+## ⚙️ Settings Management
+
+Qure includes a comprehensive settings management system that allows healthcare administrators to configure and customize their hospital operations.
+
+### Organization Settings
+
+- **Hospital Information**: Configure hospital name, address, and timezone
+- **Capacity Thresholds**: Set low, medium, and high capacity limits for queue management
+- **Timezone Configuration**: Support for multiple timezones with automatic appointment scheduling
+- **Hospital Details**: Store comprehensive hospital information including contact details
+
+### Department Management
+
+- **CRUD Operations**: Create, read, update, and delete hospital departments
+- **Status Management**: Activate/deactivate departments with real-time visibility
+- **Department Details**: Configure department names, codes, descriptions, and capacity
+- **Public API**: Patients can view active departments without authentication
+- **Real-time Updates**: Department changes reflect immediately across the system
+
+### Staff & Roles Management
+
+- **Staff Activity Tracking**: Monitor staff login/logout status in real-time
+- **Active/Inactive Status**: Visual indicators showing current staff availability
+- **Real-time Updates**: Staff status updates every 5 seconds automatically
+- **Role Management**: Track staff roles and permissions
+- **Activity History**: Monitor staff engagement and availability patterns
+
+### Notification Settings
+
+- **Appointment Reminders**: Automated email reminders sent 1 hour before appointments
+- **Professional Email Templates**: Beautifully formatted HTML emails with hospital branding
+- **Cron Job Automation**: Scheduled email sending every 30 minutes
+- **Test Notifications**: Send test emails to verify notification system
+- **Custom UI**: Modern popup notifications instead of browser alerts
+- **Email Validation**: Comprehensive email input validation with custom modals
+
+### Settings Features
+
+- **Real-time Data**: All settings update in real-time across the application
+- **Form Validation**: Comprehensive client and server-side validation
+- **Custom UI Components**: Modern, responsive interface with loading states
+- **Error Handling**: User-friendly error messages and notifications
+- **Data Persistence**: All settings automatically saved and loaded
+- **Multi-hospital Support**: Settings isolated per hospital for multi-tenant support
 
 ## 🔐 Security Features
 
@@ -273,6 +330,9 @@ For support, email support@qure-healthcare.com or create an issue in the reposit
 - [ ] Integration with hospital management systems
 - [ ] Telemedicine features
 - [ ] Patient portal enhancements
+- [ ] Advanced settings for operating hours and emergency contacts
+- [ ] Hospital logo upload and branding customization
+- [ ] Advanced staff role permissions and access control
 
 ## 🙏 Acknowledgments
 

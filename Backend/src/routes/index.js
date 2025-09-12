@@ -9,6 +9,7 @@ import { accessCodeRouter } from "./accessCodes.js";
 import { hospitalRouter } from "./hospitals.js";
 import { waitingRoomRouter } from "./waitingRooms.js";
 import messageRouter from "./messages.js";
+import { settingsRouter } from "./settings.js";
 
 export const router = Router();
 
@@ -22,3 +23,4 @@ router.use("/access-codes", accessCodeRouter);
 router.use("/hospitals", hospitalRouter);
 router.use("/waiting-rooms", waitingRoomRouter);
 router.use("/messages", messageRouter);
+router.use("/settings", settingsRouter);
