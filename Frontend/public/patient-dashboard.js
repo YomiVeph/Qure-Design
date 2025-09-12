@@ -1,6 +1,6 @@
 "use strict";
 
-// API Configuration
+// API Configuration - Production
 const API_BASE_URL = "https://qure-design.onrender.com/api";
 
 // Utility Functions

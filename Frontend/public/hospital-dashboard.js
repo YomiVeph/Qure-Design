@@ -1,6 +1,6 @@
 "use strict";
 
-// Custom Popup Function
+// Custom Popup Function - Production
 function showCustomPopup(title, message, type = "info") {
   // Remove any existing popup
   const existingPopup = document.querySelector(".custom-popup");
