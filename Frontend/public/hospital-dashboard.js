@@ -202,10 +202,15 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
       const user = JSON.parse(userData);
       if (user.role === "staff") {
-        console.log("Hospital Dashboard loaded for staff:", user.firstName);
         // Update hospital name if available
         if (user.hospitalName) {
           updateHospitalInfo(user.hospitalName);
+          const hospitalDropdown = document.querySelector(".hosp-btn");
+          if (hospitalDropdown) {
+            hospitalDropdown.setAttribute("disabled", "true");
+            hospitalDropdown.style.opacity = "0.7";
+            hospitalDropdown.style.cursor = "not-allowed";
+          }
         }
       }
     } catch (error) {
@@ -215,18 +220,30 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Load dashboard data
   loadDashboardData();
+
+  // Start live polling every 5s for queue updates
+  startQueuePolling();
+
+  // Wire up toolbar buttons
+  const exportBtn = document.getElementById("exportCsv");
+  if (exportBtn) exportBtn.addEventListener("click", exportQueueCsv);
+  const openAnn = document.getElementById("openAnnouncement");
+  if (openAnn) openAnn.addEventListener("click", openAnnouncementModal);
+  // Remove Add Staff wiring (UI removed)
 });
 
 // Update hospital information in the UI
 function updateHospitalInfo(hospitalName) {
   // Update hospital dropdown if it exists
-  const hospitalDropdown = document.querySelector(".hosp-btn");
-  if (hospitalDropdown) {
-    hospitalDropdown.textContent = hospitalName;
+  const hospitalLabel = document.getElementById("hospitalNameLabel");
+  if (hospitalLabel && hospitalName) {
+    hospitalLabel.textContent = hospitalName;
+    try {
+      localStorage.setItem("lastHospitalName", hospitalName);
+    } catch (_) {}
   }
 
   // Update any other hospital-specific elements
-  console.log("Hospital set to:", hospitalName);
 }
 
 // Load dashboard data
@@ -252,10 +269,53 @@ async function loadDashboardData() {
   }
 }
 
+// Show loading state in queue table
+function showQueueLoadingState() {
+  const tableBody = document.querySelector(".queue-list tbody");
+  if (!tableBody) return;
+
+  tableBody.innerHTML = `
+    <tr>
+      <td colspan="6" style="text-align: center; padding: 2rem; color: #6b7280;">
+        <div style="display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+          <div style="width: 20px; height: 20px; border: 2px solid #e5e7eb; border-top: 2px solid #3b82f6; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+          Loading queue data...
+        </div>
+      </td>
+    </tr>
+  `;
+}
+
 // Load queue data from backend
 async function loadQueueData() {
   try {
-    const response = await fetch("http://localhost:4000/api/queues/all", {
+    // Show loading state only if table is empty (first load)
+    const tableBody = document.querySelector(".queue-list tbody");
+    if (tableBody && tableBody.children.length === 0) {
+      showQueueLoadingState();
+    }
+
+    const user = JSON.parse(localStorage.getItem("user") || "null");
+    let hospitalName =
+      user?.hospitalName || localStorage.getItem("lastHospitalName") || "";
+    if (!hospitalName) {
+      const label = document
+        .getElementById("hospitalNameLabel")
+        ?.textContent?.trim();
+      if (label && label.toLowerCase() !== "hospital") hospitalName = label;
+    }
+
+    const isValidHospital =
+      hospitalName &&
+      hospitalName.toLowerCase() !== "select hospital" &&
+      hospitalName !== "Hospital";
+    const url = isValidHospital
+      ? `http://localhost:4000/api/queues/hospital?hospitalName=${encodeURIComponent(
+          hospitalName
+        )}`
+      : `http://localhost:4000/api/queues/all`;
+
+    const response = await fetch(url, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("authToken")}`,
         "Content-Type": "application/json",
@@ -264,12 +324,23 @@ async function loadQueueData() {
 
     if (response.ok) {
       const data = await response.json();
-      updateQueueTable(data.data || []);
+      const rows = Array.isArray(data.data)
+        ? data.data
+        : data.data?.queues || [];
+      updateQueueTable(rows);
+      if (isValidHospital) {
+        updateHospitalInfo(hospitalName);
+      } else {
+        const last = localStorage.getItem("lastHospitalName");
+        if (last) updateHospitalInfo(last);
+      }
     } else {
       console.log("No queue data available or not authenticated");
+      updateQueueTable([]);
     }
   } catch (error) {
     console.error("Error loading queue data:", error);
+    updateQueueTable([]);
   }
 }
 
@@ -281,7 +352,7 @@ function updateQueueTable(queues) {
   // Clear existing rows
   tableBody.innerHTML = "";
 
-  if (queues.length === 0) {
+  if (!queues || queues.length === 0) {
     tableBody.innerHTML = `
       <tr>
         <td colspan="6" style="text-align: center; padding: 2rem; color: #6b7280;">
@@ -296,16 +367,41 @@ function updateQueueTable(queues) {
   queues.forEach((queue) => {
     const row = document.createElement("tr");
     const action = getActionIcon(queue.status);
+    const patient = queue.patient || {};
+    const patientName =
+      queue.patientName ||
+      `${patient.firstName || ""} ${patient.lastName || ""}`.trim() ||
+      "Unknown";
+
+    // Create status-based action icons
+    let actionHTML = "";
+    if (queue.status === "waiting") {
+      actionHTML = `
+        <span class="material-symbols-outlined call-action" 
+              data-queue-id="${queue.id || queue._id}" 
+              data-patient-name="${patientName}" 
+              data-ticket="${queue.queueNumber}"
+              title="Call Patient">phone</span>
+      `;
+    } else if (queue.status === "called") {
+      actionHTML = `
+        <span class="material-symbols-outlined complete-action" 
+              data-queue-id="${queue.id || queue._id}" 
+              data-patient-name="${patientName}" 
+              data-ticket="${queue.queueNumber}"
+              title="Mark as Complete">check</span>
+      `;
+    } else {
+      actionHTML = `<span class="material-symbols-outlined ${action.className}">${action.icon}</span>`;
+    }
 
     row.innerHTML = `
-      <td>${queue.patientName || "Unknown"}</td>
+      <td>${patientName}</td>
       <td>${queue.queueNumber}</td>
       <td>${queue.specialty}</td>
       <td>${queue.status}</td>
       <td>${queue.estimatedWaitTime || 0} mins</td>
-      <td><span class="material-symbols-outlined ${action.className}">${
-      action.icon
-    }</span></td>
+      <td class="action-cell">${actionHTML}</td>
     `;
 
     tableBody.appendChild(row);
@@ -313,13 +409,387 @@ function updateQueueTable(queues) {
 
   // Update stats
   updateStats();
+
+  // Add event handlers for action icons
+  addActionIconHandlers();
+
+  // Hook up search filter
+  const searchInput = document.querySelector(".search-input");
+  if (searchInput && !searchInput._wired) {
+    searchInput._wired = true;
+    searchInput.addEventListener("input", () =>
+      filterBySearch(searchInput.value)
+    );
+  }
 }
+
+function filterBySearch(query) {
+  const q = (query || "").toLowerCase().trim();
+  const rows = Array.from(document.querySelectorAll(".queue-list tbody tr"));
+  rows.forEach((row) => {
+    const name = (row.cells[0]?.innerText || "").toLowerCase();
+    const ticket = (row.cells[1]?.innerText || "").toLowerCase();
+    row.style.display =
+      !q || name.includes(q) || ticket.includes(q) ? "" : "none";
+  });
+  updateStats();
+}
+
+function startQueuePolling() {
+  if (window.__queuePoll) clearInterval(window.__queuePoll);
+  window.__queuePoll = setInterval(async () => {
+    await loadQueueData();
+    await loadAnalyticsData(); // Also refresh analytics with latest data
+  }, 5000);
+}
+
+async function exportQueueCsv() {
+  const rows = Array.from(document.querySelectorAll(".queue-list tbody tr"));
+  const headers = ["Name", "Ticket", "Department", "Status", "Waiting Time"];
+  const data = rows.map((r) => [
+    r.cells[0]?.innerText || "",
+    r.cells[1]?.innerText || "",
+    r.cells[2]?.innerText || "",
+    r.cells[3]?.innerText || "",
+    r.cells[4]?.innerText || "",
+  ]);
+  const csv = [headers, ...data]
+    .map((row) =>
+      row.map((v) => `"${String(v).replace(/"/g, '""')}"`).join(",")
+    )
+    .join("\n");
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `queues-${new Date().toISOString().slice(0, 10)}.csv`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+}
+
+function openAnnouncementModal() {
+  const msg = prompt("Announcement message to all patients in hospital?");
+  if (!msg) return;
+  const user = JSON.parse(localStorage.getItem("user") || "null");
+  const hospitalName =
+    user?.hospitalName ||
+    document.getElementById("hospitalNameLabel")?.textContent?.trim();
+  fetch("http://localhost:4000/api/notifications", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      title: `Announcement - ${hospitalName}`,
+      message: msg,
+      type: "announcement",
+      audience: "hospital",
+      hospitalName,
+      priority: "high",
+    }),
+  })
+    .then((r) => r.json())
+    .then(() =>
+      showCustomPopup("Announcement", "Announcement sent.", "success")
+    )
+    .catch(() =>
+      showCustomPopup("Error", "Failed to send announcement.", "error")
+    );
+}
+
+function openAddStaffModal() {
+  const firstName = prompt("Staff first name?");
+  if (!firstName) return;
+  const lastName = prompt("Staff last name?") || "";
+  const email = prompt("Staff email?");
+  if (!email) return;
+  const phone = prompt("Staff phone?") || "";
+  const password =
+    prompt("Temporary password? (min 8 chars)") || "StaffPass123!";
+  const user = JSON.parse(localStorage.getItem("user") || "null");
+  const hospitalName =
+    user?.hospitalName ||
+    document.getElementById("hospitalNameLabel")?.textContent?.trim();
+  fetch("http://localhost:4000/api/auth/register", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      firstName,
+      lastName,
+      email,
+      phone,
+      password,
+      role: "staff",
+      hospitalName,
+    }),
+  })
+    .then((r) => r.json())
+    .then((d) => {
+      if (d && d.user) {
+        showCustomPopup(
+          "Staff Added",
+          `Access code emailed to ${email}.`,
+          "success"
+        );
+      } else {
+        showCustomPopup("Error", d.message || "Failed to add staff.", "error");
+      }
+    })
+    .catch(() => showCustomPopup("Error", "Failed to add staff.", "error"));
+}
+
+// Handle call and complete actions
+document.addEventListener("click", async (e) => {
+  const callBtn = e.target.closest(".call-btn");
+  if (callBtn) {
+    e.preventDefault();
+    try {
+      const response = await fetch(
+        "http://localhost:4000/api/queues/call-next",
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({}),
+        }
+      );
+      const data = await response.json();
+      if (response.ok) {
+        showCustomPopup(
+          "Patient Called",
+          `Patient ${data?.data?.patientName || ""} (${
+            data?.data?.queueNumber || ""
+          }) has been called.`,
+          "success"
+        );
+        await loadQueueData();
+      } else {
+        showCustomPopup(
+          "No Patients",
+          data.message || "No patients available to call.",
+          "info"
+        );
+      }
+    } catch (err) {
+      showCustomPopup("Error", "Failed to call next patient.", "error");
+    }
+    return;
+  }
+
+  const completeBtn = e.target.closest(".complete-btn");
+  if (completeBtn) {
+    e.preventDefault();
+    const queueId = completeBtn.getAttribute("data-id");
+    try {
+      const response = await fetch(
+        "http://localhost:4000/api/queues/complete",
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ queueId }),
+        }
+      );
+      const data = await response.json();
+      if (response.ok) {
+        showCustomPopup(
+          "Marked Completed",
+          `Patient ${data?.data?.patientName || ""} (${
+            data?.data?.queueNumber || ""
+          }) marked as done.`,
+          "success"
+        );
+        await loadQueueData();
+      } else {
+        showCustomPopup(
+          "Action Failed",
+          data.message || "Unable to mark complete.",
+          "warning"
+        );
+      }
+    } catch (err) {
+      showCustomPopup("Error", "Failed to complete patient.", "error");
+    }
+  }
+});
 
 // Load analytics data
 async function loadAnalyticsData() {
-  // This would typically fetch from analytics API
-  console.log("Loading analytics data...");
-  // For now, we'll use the existing chart data
+  try {
+    console.log("Loading analytics data...");
+
+    // Get current queue data
+    const user = JSON.parse(localStorage.getItem("user") || "null");
+    let hospitalName =
+      user?.hospitalName || localStorage.getItem("lastHospitalName") || "";
+
+    if (!hospitalName) {
+      const label = document
+        .getElementById("hospitalNameLabel")
+        ?.textContent?.trim();
+      if (label && label.toLowerCase() !== "hospital") hospitalName = label;
+    }
+
+    const isValidHospital =
+      hospitalName &&
+      hospitalName.toLowerCase() !== "select hospital" &&
+      hospitalName !== "Hospital";
+    const url = isValidHospital
+      ? `http://localhost:4000/api/queues/hospital?hospitalName=${encodeURIComponent(
+          hospitalName
+        )}`
+      : `http://localhost:4000/api/queues/all`;
+
+    const response = await fetch(url, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      const queues = Array.isArray(data.data)
+        ? data.data
+        : data.data?.queues || [];
+
+      // Update charts with real data
+      updateDailyTrendsChart(queues);
+      updatePeakHoursChart(queues);
+      updateDepartmentHeatmap(queues);
+    }
+  } catch (error) {
+    console.error("Error loading analytics data:", error);
+  }
+}
+
+// Update Daily Trends Chart with real data
+function updateDailyTrendsChart(queues) {
+  if (!window.dailyChart) return;
+
+  // Analyze queue data by day of week
+  const dayStats = {
+    Sunday: 0,
+    Monday: 0,
+    Tuesday: 0,
+    Wednesday: 0,
+    Thursday: 0,
+    Friday: 0,
+    Saturday: 0,
+  };
+
+  queues.forEach((queue) => {
+    if (queue.createdAt) {
+      const date = new Date(queue.createdAt);
+      const dayName = date.toLocaleDateString("en-US", { weekday: "long" });
+      if (dayStats.hasOwnProperty(dayName)) {
+        dayStats[dayName]++;
+      }
+    }
+  });
+
+  // Update chart data
+  window.dailyChart.data.datasets[0].data = [
+    dayStats.Sunday,
+    dayStats.Monday,
+    dayStats.Tuesday,
+    dayStats.Wednesday,
+    dayStats.Thursday,
+    dayStats.Friday,
+    dayStats.Saturday,
+  ];
+
+  window.dailyChart.update();
+}
+
+// Update Peak Hours Chart with real data
+function updatePeakHoursChart(queues) {
+  if (!window.hoursChart) return;
+
+  // Analyze queue data by hour
+  const hourStats = {
+    "8AM": 0,
+    "10AM": 0,
+    "12PM": 0,
+    "2PM": 0,
+    "4PM": 0,
+    "6PM": 0,
+    "8PM": 0,
+  };
+
+  queues.forEach((queue) => {
+    if (queue.createdAt) {
+      const date = new Date(queue.createdAt);
+      const hour = date.getHours();
+
+      // Map hours to our chart labels
+      if (hour >= 8 && hour < 10) hourStats["8AM"]++;
+      else if (hour >= 10 && hour < 12) hourStats["10AM"]++;
+      else if (hour >= 12 && hour < 14) hourStats["12PM"]++;
+      else if (hour >= 14 && hour < 16) hourStats["2PM"]++;
+      else if (hour >= 16 && hour < 18) hourStats["4PM"]++;
+      else if (hour >= 18 && hour < 20) hourStats["6PM"]++;
+      else if (hour >= 20 && hour < 22) hourStats["8PM"]++;
+    }
+  });
+
+  // Update chart data
+  window.hoursChart.data.datasets[0].data = [
+    hourStats["8AM"],
+    hourStats["10AM"],
+    hourStats["12PM"],
+    hourStats["2PM"],
+    hourStats["4PM"],
+    hourStats["6PM"],
+    hourStats["8PM"],
+  ];
+
+  window.hoursChart.update();
+}
+
+// Update Department Heatmap with real data
+function updateDepartmentHeatmap(queues) {
+  // Analyze queue data by department
+  const departmentStats = {};
+
+  queues.forEach((queue) => {
+    const dept = queue.specialty || "General";
+    departmentStats[dept] = (departmentStats[dept] || 0) + 1;
+  });
+
+  // Update heatmap squares based on department activity
+  const heatmapSquares = document.querySelectorAll(".heatmap .sq");
+  const departments = Object.keys(departmentStats);
+  const maxCount = Math.max(...Object.values(departmentStats), 1);
+
+  heatmapSquares.forEach((square, index) => {
+    const deptIndex = index % departments.length;
+    const dept = departments[deptIndex];
+    const count = departmentStats[dept] || 0;
+    const intensity = count / maxCount;
+
+    // Remove existing classes
+    square.classList.remove("low", "medium", "high");
+
+    // Add appropriate intensity class
+    if (intensity > 0.7) {
+      square.classList.add("high");
+    } else if (intensity > 0.3) {
+      square.classList.add("medium");
+    } else {
+      square.classList.add("low");
+    }
+
+    // Add tooltip with department info
+    square.title = `${dept}: ${count} patients`;
+  });
 }
 
 // Load department status
@@ -466,6 +936,172 @@ function getActionIcon(status) {
     default:
       return { icon: "mail", className: "mail" };
   }
+}
+
+/* ---------- Add event handlers for action icons ---------- */
+function addActionIconHandlers() {
+  // Remove existing handlers to avoid duplicates
+  document
+    .querySelectorAll(".call-action, .complete-action")
+    .forEach((icon) => {
+      icon.replaceWith(icon.cloneNode(true));
+    });
+
+  // Add call action handlers
+  document.querySelectorAll(".call-action").forEach((icon) => {
+    icon.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const queueId = icon.dataset.queueId;
+      const patientName = icon.dataset.patientName;
+      const ticket = icon.dataset.ticket;
+
+      console.log("Call action clicked:", { queueId, patientName, ticket });
+      handleCallIndividualPatient(queueId, patientName, ticket);
+    });
+  });
+
+  // Add complete action handlers
+  document.querySelectorAll(".complete-action").forEach((icon) => {
+    icon.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const queueId = icon.dataset.queueId;
+      const patientName = icon.dataset.patientName;
+      const ticket = icon.dataset.ticket;
+
+      console.log("Complete action clicked:", { queueId, patientName, ticket });
+      handleCompleteIndividualPatient(queueId, patientName, ticket);
+    });
+  });
+}
+
+/* ---------- Popup System ---------- */
+function showPopup(message, type = "info") {
+  const popup = document.createElement("div");
+  popup.className = `popup-toast popup-${type}`;
+
+  const icons = {
+    success: "fa-check-circle",
+    error: "fa-exclamation-circle",
+    warning: "fa-exclamation-triangle",
+    info: "fa-info-circle",
+  };
+
+  popup.innerHTML = `
+    <div class="popup-toast-content">
+      <i class="fa-solid ${icons[type] || icons.info}"></i>
+      <span>${message}</span>
+    </div>
+  `;
+
+  document.body.appendChild(popup);
+
+  // Animate in
+  setTimeout(() => popup.classList.add("show"), 100);
+
+  // Auto remove after 4 seconds
+  setTimeout(() => {
+    popup.classList.remove("show");
+    setTimeout(() => {
+      if (document.body.contains(popup)) {
+        document.body.removeChild(popup);
+      }
+    }, 300);
+  }, 4000);
+}
+
+/* ---------- Individual Patient Actions ---------- */
+function handleCallIndividualPatient(queueId, patientName, ticket) {
+  console.log("handleCallIndividualPatient called with:", {
+    queueId,
+    patientName,
+    ticket,
+  });
+
+  const token = localStorage.getItem("authToken");
+  if (!token) {
+    showPopup("Please log in to call patient", "error");
+    return;
+  }
+
+  const user = JSON.parse(localStorage.getItem("user") || "null");
+  if (user?.role !== "staff") {
+    showPopup("Only staff can call patients", "error");
+    return;
+  }
+
+  console.log("Making API call to call-specific with queueId:", queueId);
+
+  // Call the specific patient
+  fetch("http://localhost:4000/api/queues/call-specific", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({
+      queueId: queueId,
+    }),
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      if (data.success) {
+        showPopup(`Called ${patientName} (${ticket})`, "success");
+        loadQueueData(); // Refresh the queue
+      } else {
+        showPopup(`Error: ${data.message}`, "error");
+      }
+    })
+    .catch((error) => {
+      console.error("Call individual patient error:", error);
+      showPopup("Failed to call patient", "error");
+    });
+}
+
+function handleCompleteIndividualPatient(queueId, patientName, ticket) {
+  console.log("handleCompleteIndividualPatient called with:", {
+    queueId,
+    patientName,
+    ticket,
+  });
+
+  const token = localStorage.getItem("authToken");
+  if (!token) {
+    showPopup("Please log in to complete patient", "error");
+    return;
+  }
+
+  const user = JSON.parse(localStorage.getItem("user") || "null");
+  if (user?.role !== "staff") {
+    showPopup("Only staff can complete patients", "error");
+    return;
+  }
+
+  console.log("Making API call to complete-specific with queueId:", queueId);
+
+  // Complete the specific patient
+  fetch("http://localhost:4000/api/queues/complete-specific", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({
+      queueId: queueId,
+    }),
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      if (data.success) {
+        showPopup(`Completed ${patientName} (${ticket})`, "success");
+        loadQueueData(); // Refresh the queue
+      } else {
+        showPopup(`Error: ${data.message}`, "error");
+      }
+    })
+    .catch((error) => {
+      console.error("Complete individual patient error:", error);
+      showPopup("Failed to complete patient", "error");
+    });
 }
 
 /* ---------- Utility: find column indexes by header label ---------- */
@@ -722,14 +1358,14 @@ updateStats();
 // chart
 // Daily Trends Chart
 const dailyCtx = document.getElementById("dailyChart");
-const dailyChart = new Chart(dailyCtx, {
+window.dailyChart = new Chart(dailyCtx, {
   type: "line",
   data: {
     labels: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
     datasets: [
       {
-        label: "Patients Served",
-        data: [120, 150, 180, 140, 200, 250, 220],
+        label: "Queue Entries",
+        data: [0, 0, 0, 0, 0, 0, 0],
         borderColor: "#2563eb",
         backgroundColor: "rgba(37, 99, 235, 0.2)",
         tension: 0.4,
@@ -768,14 +1404,14 @@ const dailyChart = new Chart(dailyCtx, {
 
 // Peak Hours Chart
 const hoursCtx = document.getElementById("hoursChart");
-const hoursChart = new Chart(hoursCtx, {
+window.hoursChart = new Chart(hoursCtx, {
   type: "bar",
   data: {
     labels: ["8AM", "10AM", "12PM", "2PM", "4PM", "6PM", "8PM"],
     datasets: [
       {
-        label: "Patients",
-        data: [30, 50, 75, 60, 90, 40, 20],
+        label: "Queue Entries",
+        data: [0, 0, 0, 0, 0, 0, 0],
         backgroundColor: "rgba(16, 185, 129, 0.7)",
         borderColor: "#10b981",
         borderWidth: 1,

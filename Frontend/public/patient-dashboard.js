@@ -340,7 +340,6 @@ const createSampleNotifications = async () => {
         body: JSON.stringify(notification),
       });
     }
-    console.log("Sample notifications created successfully");
     // Reload notifications to show the new ones
     await loadNotifications();
   } catch (error) {
@@ -793,16 +792,6 @@ document.addEventListener("click", (e) => {
 
 // Queue Management Functions
 const handleViewQueue = () => {
-  console.log("=== View Queue Button Clicked ===");
-  console.log(
-    "Auth token before redirect:",
-    localStorage.getItem("authToken") ? "Present" : "Missing"
-  );
-  console.log(
-    "User data before redirect:",
-    localStorage.getItem("user") ? "Present" : "Missing"
-  );
-
   // Check authentication before redirect
   const token = localStorage.getItem("authToken");
   const userData = localStorage.getItem("user");
@@ -1004,6 +993,7 @@ const showQueueSelectionModal = () => {
             hospitalName,
             specialty,
             notes: notes || undefined,
+            priority: "medium",
           }),
         });
 
@@ -1450,12 +1440,42 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // Removed simulated ETA updates; will be driven by backend events.
 
+// Auto-refresh functionality for real-time updates
+let autoRefreshInterval = null;
+
+const setupAutoRefresh = () => {
+  // Clear any existing interval
+  if (autoRefreshInterval) {
+    clearInterval(autoRefreshInterval);
+  }
+
+  // Refresh appointments and notifications every 30 seconds
+  autoRefreshInterval = setInterval(async () => {
+    try {
+      console.log("Auto-refreshing patient dashboard data...");
+      await Promise.all([loadAppointments(), loadNotifications()]);
+    } catch (error) {
+      console.error("Auto-refresh error:", error);
+    }
+  }, 30000); // 30 seconds
+
+  // Also refresh when page becomes visible (user switches back to tab)
+  document.addEventListener("visibilitychange", () => {
+    if (!document.hidden) {
+      console.log("Page became visible, refreshing data...");
+      Promise.all([loadAppointments(), loadNotifications()]).catch((error) =>
+        console.error("Visibility refresh error:", error)
+      );
+    }
+  });
+};
+
 // Load appointments from API
 const loadAppointments = async () => {
   try {
     console.log("Loading appointments...");
     const response = await makeApiCall(
-      "/appointments?status=scheduled,confirmed"
+      "/appointments?status=scheduled,confirmed,checked-in,in-progress,in-queue"
     );
 
     console.log("Appointments API response:", response);
@@ -1578,6 +1598,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // Attach notification event listeners
     attachNotificationEventListeners();
+
+    // Set up auto-refresh for real-time updates
+    setupAutoRefresh();
   } catch (error) {
     console.error("Error parsing user data:", error);
     window.location.href = "login.html";

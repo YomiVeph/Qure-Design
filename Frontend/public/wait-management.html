@@ -13,6 +13,10 @@
       href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
       rel="stylesheet"
     />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
     <link rel="stylesheet" href="wait.css" />
     <title>Waiting Area Management</title>
   </head>
@@ -76,33 +80,7 @@
                 </span>
               </div>
               <ul class="dropdown-content hosp-dropdown-content">
-                <li>
-                  Main Hospital - Central location handling all major services
-                </li>
-                <li>
-                  Outpatient Wing - General consultations and follow - ups
-                </li>
-                <li>
-                  Specialist Clinic - Referred Cases requiring special care
-                </li>
-                <li>
-                  Children's Hospital - Pediatric care and child health services
-                </li>
-                <li>
-                  Diagnostic & Imaging Center - MRI, X-ray, Ultrasound services
-                </li>
-                <li>
-                  Maternity & Women's Health - Prenatal, delivery,postnatal care
-                </li>
-                <li>
-                  Emergency Care Unit - 24/7 emergency response and trauma care
-                </li>
-                <li>Oncology Center - Cancer Diagnosis and treatment</li>
-                <li>
-                  Rehabilitation & Physiotherapy - Post - surgery and injury
-                  recovery
-                </li>
-                <li>Dental & Oral Health Clinic - Specialized dental care</li>
+                <!-- Facility options will be populated dynamically from backend -->
               </ul>
             </div>
 
@@ -114,14 +92,7 @@
                 </span>
               </div>
               <ul class="dropdown-content dept-dropdown-content">
-                <li>Ground Floor- Reception, Pharmacy, Triage Area</li>
-                <li>
-                  1st Floor - General Consultation Rooms, Lab Sample Collection
-                </li>
-                <li>2nd Floor - Specialist Clinics (ENT, Cardiology, etc)</li>
-                <li>3rd Floor - Operating Theatres, ICU</li>
-                <li>4th Floor - Wards & Recovery Rooms</li>
-                <li>5th Floor - Admin Offices, Conference Rooms</li>
+                <!-- Floor options will be populated dynamically from backend -->
               </ul>
             </div>
           </div>
@@ -129,57 +100,241 @@
 
         <div class="content">
           <div class="waiting-areas">
-            <div class="room yellow">
-              <h3>Waiting Room A</h3>
-              <p>Main Hall</p>
-              <span>19/25 (76%) - Last updated: 2 mins ago</span>
-            </div>
-            <div class="room green">
-              <h3>Waiting Room B</h3>
-              <p>Pediatrics Lobby</p>
-              <span>4/15 (26%) - Last updated: 5 mins ago</span>
-            </div>
-            <div class="room orange">
-              <h3>Waiting Room C</h3>
-              <p>Lab Sample Area</p>
-              <span>8/12 (66%) - Last updated: 3 mins ago</span>
-            </div>
-            <div class="room red">
-              <h3>Waiting Room D</h3>
-              <p>X-Ray Waiting</p>
-              <span>22/22 (100%) - Last updated: Just now</span>
-            </div>
-            <div class="room yellow">
-              <h3>Waiting Room E</h3>
-              <p>General OPD</p>
-              <span>12/20 (60%) - Last updated: 7 mins ago</span>
-            </div>
-            <div class="room green">
-              <h3>Waiting Room F</h3>
-              <p>Emergency Hall</p>
-              <span>6/10 (60%) - Last updated: 1 min ago</span>
-            </div>
+            <!-- Waiting rooms will be populated dynamically from backend -->
           </div>
           <div class="details">
-            <h2>X-Ray Waiting</h2>
-            <p>22/22</p>
-            <div class="critical">CRITICAL</div>
-            <div class="patient-list">
-              <div><span>Samantha Adams</span><span>3 mins</span></div>
-              <div><span>David Fola</span><span>8 mins</span></div>
-              <div><span>Bella Johnson</span><span>5 mins</span></div>
-              <div><span>Leon James</span><span>13 mins</span></div>
-            </div>
-            <div class="actions">
-              <button>Email</button>
-              <button>Speaker</button>
-              <button class="confirm">Confirm</button>
-            </div>
+            <h2>Select a waiting room</h2>
+            <p>Click on a waiting room to view details and manage it.</p>
           </div>
         </div>
         <button class="add-btn">Add New Waiting Area</button>
       </div>
     </div>
+
+    <!-- Popup Styles -->
+    <style>
+      /* Toast Popup Styles */
+      .popup-toast {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        padding: 16px 20px;
+        z-index: 10000;
+        opacity: 0;
+        transform: translateX(100%);
+        transition: all 0.3s ease;
+        min-width: 300px;
+        border-left: 4px solid #3b82f6;
+      }
+
+      .popup-toast.show {
+        opacity: 1;
+        transform: translateX(0);
+      }
+
+      .popup-toast-success {
+        border-left-color: #10b981;
+      }
+
+      .popup-toast-error {
+        border-left-color: #ef4444;
+      }
+
+      .popup-toast-warning {
+        border-left-color: #f59e0b;
+      }
+
+      .popup-toast-content {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .popup-toast-content i {
+        font-size: 20px;
+        flex-shrink: 0;
+      }
+
+      .popup-toast-success i {
+        color: #10b981;
+      }
+
+      .popup-toast-error i {
+        color: #ef4444;
+      }
+
+      .popup-toast-warning i {
+        color: #f59e0b;
+      }
+
+      .popup-toast-content span {
+        color: #374151;
+        font-weight: 500;
+        flex: 1;
+      }
+
+      /* Modal Styles */
+      .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 10000;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+
+      .modal-overlay.show {
+        opacity: 1;
+      }
+
+      .modal-content {
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        max-width: 500px;
+        width: 90%;
+        max-height: 90vh;
+        overflow-y: auto;
+        transform: scale(0.9);
+        transition: transform 0.3s ease;
+      }
+
+      .modal-overlay.show .modal-content {
+        transform: scale(1);
+      }
+
+      .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px 24px 16px;
+        border-bottom: 1px solid #e5e7eb;
+      }
+
+      .modal-header h3 {
+        margin: 0;
+        font-size: 18px;
+        font-weight: 600;
+        color: #111827;
+      }
+
+      .modal-close {
+        background: none;
+        border: none;
+        font-size: 24px;
+        cursor: pointer;
+        color: #6b7280;
+        padding: 0;
+        width: 24px;
+        height: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .modal-close:hover {
+        color: #374151;
+      }
+
+      .modal-body {
+        padding: 20px 24px;
+      }
+
+      .modal-footer {
+        display: flex;
+        justify-content: flex-end;
+        gap: 12px;
+        padding: 16px 24px 20px;
+        border-top: 1px solid #e5e7eb;
+      }
+
+      .form-group {
+        margin-bottom: 16px;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 6px;
+        font-weight: 500;
+        color: #374151;
+      }
+
+      .btn {
+        padding: 8px 16px;
+        border-radius: 6px;
+        border: none;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+
+      .btn-secondary {
+        background: #f3f4f6;
+        color: #374151;
+      }
+
+      .btn-secondary:hover {
+        background: #e5e7eb;
+      }
+
+      .btn-primary {
+        background: #3b82f6;
+        color: white;
+      }
+
+      .btn-primary:hover {
+        background: #2563eb;
+      }
+
+      /* Action button styles */
+      .actions button {
+        margin: 4px;
+        padding: 8px 12px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 500;
+        transition: all 0.2s ease;
+      }
+
+      .actions button.edit {
+        background: #f59e0b;
+        color: white;
+      }
+
+      .actions button.edit:hover {
+        background: #d97706;
+      }
+
+      .actions button.delete {
+        background: #ef4444;
+        color: white;
+      }
+
+      .actions button.delete:hover {
+        background: #dc2626;
+      }
+
+      .actions button.confirm {
+        background: #10b981;
+        color: white;
+      }
+
+      .actions button.confirm:hover {
+        background: #059669;
+      }
+    </style>
+
     <script src="wait.js"></script>
   </body>
 </html>

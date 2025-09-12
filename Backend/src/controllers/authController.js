@@ -53,9 +53,6 @@ async function getOrCreateHospitalAccessCode(user, hospitalName) {
 
     if (existingAccessCode) {
       // Hospital already has an access code, send it to the new staff member
-      console.log(
-        `Hospital ${hospitalName} already has access code: ${existingAccessCode.code}`
-      );
 
       // Send the existing access code via email
       await sendAccessCodeEmail(
@@ -65,14 +62,10 @@ async function getOrCreateHospitalAccessCode(user, hospitalName) {
         hospitalName
       );
 
-      console.log(
-        `Existing access code sent to ${user.email}: ${existingAccessCode.code}`
-      );
       return existingAccessCode;
     }
 
     // Hospital doesn't have an access code yet, generate a new one
-    console.log(`Creating new access code for hospital: ${hospitalName}`);
 
     let code;
     let attempts = 0;
@@ -134,7 +127,12 @@ export async function register(req, res) {
     });
 
     const token = signAuthToken(
-      { userId: user.id, role: user.role, firstName: user.firstName },
+      {
+        userId: user.id,
+        role: user.role,
+        firstName: user.firstName,
+        hospitalName: user.hospitalName,
+      },
       process.env.JWT_SECRET
     );
 
@@ -152,6 +150,22 @@ export async function register(req, res) {
       try {
         await getOrCreateHospitalAccessCode(user, data.hospitalName);
         console.log(`Access code processed for staff: ${user.email}`);
+
+        // Ensure hospital exists in catalog for patient booking lists
+        try {
+          const { Hospital } = await import("../models/Hospital.js");
+          const code = data.hospitalName
+            .toUpperCase()
+            .replace(/[^A-Z0-9]+/g, "-")
+            .replace(/^-+|-+$/g, "");
+          await Hospital.updateOne(
+            { name: data.hospitalName },
+            { $setOnInsert: { name: data.hospitalName, code } },
+            { upsert: true }
+          );
+        } catch (e) {
+          console.error("Failed to upsert hospital record:", e);
+        }
       } catch (accessCodeError) {
         console.error("Failed to process access code:", accessCodeError);
         // Don't fail registration if access code generation fails
@@ -168,6 +182,7 @@ export async function register(req, res) {
         phone: user.phone,
         role: user.role,
         hospitalName: user.hospitalName,
+        preferredHospital: user.preferredHospital,
         gender: user.gender,
         dateOfBirth: user.dateOfBirth,
       },
@@ -194,7 +209,12 @@ export async function login(req, res) {
     if (!ok) return res.status(401).json({ message: "Invalid credentials" });
 
     const token = signAuthToken(
-      { userId: user.id, role: user.role, firstName: user.firstName },
+      {
+        userId: user.id,
+        role: user.role,
+        firstName: user.firstName,
+        hospitalName: user.hospitalName,
+      },
       process.env.JWT_SECRET
     );
     return res.json({
@@ -207,6 +227,7 @@ export async function login(req, res) {
         phone: user.phone,
         role: user.role,
         hospitalName: user.hospitalName,
+        preferredHospital: user.preferredHospital,
         gender: user.gender,
         dateOfBirth: user.dateOfBirth,
       },

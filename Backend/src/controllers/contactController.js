@@ -33,14 +33,9 @@ const updateContactSchema = z.object({
 // Create contact message
 export const createContact = async (req, res) => {
   try {
-    console.log("Request body:", req.body);
-    console.log("IP Address:", req.ip);
-    console.log("User Agent:", req.get("User-Agent"));
-
     // Validate request body
     const validationResult = createContactSchema.safeParse(req.body);
     if (!validationResult.success) {
-      console.log("Validation errors:", validationResult.error.errors);
       return res.status(400).json({
         success: false,
         message: "Validation failed",
@@ -70,8 +65,6 @@ export const createContact = async (req, res) => {
     });
 
     await contact.save();
-
-    console.log("Contact message created successfully:", contact._id);
 
     res.status(201).json({
       success: true,
@@ -104,9 +97,6 @@ export const createContact = async (req, res) => {
 // Get all contact messages (Admin/Staff only)
 export const getAllContacts = async (req, res) => {
   try {
-    console.log("User ID:", req.user.id);
-    console.log("Query params:", req.query);
-
     const {
       page = 1,
       limit = 10,
@@ -150,10 +140,6 @@ export const getAllContacts = async (req, res) => {
 
     // Get total count
     const total = await Contact.countDocuments(filter);
-
-    console.log(
-      `Found ${contacts.length} contact messages out of ${total} total`
-    );
 
     res.json({
       success: true,

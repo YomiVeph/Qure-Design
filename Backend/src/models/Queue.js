@@ -51,8 +51,12 @@ const queueSchema = new mongoose.Schema(
     },
     priority: {
       type: String,
-      enum: ["normal", "urgent", "emergency"],
-      default: "normal",
+      enum: ["low", "medium", "high", "urgent"],
+      default: "medium",
+    },
+    assignedRoom: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "WaitingRoom",
     },
   },
   { timestamps: true }

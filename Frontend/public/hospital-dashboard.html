@@ -109,21 +109,22 @@
 
         <div class="select-button">
           <div class="hospital-department">
-            <div class="hosp-dropdown dropdown">
-              <div class="hosp-dropdown-toggle dropdown-toggle">
-                <button class="hosp-btn btn">Select Hospital</button>
-                <span class="material-symbols-outlined hosp-arrow arrow-icon">
-                  arrow_drop_down
-                </span>
-              </div>
-              <ul class="dropdown-content hosp-dropdown-content">
-                <li>City Care Medical Center</li>
-                <li>Green Valley Hospital</li>
-                <li>Riverside General Hospital</li>
-                <li>General Hospital Abuja</li>
-                <li>St Mary's Specialist Clinic</li>
-                <li>Horizon Health Center</li>
-              </ul>
+            <div
+              class="hospital-name"
+              style="
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                padding: 10px 12px;
+                border: 1px solid #e5e7eb;
+                border-radius: 8px;
+                background: #fff;
+                color: #374151;
+                min-height: 40px;
+              "
+            >
+              <span class="material-symbols-outlined">local_hospital</span>
+              <strong id="hospitalNameLabel">Hospital</strong>
             </div>
 
             <div class="dropdown dept-dropdown">
@@ -144,14 +145,13 @@
             </div>
           </div>
           <div class="button-part">
-            <div class="add-staff">
-              <button class="add-staff-btn">Add Staff</button>
-            </div>
             <div class="announcement">
-              <button class="announcement-btn">Create Announcement</button>
+              <button class="announcement-btn" id="openAnnouncement">
+                Create Announcement
+              </button>
             </div>
             <div class="export-data">
-              <button class="export-btn">Export Data</button>
+              <button class="export-btn" id="exportCsv">Export Data</button>
             </div>
           </div>
         </div>
@@ -222,8 +222,8 @@
                         <ul class="dropdown-content select-dropdown-content">
                           <li>Waiting</li>
                           <li>Called</li>
-                          <li>In Triage</li>
-                          <li>With Doc</li>
+                          <!-- <li>In Triage</li>
+                          <li>With Doc</li> -->
                           <li>Completed</li>
                           <li>No-show</li>
                         </ul>
@@ -239,63 +239,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td>Ada Okoro</td>
-                    <td>C-024</td>
-                    <td>Cardiology</td>
-                    <td>Waiting</td>
-                    <td>2 mins</td>
-                    <td>
-                      <span class="material-symbols-outlined call"> call </span>
-                    </td>
-                  </tr>
-
-                  <tr>
-                    <td>Faith Ben</td>
-                    <td>OE-015</td>
-                    <td>O&E</td>
-                    <td>Called</td>
-                    <td>8 mins</td>
-                    <td>
-                      <span class="material-symbols-outlined mail"> mail </span>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>John Yakubu</td>
-                    <td>PD-108</td>
-                    <td>Pediatrics</td>
-                    <td>In Triage</td>
-                    <td>2 mins</td>
-                    <td>
-                      <span class="material-symbols-outlined hospi-icon">
-                        local_hospital
-                      </span>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>Mary Udo</td>
-                    <td>PH-022</td>
-                    <td>Pharmacy</td>
-                    <td>Checked-in</td>
-                    <td>4 mins</td>
-                    <td>
-                      <span class="material-symbols-outlined check">
-                        check
-                      </span>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>Aisha Bawa</td>
-                    <td>EM-007</td>
-                    <td>EM</td>
-                    <td>No show</td>
-                    <td>5 mins</td>
-                    <td>
-                      <span class="material-symbols-outlined error">
-                        error
-                      </span>
-                    </td>
-                  </tr>
+                  <!-- Queue data will be loaded dynamically -->
                 </tbody>
               </table>
             </div>
@@ -480,6 +424,100 @@
         </div>
       </div>
     </div>
+
+    <!-- Popup Styles -->
+    <style>
+      /* Toast Popup Styles */
+      .popup-toast {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        padding: 16px 20px;
+        z-index: 10000;
+        opacity: 0;
+        transform: translateX(100%);
+        transition: all 0.3s ease;
+        min-width: 300px;
+        border-left: 4px solid #3b82f6;
+      }
+
+      .popup-toast.show {
+        opacity: 1;
+        transform: translateX(0);
+      }
+
+      .popup-toast-success {
+        border-left-color: #10b981;
+      }
+
+      .popup-toast-error {
+        border-left-color: #ef4444;
+      }
+
+      .popup-toast-warning {
+        border-left-color: #f59e0b;
+      }
+
+      .popup-toast-content {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .popup-toast-content i {
+        font-size: 20px;
+        flex-shrink: 0;
+      }
+
+      .popup-toast-success i {
+        color: #10b981;
+      }
+
+      .popup-toast-error i {
+        color: #ef4444;
+      }
+
+      .popup-toast-warning i {
+        color: #f59e0b;
+      }
+
+      .popup-toast-content span {
+        color: #374151;
+        font-weight: 500;
+        flex: 1;
+      }
+
+      /* Action icon styles */
+      .action-cell .material-symbols-outlined {
+        cursor: pointer;
+        padding: 8px;
+        border-radius: 4px;
+        transition: all 0.2s ease;
+        font-size: 20px;
+      }
+
+      .action-cell .call-action {
+        color: #3b82f6;
+      }
+
+      .action-cell .call-action:hover {
+        background-color: #eff6ff;
+        color: #1d4ed8;
+      }
+
+      .action-cell .complete-action {
+        color: #10b981;
+      }
+
+      .action-cell .complete-action:hover {
+        background-color: #ecfdf5;
+        color: #059669;
+      }
+    </style>
+
     <script src="hospital-dashboard.js"></script>
   </body>
 </html>

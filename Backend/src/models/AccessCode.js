@@ -55,8 +55,8 @@ const accessCodeSchema = new mongoose.Schema(
 );
 
 // Index for faster lookups
-accessCodeSchema.index({ code: 1 });
-accessCodeSchema.index({ hospitalName: 1 });
+// Note: 'unique: true' on code already creates a unique index.
+// Avoid duplicate index definitions to prevent Mongoose warnings.
 accessCodeSchema.index({ isActive: 1 });
 
 // Virtual for checking if code is expired

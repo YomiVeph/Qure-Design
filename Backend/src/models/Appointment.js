@@ -28,7 +28,17 @@ const appointmentSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ["scheduled", "confirmed", "completed", "cancelled", "rescheduled"],
+      enum: [
+        "scheduled",
+        "confirmed",
+        "checked-in",
+        "in-progress",
+        "in-queue",
+        "completed",
+        "cancelled",
+        "rescheduled",
+        "no-show",
+      ],
       default: "scheduled",
     },
     notes: {
@@ -58,7 +68,7 @@ const appointmentSchema = new mongoose.Schema(
       },
       dateOfBirth: {
         type: Date,
-        required: true,
+        required: false,
       },
     },
     isRescheduled: {

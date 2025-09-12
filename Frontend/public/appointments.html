@@ -49,7 +49,7 @@
               </a>
             </li>
             <li>
-              <a class="icon active" href="appoinment.html">
+              <a class="icon active" href="appointments.html">
                 <span class="material-symbols-outlined"> stacked_inbox </span
                 >Appointments
               </a>
@@ -83,7 +83,7 @@
           <div class="slt-btn">
             <button class="all-btn">All</button>
             <button class="today-btn inactive-btn">Today</button>
-            <button class="today-btn inactive-btn">Upcoming</button>
+            <button class="upcoming-btn inactive-btn">Upcoming</button>
             <button class="past-btn inactive-btn">Past</button>
             <button class="cancelled-btn inactive-btn">Cancelled</button>
           </div>
@@ -100,12 +100,12 @@
               </button>
               <div class="dropdown-menu" id="menu">
                 <div>
-                  <label for="start-date">Start Date</label>
-                  <input type="date" id="start-date" />
+                  <label for="startDate">Start Date</label>
+                  <input type="date" id="startDate" />
                 </div>
                 <div>
-                  <label for="end-date">End Date</label>
-                  <input type="date" id="end-date" />
+                  <label for="endDate">End Date</label>
+                  <input type="date" id="endDate" />
                 </div>
                 <div class="actions">
                   <button class="btn" id="clearBtn" type="button">Clear</button>
@@ -132,6 +132,11 @@
               </ul>
             </div>
             <div class="search-bar">
+              <input
+                type="text"
+                placeholder="Search appointments..."
+                style="border: none; outline: none; padding: 8px; width: 200px"
+              />
               <button class="src-icon">
                 <span class="material-symbols-outlined search-icon">
                   search
@@ -148,122 +153,37 @@
                 <thead>
                   <tr>
                     <th>Patient Name</th>
-                    <th>Doctor</th>
                     <th>Department</th>
                     <th>Status</th>
                     <th>Type</th>
                     <th>Date $ Time</th>
                   </tr>
                 </thead>
-                <tbody>
-                  <tr>
-                    <td>Abel Johnson</td>
-                    <td>Dr. Daniel Edwards</td>
-                    <td>Cardiology</td>
-                    <td><span class="status booked">Booked</span></td>
-                    <td>Visit</td>
-                    <td>April 20, 2024 <br /><span>10.00am</span></td>
-                  </tr>
-                  <tr>
-                    <td>Alex Martins</td>
-                    <td>Dr. Rose Davis</td>
-                    <td>Neurology</td>
-                    <td><span class="status checked-in">Checked-in</span></td>
-                    <td>Follow-up</td>
-                    <td>April 20, 2024 <br /><span>11.30am</span></td>
-                  </tr>
-                  <tr>
-                    <td>Jane Andrey</td>
-                    <td>Dr. Williams Ola</td>
-                    <td>Pediatrics</td>
-                    <td><span class="status cancelled">cancelled</span></td>
-                    <td>Consultation</td>
-                    <td>April 20, 2024 <br /><span>10.00am</span></td>
-                  </tr>
-                  <tr>
-                    <td>Emily Jordan</td>
-                    <td>Dr. Henry Jay</td>
-                    <td>O/G</td>
-                    <td><span class="status no-show">No-show</span></td>
-                    <td>Visit</td>
-                    <td>April 20, 2024 <br /><span>10.00am</span></td>
-                  </tr>
-                  <tr>
-                    <td>Steven Banks</td>
-                    <td>Dr. James Corner</td>
-                    <td>E.N.T</td>
-                    <td><span class="status checked-in">Checked-in</span></td>
-                    <td>Consultation</td>
-                    <td>April 20, 2024 <br /><span>1.00pm</span></td>
-                  </tr>
-                  <tr>
-                    <td>Mya Smith</td>
-                    <td>Dr. Tunde Okafor</td>
-                    <td>Pharmacy</td>
-                    <td><span class="status booked">Booked</span></td>
-                    <td>Visit</td>
-                    <td>April 20, 2024 <br /><span>1.40pm</span></td>
-                  </tr>
-                  <tr>
-                    <td>Ruth Patrick</td>
-                    <td>Dr. Kemi Alao</td>
-                    <td>Radiology</td>
-                    <td><span class="status cancelled">Cancelled</span></td>
-                    <td>Consultation</td>
-                    <td>April 20, 2024 <br /><span>2:30pm</span></td>
-                  </tr>
-                  <tr>
-                    <td>Paul Adams</td>
-                    <td>Dr. Peter Ahams</td>
-                    <td>Urology</td>
-                    <td><span class="status booked">Booked</span></td>
-                    <td>Visit</td>
-                    <td>April 20, 2024 <br /><span>10.00am</span></td>
-                  </tr>
-                  <tr>
-                    <td>James Daniel</td>
-                    <td>Dr. Ivy Nwobodo</td>
-                    <td>Laboratory</td>
-                    <td><span class="status booked">Booked</span></td>
-                    <td>Visit</td>
-                    <td>April 20, 2024 <br /><span>10:00am</span></td>
-                  </tr>
+                <tbody id="appointmentsTableBody">
+                  <!-- Appointments will be populated dynamically from backend -->
                 </tbody>
               </table>
+
+              <!-- Pagination -->
+              <div
+                class="pagination"
+                style="
+                  display: flex;
+                  justify-content: center;
+                  align-items: center;
+                  margin: 20px auto;
+                  gap: 8px;
+                  width: 100%;
+                "
+              >
+                <!-- Pagination buttons will be populated dynamically -->
+              </div>
             </div>
           </div>
 
-          <div class="profile">
+          <div class="profile" style="display: none">
             <div class="profile-details">
-              <div class="pic-name">
-                <div class="profile-name">
-                  <h2>Jane Andrey</h2>
-                  <p>(234) 801 6767 431</p>
-                  <p>MRN 123456</p>
-                </div>
-              </div>
-              <div class="history">
-                <h3>Appointment Details</h3>
-                <p>Time: April 20,2024\ 10:00AM</p>
-                <p>Department: Cardiology</p>
-                <p>Doctor: Dr. Williams Ola</p>
-                <p>Notes: First-time-Visit</p>
-              </div>
-              <div class="notes">
-                <h3>Notes</h3>
-                <p>Patient is allergic to penicillin</p>
-              </div>
-              <div class="check-btn-profile">
-                <div class="profile-button-1">
-                  <button class="next pro-btn">Check-in</button>
-                  <button class="prev pro-btn">Move to Queue</button>
-                </div>
-
-                <div class="profile-button">
-                  <button class="next pro-btn">Message</button>
-                  <button class="prev pro-btn">Edit</button>
-                </div>
-              </div>
+              <!-- Patient details will be populated dynamically when an appointment is selected -->
             </div>
           </div>
         </div>
@@ -278,8 +198,11 @@
           <label>Patient Name</label>
           <input type="text" id="patientName" required />
 
-          <label>Doctor</label>
-          <input type="text" id="doctorName" required />
+          <label>Patient Email</label>
+          <input type="email" id="patientEmail" required />
+
+          <label>Patient Phone</label>
+          <input type="tel" id="patientPhone" required />
 
           <label>Department</label>
           <input type="text" id="department" required />
@@ -306,6 +229,258 @@
         </form>
       </div>
     </div>
+    <!-- Popup Styles -->
+    <style>
+      /* Toast Popup Styles */
+      .popup-toast {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        padding: 16px 20px;
+        z-index: 10000;
+        opacity: 0;
+        transform: translateX(100%);
+        transition: all 0.3s ease;
+        min-width: 300px;
+        border-left: 4px solid #3b82f6;
+      }
+
+      .popup-toast.show {
+        opacity: 1;
+        transform: translateX(0);
+      }
+
+      .popup-toast-success {
+        border-left-color: #10b981;
+      }
+
+      .popup-toast-error {
+        border-left-color: #ef4444;
+      }
+
+      .popup-toast-warning {
+        border-left-color: #f59e0b;
+      }
+
+      .popup-toast-content {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .popup-toast-content i {
+        font-size: 20px;
+        flex-shrink: 0;
+      }
+
+      .popup-toast-success i {
+        color: #10b981;
+      }
+
+      .popup-toast-error i {
+        color: #ef4444;
+      }
+
+      .popup-toast-warning i {
+        color: #f59e0b;
+      }
+
+      .popup-toast-content span {
+        color: #374151;
+        font-weight: 500;
+      }
+
+      /* Pagination Styles */
+      .pagination-btn {
+        padding: 8px 12px;
+        border: 1px solid #d1d5db;
+        background: white;
+        color: #374151;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 14px;
+        transition: all 0.2s ease;
+      }
+
+      .pagination-btn:hover:not(.disabled) {
+        background: #f3f4f6;
+        border-color: #9ca3af;
+      }
+
+      .pagination-btn.active {
+        background: #3b82f6;
+        color: white;
+        border-color: #3b82f6;
+      }
+
+      .pagination-btn.disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+
+      .pagination-dots {
+        padding: 8px 4px;
+        color: #6b7280;
+      }
+
+      /* Modal Styles */
+      .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 10000;
+      }
+
+      .modal-content {
+        background: white;
+        border-radius: 8px;
+        padding: 24px;
+        max-width: 500px;
+        width: 90%;
+        max-height: 90vh;
+        overflow-y: auto;
+      }
+
+      .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        padding-bottom: 16px;
+        border-bottom: 1px solid #e5e7eb;
+      }
+
+      .modal-header h3 {
+        margin: 0;
+        color: #111827;
+        font-size: 18px;
+        font-weight: 600;
+      }
+
+      .form-group {
+        margin-bottom: 16px;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 6px;
+        color: #374151;
+        font-weight: 500;
+        font-size: 14px;
+      }
+
+      .form-group input,
+      .form-group textarea,
+      .form-group select {
+        width: 100%;
+        padding: 8px 12px;
+        border: 1px solid #d1d5db;
+        border-radius: 6px;
+        font-size: 14px;
+        transition: border-color 0.2s ease;
+      }
+
+      .form-group input:focus,
+      .form-group textarea:focus,
+      .form-group select:focus {
+        outline: none;
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+      }
+
+      .modal-actions {
+        display: flex;
+        gap: 12px;
+        justify-content: flex-end;
+        margin-top: 24px;
+        padding-top: 16px;
+        border-top: 1px solid #e5e7eb;
+      }
+
+      .btn-primary {
+        background: #3b82f6;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 6px;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+      }
+
+      .btn-primary:hover {
+        background: #2563eb;
+      }
+
+      .btn-secondary {
+        background: #f3f4f6;
+        color: #374151;
+        border: 1px solid #d1d5db;
+        padding: 10px 20px;
+        border-radius: 6px;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+      }
+
+      .btn-secondary:hover {
+        background: #e5e7eb;
+      }
+
+      .char-count {
+        display: block;
+        text-align: right;
+        font-size: 12px;
+        color: #6b7280;
+        margin-top: 4px;
+      }
+
+      .form-group select {
+        width: 100%;
+        padding: 8px 12px;
+        border: 1px solid #d1d5db;
+        border-radius: 6px;
+        font-size: 14px;
+        background-color: white;
+        cursor: pointer;
+      }
+
+      .form-group select:focus {
+        outline: none;
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+      }
+
+      .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+        margin-bottom: 16px;
+      }
+
+      .form-row .form-group {
+        margin-bottom: 0;
+      }
+
+      @media (max-width: 768px) {
+        .form-row {
+          grid-template-columns: 1fr;
+          gap: 12px;
+        }
+      }
+    </style>
+
     <script src="appointment.js"></script>
   </body>
 </html>

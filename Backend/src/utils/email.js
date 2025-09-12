@@ -551,3 +551,23 @@ export const sendAccessCodeEmail = async (
     throw new Error("Failed to send access code email");
   }
 };
+
+// Generic send email function
+export const sendEmail = async ({ to, subject, html, text }) => {
+  try {
+    const mailOptions = {
+      from: process.env.EMAIL_FROM || process.env.EMAIL_USER,
+      to,
+      subject,
+      html,
+      text,
+    };
+
+    const result = await transporter.sendMail(mailOptions);
+    console.log("Email sent successfully:", result.messageId);
+    return result;
+  } catch (error) {
+    console.error("Error sending email:", error);
+    throw new Error("Failed to send email");
+  }
+};

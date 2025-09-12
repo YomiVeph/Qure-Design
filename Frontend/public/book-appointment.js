@@ -231,6 +231,7 @@ const goToDashboardBtn = document.getElementById("go-to-dashboard");
 
 // Form Elements
 const serviceDepartmentSelect = document.getElementById("service-department");
+const hospitalSelect = document.getElementById("hospital-name");
 const appointmentDateInput = document.getElementById("appointment-date");
 const appointmentTimeInput = document.getElementById("appointment-time");
 const phoneNumberInput = document.getElementById("phone-number");
@@ -358,6 +359,13 @@ const validateForm = () => {
     showFieldError(serviceDepartmentSelect, "Please select a department");
     isValid = false;
     errors.push("Department selection required");
+  }
+
+  // Validate Hospital
+  if (!hospitalSelect.value) {
+    showFieldError(hospitalSelect, "Please select a hospital");
+    isValid = false;
+    errors.push("Hospital selection required");
   }
 
   // Validate Date
@@ -520,7 +528,7 @@ const handleFormSubmit = async (e) => {
         reasonVisitSelect.value === "other"
           ? otherSpecifyTextarea.value.trim()
           : reasonVisitSelect.options[reasonVisitSelect.selectedIndex].text,
-      hospitalName: "Qure Medical Center", // Default hospital name
+      hospitalName: hospitalSelect.options[hospitalSelect.selectedIndex].text,
       patientInfo: {
         fullName: fullName,
         phoneNumber: phoneNumberInput.value,
@@ -635,6 +643,9 @@ document.addEventListener("DOMContentLoaded", () => {
   // Set initial values
   updateAppointmentDetails();
 
+  // Load hospitals list
+  loadHospitals();
+
   // Set default time to current time + 1 hour
   const now = new Date();
   now.setHours(now.getHours() + 1);
@@ -644,6 +655,23 @@ document.addEventListener("DOMContentLoaded", () => {
   // Update display immediately
   updateAppointmentDetails();
 });
+
+async function loadHospitals() {
+  try {
+    const res = await fetch(`${API_BASE_URL}/hospitals`);
+    const data = await res.json();
+    if (data.success && Array.isArray(data.data)) {
+      data.data.forEach((h) => {
+        const opt = document.createElement("option");
+        opt.value = h.code;
+        opt.textContent = h.name;
+        hospitalSelect.appendChild(opt);
+      });
+    }
+  } catch (e) {
+    console.error("Failed to load hospitals", e);
+  }
+}
 
 // Update patient details with real user data
 const updatePatientDetails = (user) => {

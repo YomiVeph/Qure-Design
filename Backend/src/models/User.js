@@ -16,6 +16,7 @@ const userSchema = new mongoose.Schema(
     role: { type: String, enum: ["patient", "staff"], required: true },
     hospitalName: { type: String, trim: true }, // only for staff
     // Patient-specific fields
+    preferredHospital: { type: String, trim: true },
     gender: {
       type: String,
       enum: ["male", "female", "other", "prefer-not-to-say"],

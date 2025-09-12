@@ -15,6 +15,7 @@ export function authenticateToken(req, res, next) {
       id: decoded.userId, // Map userId to id for consistency
       role: decoded.role,
       firstName: decoded.firstName,
+      hospitalName: decoded.hospitalName,
     };
     next();
   } catch (err) {

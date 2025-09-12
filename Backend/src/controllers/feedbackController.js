@@ -16,13 +16,9 @@ const createFeedbackSchema = z.object({
 // Create feedback
 export const createFeedback = async (req, res) => {
   try {
-    console.log("User ID:", req.user.id);
-    console.log("Request body:", req.body);
-
     // Validate request body
     const validationResult = createFeedbackSchema.safeParse(req.body);
     if (!validationResult.success) {
-      console.log("Validation errors:", validationResult.error.errors);
       return res.status(400).json({
         success: false,
         message: "Validation failed",
@@ -59,8 +55,6 @@ export const createFeedback = async (req, res) => {
     // Populate patient data for response
     await feedback.populate("patient", "firstName lastName email");
 
-    console.log("Feedback created successfully:", feedback._id);
-
     res.status(201).json({
       success: true,
       message: "Feedback submitted successfully",
@@ -91,8 +85,6 @@ export const createFeedback = async (req, res) => {
 // Get user's feedback
 export const getUserFeedback = async (req, res) => {
   try {
-    console.log("User ID:", req.user.id);
-
     const { page = 1, limit = 10 } = req.query;
     const skip = (page - 1) * limit;
 
@@ -103,8 +95,6 @@ export const getUserFeedback = async (req, res) => {
       .limit(parseInt(limit));
 
     const total = await Feedback.countDocuments({ patient: req.user.id });
-
-    console.log(`Found ${feedback.length} feedback entries for user`);
 
     res.json({
       success: true,
@@ -144,7 +134,6 @@ export const getUserFeedback = async (req, res) => {
 // Get all feedback (for admin/staff)
 export const getAllFeedback = async (req, res) => {
   try {
-
     const { page = 1, limit = 20, rating, status, hospitalName } = req.query;
     const skip = (page - 1) * limit;
 
@@ -161,8 +150,6 @@ export const getAllFeedback = async (req, res) => {
       .limit(parseInt(limit));
 
     const total = await Feedback.countDocuments(filter);
-
-    console.log(`Found ${feedback.length} feedback entries`);
 
     res.json({
       success: true,
@@ -203,7 +190,6 @@ export const getAllFeedback = async (req, res) => {
 // Get feedback statistics
 export const getFeedbackStats = async (req, res) => {
   try {
-
     const stats = await Feedback.aggregate([
       {
         $group: {
@@ -254,8 +240,6 @@ export const getFeedbackStats = async (req, res) => {
       }, {}),
       topHospitals: hospitalStats,
     };
-
-    console.log("Feedback stats:", result);
 
     res.json({
       success: true,

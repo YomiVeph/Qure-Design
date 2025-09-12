@@ -104,41 +104,6 @@
         </div>
 
         <div class="select-button">
-          <div class="hospital-department">
-            <div class="hosp-dropdown dropdown">
-              <div class="hosp-dropdown-toggle dropdown-toggle">
-                <button class="hosp-btn btn">Select Hospital</button>
-                <span class="material-symbols-outlined hosp-arrow arrow-icon">
-                  arrow_drop_down
-                </span>
-              </div>
-              <ul class="dropdown-content hosp-dropdown-content">
-                <li>City Care Medical Center</li>
-                <li>Green Valley Hospital</li>
-                <li>Riverside General Hospital</li>
-                <li>General Hospital Abuja</li>
-                <li>St Mary's Specialist Clinic</li>
-                <li>Horizon Health Center</li>
-              </ul>
-            </div>
-
-            <div class="dropdown dept-dropdown">
-              <div class="dropdown-toggle dept-dropdown-toggle">
-                <button class="btn dept-btn">Select Department</button>
-                <span class="material-symbols-outlined dept-arrow arrow-icon">
-                  arrow_drop_down
-                </span>
-              </div>
-              <ul class="dropdown-content dept-dropdown-content">
-                <li>Cardiology</li>
-                <li>Neurology</li>
-                <li>Orthopedics</li>
-                <li>Pediatrics</li>
-                <li>Dermatology</li>
-                <li>Gynecology</li>
-              </ul>
-            </div>
-          </div>
           <div class="search-bar">
             <input
               type="text"
@@ -156,7 +121,7 @@
         <div class="button-choose">
           <button class="btn all active">Call Next</button>
           <button class="btn waiting">Notify selected patients</button>
-          <button class="btn in-progress">Reassign selected patients</button>
+          <button class="btn in-progress">Assign Room</button>
           <button class="btn completed">Mark as No - show</button>
         </div>
 
@@ -175,242 +140,13 @@
                     <th>Actions</th>
                   </tr>
                 </thead>
-                <tbody>
-                  <tr>
-                    <td>
-                      <input type="checkbox" />
-                    </td>
-                    <td>
-                      <div class="name">
-                        <img
-                          src="./asset/image/Avatar/Image-40.png"
-                          alt="profile"
-                        />
-                        Abel Johnson
-                      </div>
-                    </td>
-                    <td>C-068</td>
-                    <td><span class="status waiting">Waiting</span></td>
-                    <td>Out</td>
-                    <td>-</td>
-                    <td class="action">
-                      <i class="fa-solid fa-phone"></i>
-                      <i class="fa-solid fa-envelope"></i>
-                      <i class="fa-solid fa-check"></i>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <input type="checkbox" />
-                    </td>
-                    <td>
-                      <div class="name">
-                        <img
-                          src="./asset/image/Avatar/Image-40-1.png"
-                          alt="profile"
-                        />
-
-                        Alex Martins
-                      </div>
-                    </td>
-                    <td>C-068</td>
-                    <td><span class="status admit">Admitted</span></td>
-                    <td>Out</td>
-                    <td>-</td>
-                    <td class="action">
-                      <i class="fa-solid fa-phone"></i>
-                      <i class="fa-solid fa-envelope"></i>
-                      <i class="fa-solid fa-check"></i>
-                    </td>
-                  </tr>
-                  <tr class="active-patient">
-                    <td>
-                      <input type="checkbox" checked />
-                    </td>
-                    <td>
-                      <div class="name">
-                        <img
-                          src="./asset/image/Avatar/Image-40-2.png"
-                          alt="profile"
-                        />
-                        Jane Andrey
-                      </div>
-                    </td>
-                    <td>PM-098</td>
-                    <td><span class="status complete">Completed</span></td>
-                    <td>In</td>
-                    <td>Room 1</td>
-                    <td class="action">
-                      <i class="fa-solid fa-phone"></i>
-                      <i class="fa-solid fa-envelope"></i>
-                      <i class="fa-solid fa-check"></i>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <input type="checkbox" />
-                    </td>
-                    <td>
-                      <div class="name">
-                        <img
-                          src="./asset/image/Avatar/Image-40-3.png"
-                          alt="profile"
-                        />Emily Jordan
-                      </div>
-                    </td>
-                    <td>G-087</td>
-                    <td><span class="status admit">Admitted</span></td>
-                    <td>In</td>
-                    <td>Room 3</td>
-                    <td class="action">
-                      <i class="fa-solid fa-phone"></i>
-                      <i class="fa-solid fa-envelope"></i>
-                      <i class="fa-solid fa-check"></i>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <input type="checkbox" />
-                    </td>
-                    <td>
-                      <div class="name">
-                        <img
-                          src="./asset/image/Avatar/Image-40-4.png"
-                          alt="profile"
-                        />
-                        Steven Banks
-                      </div>
-                    </td>
-                    <td>EM-060</td>
-                    <td><span class="status no-show">No- show</span></td>
-                    <td>In</td>
-                    <td>Room 1</td>
-                    <td class="action">
-                      <i class="fa-solid fa-phone"></i>
-                      <i class="fa-solid fa-envelope"></i>
-                      <i class="fa-solid fa-check"></i>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <input type="checkbox" />
-                    </td>
-                    <td>
-                      <div class="name">
-                        <img
-                          src="./asset/image/Avatar/Image-40-5.png"
-                          alt="profile"
-                        />
-                        Mya Smith
-                      </div>
-                    </td>
-                    <td>CO-098</td>
-                    <td><span class="status no-show">No-show</span></td>
-                    <td>In</td>
-                    <td>Room 3</td>
-                    <td class="action">
-                      <i class="fa-solid fa-phone"></i>
-                      <i class="fa-solid fa-envelope"></i>
-                      <i class="fa-solid fa-check"></i>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <input type="checkbox" />
-                    </td>
-                    <td>
-                      <div class="name">
-                        <img
-                          src="./asset/image/Avatar/Image-40-6.png"
-                          alt="profile"
-                        />
-                        Ruth Patrick
-                      </div>
-                    </td>
-                    <td>P-097</td>
-                    <td><span class="status in-progress">In Progress</span></td>
-                    <td>Out</td>
-                    <td>-</td>
-                    <td class="action">
-                      <i class="fa-solid fa-phone"></i>
-                      <i class="fa-solid fa-envelope"></i>
-                      <i class="fa-solid fa-check"></i>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <input type="checkbox" />
-                    </td>
-                    <td>
-                      <div class="name">
-                        <img
-                          src="./asset/image/Avatar/Image-40-7.png"
-                          alt="profile"
-                        />
-                        Paul Adams
-                      </div>
-                    </td>
-                    <td>D-057</td>
-                    <td><span class="status admit">Admitted</span></td>
-                    <td>in</td>
-                    <td>Room 4</td>
-                    <td class="action">
-                      <i class="fa-solid fa-phone"></i>
-                      <i class="fa-solid fa-envelope"></i>
-                      <i class="fa-solid fa-check"></i>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <input type="checkbox" />
-                    </td>
-                    <td>
-                      <div class="name">
-                        <img
-                          src="./asset/image/Avatar/Image-40-8.png"
-                          alt="profile"
-                        />
-                        James Daniel
-                      </div>
-                    </td>
-                    <td>G-056</td>
-                    <td><span class="status in-progress">In Progress</span></td>
-                    <td>In</td>
-                    <td>Room 2</td>
-                    <td class="action">
-                      <i class="fa-solid fa-phone"></i>
-                      <i class="fa-solid fa-envelope"></i>
-                      <i class="fa-solid fa-check"></i>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <input type="checkbox" />
-                    </td>
-                    <td>
-                      <div class="name">
-                        <img
-                          src="./asset/image/Avatar/Image-40-9.png"
-                          alt="profile"
-                        />
-                        Bello George
-                      </div>
-                    </td>
-                    <td>CO-095</td>
-                    <td><span class="status no-show">No-show</span></td>
-                    <td>In</td>
-                    <td>Room 4</td>
-                    <td class="action">
-                      <i class="fa-solid fa-phone"></i>
-                      <i class="fa-solid fa-envelope"></i>
-                      <i class="fa-solid fa-check"></i>
-                    </td>
-                  </tr>
-                </tbody>
+                <tbody id="queueTableBody"></tbody>
               </table>
             </div>
             <div class="process">
-              <p>15 patients waiting, 3 in progress, 10 completed today</p>
+              <p id="queueStatsText">
+                0 waiting, 0 in progress, 0 completed · total 0
+              </p>
               <div class="pagination">
                 <button class="btn prev">
                   <span class="material-symbols-outlined chevron">
@@ -427,29 +163,9 @@
             </div>
           </div>
 
-          <div class="profile">
+          <div class="profile" style="display: none">
             <div class="profile-details">
-              <div class="pic-name">
-                <div class="prof-pic">
-                  <img
-                    src="asset/image/Avatar/Image-40-2.png"
-                    alt="Andrey-profile-pic"
-                  />
-                </div>
-                <div class="profile-name">
-                  <h2>Jane Andrey</h2>
-                  <p>28/Female</p>
-                </div>
-              </div>
-              <div class="history">
-                <h3>Queue History</h3>
-                <p>Visit 1: Feb, 11 2023</p>
-                <p>Visit 2: May, 8 2023</p>
-              </div>
-              <div class="notes">
-                <h3>Notes</h3>
-                <p>Patient is allergic to penicillin</p>
-              </div>
+              <!-- Patient details will be populated dynamically when a patient is selected -->
             </div>
             <div class="profile-button">
               <button class="next pro-btn">Next</button>

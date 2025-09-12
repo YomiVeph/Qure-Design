@@ -6,6 +6,9 @@ import { notificationRouter } from "./notifications.js";
 import feedbackRouter from "./feedback.js";
 import contactRouter from "./contact.js";
 import { accessCodeRouter } from "./accessCodes.js";
+import { hospitalRouter } from "./hospitals.js";
+import { waitingRoomRouter } from "./waitingRooms.js";
+import messageRouter from "./messages.js";
 
 export const router = Router();
 
@@ -16,3 +19,6 @@ router.use("/notifications", notificationRouter);
 router.use("/feedback", feedbackRouter);
 router.use("/contact", contactRouter);
 router.use("/access-codes", accessCodeRouter);
+router.use("/hospitals", hospitalRouter);
+router.use("/waiting-rooms", waitingRoomRouter);
+router.use("/messages", messageRouter);
