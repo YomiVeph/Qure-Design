@@ -13,6 +13,17 @@ import { settingsRouter } from "./settings.js";
 
 export const router = Router();
 
+// Health check endpoint for deployment monitoring
+router.get("/health", (req, res) => {
+  res.status(200).json({
+    status: "OK",
+    message: "Qure Backend API is running",
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime(),
+    environment: process.env.NODE_ENV || "development"
+  });
+});
+
 router.use("/auth", authRouter);
 router.use("/appointments", appointmentRouter);
 router.use("/queues", queueRouter);

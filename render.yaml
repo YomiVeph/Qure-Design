@@ -1,0 +1,34 @@
+services:
+  - type: web
+    name: qure-backend
+    env: node
+    plan: free
+    buildCommand: cd Backend && npm install
+    startCommand: cd Backend && npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: MONGODB_URI
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: CORS_ORIGIN
+        value: https://your-frontend-domain.com
+      - key: EMAIL_USER
+        sync: false
+      - key: EMAIL_PASS
+        sync: false
+      - key: EMAIL_FROM
+        sync: false
+    regions:
+      - oregon
+    branch: main
+    rootDir: /
+    autoDeploy: true
+    disk:
+      name: qure-data
+      mountPath: /data
+      sizeGB: 1
