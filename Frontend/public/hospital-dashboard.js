@@ -258,6 +258,9 @@ async function loadDashboardData() {
     // Load analytics data
     await loadAnalyticsData();
 
+    // Load waiting rooms with patient counts
+    await loadWaitingRooms();
+
     // Department status will be loaded by auto-refresh every 30 minutes
     // No initial load to prevent placeholder showing
 
@@ -816,6 +819,165 @@ async function loadDepartmentStatus() {
   // For now, we'll use static data
 }
 
+// Load and display waiting rooms with patient counts
+async function loadWaitingRooms() {
+  try {
+    const token = localStorage.getItem("authToken");
+    if (!token) return;
+
+    const response = await fetch(`${API_BASE_URL}/waiting-rooms`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      if (data.success) {
+        displayWaitingRooms(data.data);
+      }
+    }
+  } catch (error) {
+    console.error("Error loading waiting rooms:", error);
+  }
+}
+
+// Display waiting rooms with patient counts
+function displayWaitingRooms(rooms) {
+  // Find or create a container for waiting rooms
+  let container = document.getElementById("waiting-rooms-container");
+  if (!container) {
+    container = document.createElement("div");
+    container.id = "waiting-rooms-container";
+    container.className = "waiting-rooms-container";
+    container.innerHTML = `
+      <h3>Waiting Rooms</h3>
+      <div class="rooms-grid" id="rooms-grid"></div>
+    `;
+
+    // Insert after the occupancy section
+    const occupancySection = document.querySelector(".length");
+    if (occupancySection) {
+      occupancySection.parentNode.insertBefore(
+        container,
+        occupancySection.nextSibling
+      );
+    }
+  }
+
+  const roomsGrid = document.getElementById("rooms-grid");
+  if (!roomsGrid) return;
+
+  roomsGrid.innerHTML = "";
+
+  rooms.forEach((room) => {
+    const roomElement = document.createElement("div");
+    roomElement.className = "room-card";
+    roomElement.setAttribute("data-room-id", room._id);
+
+    const occupancyPercentage = Math.round(
+      (room.currentOccupancy / room.capacity) * 100
+    );
+    const statusColor =
+      occupancyPercentage >= 100
+        ? "red"
+        : occupancyPercentage >= 80
+        ? "orange"
+        : occupancyPercentage >= 60
+        ? "yellow"
+        : "green";
+
+    roomElement.innerHTML = `
+      <div class="room-header">
+        <h4>${room.name}</h4>
+        <span class="room-status status-${statusColor}">${room.status}</span>
+      </div>
+      <div class="room-details">
+        <div class="occupancy-info">
+          <span class="occupancy-count">${room.currentOccupancy}/${
+      room.capacity
+    }</span>
+          <span class="occupancy-percentage">${occupancyPercentage}%</span>
+        </div>
+        <div class="room-floor">Floor: ${room.floor || "N/A"}</div>
+        <div class="room-specialties">
+          ${room.specialties ? room.specialties.join(", ") : "General"}
+        </div>
+      </div>
+      <div class="room-actions">
+        <button class="btn-delete-room" onclick="deleteWaitingRoom('${
+          room._id
+        }')">
+          Delete Room
+        </button>
+      </div>
+    `;
+
+    roomsGrid.appendChild(roomElement);
+  });
+}
+
+// Delete waiting room function
+async function deleteWaitingRoom(roomId) {
+  try {
+    const token = localStorage.getItem("authToken");
+    if (!token) {
+      showCustomPopup(
+        "Error",
+        "Authentication required. Please log in again.",
+        "error"
+      );
+      return;
+    }
+
+    if (!confirm("Are you sure you want to delete this waiting room?")) {
+      return;
+    }
+
+    const response = await fetch(`${API_BASE_URL}/waiting-rooms/${roomId}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      if (data.success) {
+        showCustomPopup(
+          "Success",
+          "Waiting room deleted successfully.",
+          "success"
+        );
+
+        // Reload waiting rooms
+        loadWaitingRooms();
+
+        // Update occupancy data
+        updateWaitingRoomOccupancy();
+      } else {
+        showCustomPopup(
+          "Error",
+          data.message || "Failed to delete waiting room.",
+          "error"
+        );
+      }
+    } else {
+      const errorData = await response.json();
+      showCustomPopup(
+        "Error",
+        errorData.message || "Failed to delete waiting room.",
+        "error"
+      );
+    }
+  } catch (error) {
+    console.error("Error deleting waiting room:", error);
+    showCustomPopup("Error", "Network error. Please try again.", "error");
+  }
+}
+
 // Logout functionality
 function handleLogout() {
   localStorage.removeItem("authToken");
@@ -1048,7 +1210,8 @@ async function assignPatientsToRoom(queueIds, roomId) {
     // Check room capacity before assignment
     const roomOccupancy = waitingRoomOccupancy[roomId];
     if (roomOccupancy) {
-      const availableCapacity = roomOccupancy.capacity - roomOccupancy.currentOccupancy;
+      const availableCapacity =
+        roomOccupancy.capacity - roomOccupancy.currentOccupancy;
       if (queueIds.length > availableCapacity) {
         showCustomPopup(
           "Room Full",
@@ -1163,10 +1326,10 @@ function setupAutoRefresh() {
       loadRoleData();
     }
 
-    // Refresh department status
-    if (typeof loadDepartmentStatus === "function") {
-      loadDepartmentStatus();
-    }
+    // Department status loading disabled to prevent placeholder showing
+    // if (typeof loadDepartmentStatus === "function") {
+    //   loadDepartmentStatus();
+    // }
 
     // No notification - silent refresh
   }, refreshInterval);
