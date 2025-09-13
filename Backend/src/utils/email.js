@@ -2,10 +2,7 @@ import nodemailer from "nodemailer";
 
 // Create transporter
 const transporter = nodemailer.createTransport({
-  service: process.env.EMAIL_SERVICE,
-  host: process.env.EMAIL_HOST,
-  port: process.env.EMAIL_PORT,
-  secure: false, // true for 465, false for other ports
+  service: process.env.EMAIL_SERVICE || "gmail",
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS,
@@ -29,9 +26,11 @@ export const sendPasswordResetEmail = async (email, resetToken) => {
     }/reset-password.html?token=${resetToken}`;
 
     const mailOptions = {
-      from: process.env.EMAIL_FROM || process.env.EMAIL_USER,
+      from: `"Qure Healthcare" <${
+        process.env.EMAIL_FROM || process.env.EMAIL_USER
+      }>`,
       to: email,
-      subject: "Reset Your Password - Qure Healthcare",
+      subject: "Password Reset Request - Qure Healthcare System",
       html: `
         <!DOCTYPE html>
         <html>
@@ -126,14 +125,22 @@ export const sendPasswordResetEmail = async (email, resetToken) => {
             <div class="content">
               <p>Hello,</p>
               
-              <p>We received a request to reset your password for your Qure Healthcare account. If you made this request, click the button below to reset your password:</p>
+              <p>We received a request to reset your password for your Qure Healthcare account. If you made this request, please follow the instructions below:</p>
               
-              <div style="text-align: center;">
-                <a href="${resetUrl}" class="button">Reset My Password</a>
+              <div style="text-align: center; margin: 30px 0;">
+                <p style="font-size: 16px; color: #1f2937; margin-bottom: 20px;">
+                  <strong>To reset your password:</strong>
+                </p>
+                <ol style="text-align: left; max-width: 400px; margin: 0 auto; color: #374151;">
+                  <li style="margin-bottom: 10px;">Go to the Qure Healthcare website</li>
+                  <li style="margin-bottom: 10px;">Navigate to the password reset page</li>
+                  <li style="margin-bottom: 10px;">Enter this reset code: <strong style="color: #1f2937;">${resetToken}</strong></li>
+                  <li>Follow the instructions to create a new password</li>
+                </ol>
               </div>
               
-              <p>Or copy and paste this link into your browser:</p>
-              <div class="token">${resetUrl}</div>
+              <p><strong>Reset Code:</strong></p>
+              <div class="token">${resetToken}</div>
               
               <div class="warning">
                 <strong>⚠️ Important:</strong>
@@ -144,8 +151,7 @@ export const sendPasswordResetEmail = async (email, resetToken) => {
                 </ul>
               </div>
               
-              <p>If the button doesn't work, you can also manually navigate to the reset password page and use this token:</p>
-              <div class="token">${resetToken}</div>
+              <p>If you need to access the reset page directly, you can manually navigate to the password reset section of our website.</p>
             </div>
             
             <div class="footer">
@@ -198,9 +204,11 @@ export const sendPasswordResetEmail = async (email, resetToken) => {
 export const sendWelcomeEmail = async (email, firstName) => {
   try {
     const mailOptions = {
-      from: process.env.EMAIL_FROM || process.env.EMAIL_USER,
+      from: `"Qure Healthcare" <${
+        process.env.EMAIL_FROM || process.env.EMAIL_USER
+      }>`,
       to: email,
-      subject: "Welcome to Qure Healthcare!",
+      subject: "Welcome to Qure Healthcare System",
       html: `
         <!DOCTYPE html>
         <html>
@@ -322,9 +330,11 @@ export const sendAccessCodeEmail = async (
     }/access.html`;
 
     const mailOptions = {
-      from: process.env.EMAIL_FROM || process.env.EMAIL_USER,
+      from: `"Qure Healthcare" <${
+        process.env.EMAIL_FROM || process.env.EMAIL_USER
+      }>`,
       to: email,
-      subject: `Your Hospital Access Code - ${hospitalName}`,
+      subject: `Hospital Access Information - ${hospitalName}`,
       html: `
         <!DOCTYPE html>
         <html>
@@ -467,8 +477,16 @@ export const sendAccessCodeEmail = async (
                 </ol>
               </div>
               
-              <div style="text-align: center;">
-                <a href="${accessUrl}" class="button">Access Hospital Dashboard</a>
+              <div style="text-align: center; margin: 30px 0;">
+                <p style="font-size: 16px; color: #1f2937; margin-bottom: 20px;">
+                  <strong>To access your dashboard:</strong>
+                </p>
+                <ol style="text-align: left; max-width: 400px; margin: 0 auto; color: #374151;">
+                  <li style="margin-bottom: 10px;">Visit the Qure Healthcare website</li>
+                  <li style="margin-bottom: 10px;">Go to the staff access page</li>
+                  <li style="margin-bottom: 10px;">Enter your access code: <strong style="color: #1f2937;">${accessCode}</strong></li>
+                  <li>Click continue to access your dashboard</li>
+                </ol>
               </div>
               
               <div class="warning">
@@ -556,7 +574,9 @@ export const sendAccessCodeEmail = async (
 export const sendEmail = async ({ to, subject, html, text }) => {
   try {
     const mailOptions = {
-      from: process.env.EMAIL_FROM || process.env.EMAIL_USER,
+      from: `"Qure Healthcare" <${
+        process.env.EMAIL_FROM || process.env.EMAIL_USER
+      }>`,
       to,
       subject,
       html,
