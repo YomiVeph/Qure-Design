@@ -258,8 +258,8 @@ async function loadDashboardData() {
     // Load analytics data
     await loadAnalyticsData();
 
-    // Load department status
-    await loadDepartmentStatus();
+    // Department status will be loaded by auto-refresh every 30 minutes
+    // No initial load to prevent placeholder showing
 
     console.log("Dashboard data loaded successfully");
   } catch (error) {
@@ -972,14 +972,10 @@ async function updateWaitingRoomOccupancy() {
         // Update global occupancy state
         waitingRoomOccupancy = newOccupancy;
 
-        // If there are changes, update the UI and show notification
+        // If there are changes, update the UI silently
         if (hasChanges) {
           updateWaitingRoomUI();
-          showCustomPopup(
-            "Room Occupancy Updated",
-            "Waiting room occupancy has been updated in real-time.",
-            "info"
-          );
+          // No notification - silent update
         }
       }
     }
@@ -1047,6 +1043,20 @@ async function assignPatientsToRoom(queueIds, roomId) {
         "error"
       );
       return;
+    }
+
+    // Check room capacity before assignment
+    const roomOccupancy = waitingRoomOccupancy[roomId];
+    if (roomOccupancy) {
+      const availableCapacity = roomOccupancy.capacity - roomOccupancy.currentOccupancy;
+      if (queueIds.length > availableCapacity) {
+        showCustomPopup(
+          "Room Full",
+          `Cannot assign ${queueIds.length} patients. Room only has ${availableCapacity} available spaces.`,
+          "error"
+        );
+        return false;
+      }
     }
 
     const response = await fetch(`${API_BASE_URL}/queues/assign-room`, {
@@ -1158,12 +1168,7 @@ function setupAutoRefresh() {
       loadDepartmentStatus();
     }
 
-    // Show a subtle notification
-    showCustomPopup(
-      "Data Refreshed",
-      "Staff and role data has been automatically refreshed.",
-      "success"
-    );
+    // No notification - silent refresh
   }, refreshInterval);
 }
 
