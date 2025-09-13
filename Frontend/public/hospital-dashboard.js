@@ -1,5 +1,8 @@
 "use strict";
 
+// API Configuration - Production
+const API_BASE_URL = "https://qure-design.onrender.com/api";
+
 // Custom Popup Function - Production
 function showCustomPopup(title, message, type = "info") {
   // Remove any existing popup
@@ -792,6 +795,20 @@ function updateDepartmentHeatmap(queues) {
   });
 }
 
+// Load staff data
+async function loadStaffData() {
+  // This would typically fetch from staff API
+  console.log("Loading staff data...");
+  // For now, we'll use static data
+}
+
+// Load role data
+async function loadRoleData() {
+  // This would typically fetch from role API
+  console.log("Loading role data...");
+  // For now, we'll use static data
+}
+
 // Load department status
 async function loadDepartmentStatus() {
   // This would typically fetch from department status API
@@ -893,17 +910,17 @@ function showLogoutConfirmation() {
   document.body.appendChild(overlay);
 
   // Add event listeners
-  document.getElementById('cancelLogout').addEventListener('click', () => {
+  document.getElementById("cancelLogout").addEventListener("click", () => {
     overlay.remove();
   });
 
-  document.getElementById('confirmLogout').addEventListener('click', () => {
+  document.getElementById("confirmLogout").addEventListener("click", () => {
     overlay.remove();
     handleLogout();
   });
 
   // Close on overlay click
-  overlay.addEventListener('click', (e) => {
+  overlay.addEventListener("click", (e) => {
     if (e.target === overlay) {
       overlay.remove();
     }
@@ -922,9 +939,9 @@ async function updateWaitingRoomOccupancy() {
 
     const response = await fetch(`${API_BASE_URL}/waiting-rooms`, {
       headers: {
-        "Authorization": `Bearer ${token}`,
-        "Content-Type": "application/json"
-      }
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
     });
 
     if (response.ok) {
@@ -933,18 +950,21 @@ async function updateWaitingRoomOccupancy() {
         const newOccupancy = {};
         let hasChanges = false;
 
-        data.data.forEach(room => {
+        data.data.forEach((room) => {
           newOccupancy[room._id] = {
             currentOccupancy: room.currentOccupancy,
             capacity: room.capacity,
             occupancyPercentage: room.occupancyPercentage,
             color: room.color,
-            status: room.status
+            status: room.status,
           };
 
           // Check if occupancy changed
-          if (!waitingRoomOccupancy[room._id] || 
-              waitingRoomOccupancy[room._id].currentOccupancy !== room.currentOccupancy) {
+          if (
+            !waitingRoomOccupancy[room._id] ||
+            waitingRoomOccupancy[room._id].currentOccupancy !==
+              room.currentOccupancy
+          ) {
             hasChanges = true;
           }
         });
@@ -955,7 +975,11 @@ async function updateWaitingRoomOccupancy() {
         // If there are changes, update the UI and show notification
         if (hasChanges) {
           updateWaitingRoomUI();
-          showCustomPopup("Room Occupancy Updated", "Waiting room occupancy has been updated in real-time.", "info");
+          showCustomPopup(
+            "Room Occupancy Updated",
+            "Waiting room occupancy has been updated in real-time.",
+            "info"
+          );
         }
       }
     }
@@ -967,24 +991,26 @@ async function updateWaitingRoomOccupancy() {
 // Function to update waiting room UI elements
 function updateWaitingRoomUI() {
   // Update any waiting room displays on the page
-  Object.keys(waitingRoomOccupancy).forEach(roomId => {
+  Object.keys(waitingRoomOccupancy).forEach((roomId) => {
     const occupancy = waitingRoomOccupancy[roomId];
-    
+
     // Update room occupancy displays
-    const roomElements = document.querySelectorAll(`[data-room-id="${roomId}"]`);
-    roomElements.forEach(element => {
-      const occupancyElement = element.querySelector('.occupancy-count');
-      const percentageElement = element.querySelector('.occupancy-percentage');
-      const statusElement = element.querySelector('.room-status');
-      
+    const roomElements = document.querySelectorAll(
+      `[data-room-id="${roomId}"]`
+    );
+    roomElements.forEach((element) => {
+      const occupancyElement = element.querySelector(".occupancy-count");
+      const percentageElement = element.querySelector(".occupancy-percentage");
+      const statusElement = element.querySelector(".room-status");
+
       if (occupancyElement) {
         occupancyElement.textContent = `${occupancy.currentOccupancy}/${occupancy.capacity}`;
       }
-      
+
       if (percentageElement) {
         percentageElement.textContent = `${occupancy.occupancyPercentage}%`;
       }
-      
+
       if (statusElement) {
         statusElement.className = `room-status status-${occupancy.color}`;
         statusElement.textContent = occupancy.status;
@@ -997,7 +1023,7 @@ function updateWaitingRoomUI() {
 function startOccupancyMonitoring() {
   // Update immediately
   updateWaitingRoomOccupancy();
-  
+
   // Then update every 30 seconds
   occupancyUpdateInterval = setInterval(updateWaitingRoomOccupancy, 30000);
 }
@@ -1015,40 +1041,56 @@ async function assignPatientsToRoom(queueIds, roomId) {
   try {
     const token = localStorage.getItem("authToken");
     if (!token) {
-      showCustomPopup("Error", "Authentication required. Please log in again.", "error");
+      showCustomPopup(
+        "Error",
+        "Authentication required. Please log in again.",
+        "error"
+      );
       return;
     }
 
     const response = await fetch(`${API_BASE_URL}/queues/assign-room`, {
       method: "POST",
       headers: {
-        "Authorization": `Bearer ${token}`,
-        "Content-Type": "application/json"
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
         queueIds: queueIds,
-        roomId: roomId
-      })
+        roomId: roomId,
+      }),
     });
 
     if (response.ok) {
       const data = await response.json();
       if (data.success) {
-        showCustomPopup("Success", `Successfully assigned ${queueIds.length} patient(s) to the waiting room.`, "success");
-        
+        showCustomPopup(
+          "Success",
+          `Successfully assigned ${queueIds.length} patient(s) to the waiting room.`,
+          "success"
+        );
+
         // Trigger immediate occupancy update
         setTimeout(() => {
           updateWaitingRoomOccupancy();
         }, 1000);
-        
+
         return true;
       } else {
-        showCustomPopup("Error", data.message || "Failed to assign patients to room.", "error");
+        showCustomPopup(
+          "Error",
+          data.message || "Failed to assign patients to room.",
+          "error"
+        );
         return false;
       }
     } else {
       const errorData = await response.json();
-      showCustomPopup("Error", errorData.message || "Failed to assign patients to room.", "error");
+      showCustomPopup(
+        "Error",
+        errorData.message || "Failed to assign patients to room.",
+        "error"
+      );
       return false;
     }
   } catch (error) {
@@ -1064,19 +1106,27 @@ async function removePatientsFromRoom(queueIds) {
   try {
     const token = localStorage.getItem("authToken");
     if (!token) {
-      showCustomPopup("Error", "Authentication required. Please log in again.", "error");
+      showCustomPopup(
+        "Error",
+        "Authentication required. Please log in again.",
+        "error"
+      );
       return;
     }
 
     // TODO: Implement remove-room endpoint in backend
     // For now, we'll show a message that this feature is coming soon
-    showCustomPopup("Feature Coming Soon", "Room removal functionality will be available in the next update.", "info");
-    
+    showCustomPopup(
+      "Feature Coming Soon",
+      "Room removal functionality will be available in the next update.",
+      "info"
+    );
+
     // Trigger occupancy update anyway to refresh data
     setTimeout(() => {
       updateWaitingRoomOccupancy();
     }, 1000);
-    
+
     return false; // Indicate that the operation was not completed
   } catch (error) {
     console.error("Error removing patients from room:", error);
@@ -1089,27 +1139,31 @@ async function removePatientsFromRoom(queueIds) {
 function setupAutoRefresh() {
   // Refresh every 30 minutes (30 * 60 * 1000 milliseconds)
   const refreshInterval = 30 * 60 * 1000;
-  
+
   setInterval(() => {
     console.log("Auto-refreshing staff and role data...");
-    
+
     // Refresh staff data
-    if (typeof loadStaffData === 'function') {
+    if (typeof loadStaffData === "function") {
       loadStaffData();
     }
-    
+
     // Refresh role data
-    if (typeof loadRoleData === 'function') {
+    if (typeof loadRoleData === "function") {
       loadRoleData();
     }
-    
+
     // Refresh department status
-    if (typeof loadDepartmentStatus === 'function') {
+    if (typeof loadDepartmentStatus === "function") {
       loadDepartmentStatus();
     }
-    
+
     // Show a subtle notification
-    showCustomPopup("Data Refreshed", "Staff and role data has been automatically refreshed.", "success");
+    showCustomPopup(
+      "Data Refreshed",
+      "Staff and role data has been automatically refreshed.",
+      "success"
+    );
   }, refreshInterval);
 }
 
@@ -1122,10 +1176,10 @@ document.addEventListener("DOMContentLoaded", () => {
       showLogoutConfirmation();
     });
   }
-  
+
   // Setup auto-refresh
   setupAutoRefresh();
-  
+
   // Start real-time waiting room occupancy monitoring
   startOccupancyMonitoring();
 });
