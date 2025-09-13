@@ -258,8 +258,7 @@ async function loadDashboardData() {
     // Load analytics data
     await loadAnalyticsData();
 
-    // Load waiting rooms with patient counts
-    await loadWaitingRooms();
+    // Waiting rooms functionality moved to wait-management.html
 
     // Department status will be loaded by auto-refresh every 30 minutes
     // No initial load to prevent placeholder showing
@@ -820,187 +819,7 @@ async function loadDepartmentStatus() {
   // For now, we'll use static data
 }
 
-// Load and display waiting rooms with patient counts
-async function loadWaitingRooms() {
-  try {
-    const token = localStorage.getItem("authToken");
-    if (!token) {
-      console.log("No auth token found, skipping waiting rooms load");
-      return;
-    }
-
-    console.log("Loading waiting rooms...");
-    const response = await fetch(`${API_BASE_URL}/waiting-rooms`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-    });
-
-    console.log("Waiting rooms response status:", response.status);
-
-    if (response.ok) {
-      const data = await response.json();
-      console.log("Waiting rooms data:", data);
-      if (data.success && data.data) {
-        displayWaitingRooms(data.data);
-      } else {
-        console.log("No waiting rooms data or API returned success: false");
-      }
-    } else {
-      const errorData = await response.json();
-      console.error("Failed to load waiting rooms:", errorData);
-    }
-  } catch (error) {
-    console.error("Error loading waiting rooms:", error);
-  }
-}
-
-// Display waiting rooms with patient counts
-function displayWaitingRooms(rooms) {
-  console.log("Displaying waiting rooms:", rooms);
-  
-  if (!rooms || rooms.length === 0) {
-    console.log("No rooms to display");
-    return;
-  }
-
-  // Find or create a container for waiting rooms
-  let container = document.getElementById("waiting-rooms-container");
-  if (!container) {
-    console.log("Creating waiting rooms container");
-    container = document.createElement("div");
-    container.id = "waiting-rooms-container";
-    container.className = "waiting-rooms-container";
-    container.innerHTML = `
-      <h3>Waiting Rooms</h3>
-      <div class="rooms-grid" id="rooms-grid"></div>
-    `;
-    
-    // Insert after the occupancy section
-    const occupancySection = document.querySelector(".length");
-    if (occupancySection) {
-      occupancySection.parentNode.insertBefore(
-        container,
-        occupancySection.nextSibling
-      );
-      console.log("Waiting rooms container inserted after occupancy section");
-    } else {
-      console.log("Could not find occupancy section to insert after");
-    }
-  }
-
-  const roomsGrid = document.getElementById("rooms-grid");
-  if (!roomsGrid) return;
-
-  roomsGrid.innerHTML = "";
-
-  rooms.forEach((room) => {
-    const roomElement = document.createElement("div");
-    roomElement.className = "room-card";
-    roomElement.setAttribute("data-room-id", room._id);
-
-    const occupancyPercentage = Math.round(
-      (room.currentOccupancy / room.capacity) * 100
-    );
-    const statusColor =
-      occupancyPercentage >= 100
-        ? "red"
-        : occupancyPercentage >= 80
-        ? "orange"
-        : occupancyPercentage >= 60
-        ? "yellow"
-        : "green";
-
-    roomElement.innerHTML = `
-      <div class="room-header">
-        <h4>${room.name}</h4>
-        <span class="room-status status-${statusColor}">${room.status}</span>
-      </div>
-      <div class="room-details">
-        <div class="occupancy-info">
-          <span class="occupancy-count">${room.currentOccupancy}/${
-      room.capacity
-    }</span>
-          <span class="occupancy-percentage">${occupancyPercentage}%</span>
-        </div>
-        <div class="room-floor">Floor: ${room.floor || "N/A"}</div>
-        <div class="room-specialties">
-          ${room.specialties ? room.specialties.join(", ") : "General"}
-        </div>
-      </div>
-      <div class="room-actions">
-        <button class="btn-delete-room" onclick="deleteWaitingRoom('${
-          room._id
-        }')">
-          Delete Room
-        </button>
-      </div>
-    `;
-
-    roomsGrid.appendChild(roomElement);
-  });
-}
-
-// Delete waiting room function
-async function deleteWaitingRoom(roomId) {
-  try {
-    const token = localStorage.getItem("authToken");
-    if (!token) {
-      showCustomPopup(
-        "Error",
-        "Authentication required. Please log in again.",
-        "error"
-      );
-      return;
-    }
-
-    if (!confirm("Are you sure you want to delete this waiting room?")) {
-      return;
-    }
-
-    const response = await fetch(`${API_BASE_URL}/waiting-rooms/${roomId}`, {
-      method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-    });
-
-    if (response.ok) {
-      const data = await response.json();
-      if (data.success) {
-        showCustomPopup(
-          "Success",
-          "Waiting room deleted successfully.",
-          "success"
-        );
-
-        // Reload waiting rooms
-        loadWaitingRooms();
-
-        // Update occupancy data
-        updateWaitingRoomOccupancy();
-      } else {
-        showCustomPopup(
-          "Error",
-          data.message || "Failed to delete waiting room.",
-          "error"
-        );
-      }
-    } else {
-      const errorData = await response.json();
-      showCustomPopup(
-        "Error",
-        errorData.message || "Failed to delete waiting room.",
-        "error"
-      );
-    }
-  } catch (error) {
-    console.error("Error deleting waiting room:", error);
-    showCustomPopup("Error", "Network error. Please try again.", "error");
-  }
-}
+// Waiting rooms functionality moved to wait-management.html
 
 // Logout functionality
 function handleLogout() {
@@ -1332,31 +1151,10 @@ async function removePatientsFromRoom(queueIds) {
   }
 }
 
-// Auto-refresh staff and role data every 30 minutes
+// Auto-refresh disabled for staff and role data
 function setupAutoRefresh() {
-  // Refresh every 30 minutes (30 * 60 * 1000 milliseconds)
-  const refreshInterval = 30 * 60 * 1000;
-
-  setInterval(() => {
-    console.log("Auto-refreshing staff and role data...");
-
-    // Refresh staff data
-    if (typeof loadStaffData === "function") {
-      loadStaffData();
-    }
-
-    // Refresh role data
-    if (typeof loadRoleData === "function") {
-      loadRoleData();
-    }
-
-    // Department status loading disabled to prevent placeholder showing
-    // if (typeof loadDepartmentStatus === "function") {
-    //   loadDepartmentStatus();
-    // }
-
-    // No notification - silent refresh
-  }, refreshInterval);
+  // Auto-refresh removed as requested
+  console.log("Auto-refresh disabled for staff and role data");
 }
 
 // Add logout to logout link

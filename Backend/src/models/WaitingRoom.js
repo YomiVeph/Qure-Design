@@ -74,17 +74,23 @@ waitingRoomSchema.methods.updateOccupancy = function (newOccupancy) {
   this.currentOccupancy = Math.max(0, Math.min(newOccupancy, this.capacity));
   this.lastUpdated = new Date();
 
-  // Update color based on occupancy
+  // Update color and status based on occupancy
   const percentage = this.occupancyPercentage;
   if (percentage >= 100) {
     this.color = "red";
     this.status = "full";
   } else if (percentage >= 80) {
     this.color = "orange";
+    this.status = "busy";
   } else if (percentage >= 60) {
     this.color = "yellow";
+    this.status = "moderate";
+  } else if (percentage > 0) {
+    this.color = "green";
+    this.status = "available";
   } else {
     this.color = "green";
+    this.status = "empty";
   }
 
   return this.save();
