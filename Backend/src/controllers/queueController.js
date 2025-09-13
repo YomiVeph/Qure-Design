@@ -782,6 +782,10 @@ export const assignRoomToPatients = async (req, res) => {
 
     await Notification.insertMany(notifications);
 
+    // Update waiting room occupancy
+    const newOccupancy = waitingRoom.currentOccupancy + updateResult.modifiedCount;
+    await waitingRoom.updateOccupancy(newOccupancy);
+
     return res.json({
       success: true,
       message: `Assigned ${updateResult.modifiedCount} patients to ${waitingRoom.name}`,
@@ -789,6 +793,8 @@ export const assignRoomToPatients = async (req, res) => {
         modifiedCount: updateResult.modifiedCount,
         roomName: waitingRoom.name,
         roomFloor: waitingRoom.floor,
+        newOccupancy: newOccupancy,
+        roomCapacity: waitingRoom.capacity,
         patientNames: updatedQueues.map(
           (q) => `${q.patient.firstName} ${q.patient.lastName}`
         ),
