@@ -808,17 +808,346 @@ function handleLogout() {
   window.location.href = "login.html";
 }
 
+// Show logout confirmation UI
+function showLogoutConfirmation() {
+  // Remove any existing popup
+  const existingPopup = document.querySelector(".custom-popup");
+  if (existingPopup) {
+    existingPopup.remove();
+  }
+
+  // Create popup overlay
+  const overlay = document.createElement("div");
+  overlay.className = "custom-popup-overlay";
+  overlay.style.cssText = `
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+    animation: fadeIn 0.3s ease;
+  `;
+
+  // Create popup content
+  const popup = document.createElement("div");
+  popup.className = "custom-popup";
+  popup.style.cssText = `
+    background: white;
+    border-radius: 12px;
+    padding: 32px;
+    max-width: 400px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    animation: slideIn 0.3s ease;
+  `;
+
+  popup.innerHTML = `
+    <div style="margin-bottom: 24px;">
+      <div style="width: 64px; height: 64px; background: #fef2f2; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px;">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+          <polyline points="16,17 21,12 16,7"></polyline>
+          <line x1="21" y1="12" x2="9" y2="12"></line>
+        </svg>
+      </div>
+      <h3 style="margin: 0 0 8px; font-size: 20px; font-weight: 600; color: #1f2937;">Logout Confirmation</h3>
+      <p style="margin: 0; color: #6b7280; font-size: 14px; line-height: 1.5;">Are you sure you want to logout? You'll need to sign in again to access the dashboard.</p>
+    </div>
+    <div style="display: flex; gap: 12px; justify-content: center;">
+      <button id="cancelLogout" style="
+        padding: 10px 24px;
+        border: 1px solid #d1d5db;
+        background: white;
+        color: #374151;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s ease;
+      " onmouseover="this.style.backgroundColor='#f9fafb'" onmouseout="this.style.backgroundColor='white'">
+        Cancel
+      </button>
+      <button id="confirmLogout" style="
+        padding: 10px 24px;
+        border: none;
+        background: #ef4444;
+        color: white;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s ease;
+      " onmouseover="this.style.backgroundColor='#dc2626'" onmouseout="this.style.backgroundColor='#ef4444'">
+        Logout
+      </button>
+    </div>
+  `;
+
+  overlay.appendChild(popup);
+  document.body.appendChild(overlay);
+
+  // Add event listeners
+  document.getElementById('cancelLogout').addEventListener('click', () => {
+    overlay.remove();
+  });
+
+  document.getElementById('confirmLogout').addEventListener('click', () => {
+    overlay.remove();
+    handleLogout();
+  });
+
+  // Close on overlay click
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) {
+      overlay.remove();
+    }
+  });
+}
+
+// Real-time waiting room occupancy tracking
+let waitingRoomOccupancy = {};
+let occupancyUpdateInterval = null;
+
+// Function to update waiting room occupancy in real-time
+async function updateWaitingRoomOccupancy() {
+  try {
+    const token = localStorage.getItem("authToken");
+    if (!token) return;
+
+    const response = await fetch(`${API_BASE_URL}/waiting-rooms`, {
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json"
+      }
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      if (data.success) {
+        const newOccupancy = {};
+        let hasChanges = false;
+
+        data.data.forEach(room => {
+          newOccupancy[room._id] = {
+            currentOccupancy: room.currentOccupancy,
+            capacity: room.capacity,
+            occupancyPercentage: room.occupancyPercentage,
+            color: room.color,
+            status: room.status
+          };
+
+          // Check if occupancy changed
+          if (!waitingRoomOccupancy[room._id] || 
+              waitingRoomOccupancy[room._id].currentOccupancy !== room.currentOccupancy) {
+            hasChanges = true;
+          }
+        });
+
+        // Update global occupancy state
+        waitingRoomOccupancy = newOccupancy;
+
+        // If there are changes, update the UI and show notification
+        if (hasChanges) {
+          updateWaitingRoomUI();
+          showCustomPopup("Room Occupancy Updated", "Waiting room occupancy has been updated in real-time.", "info");
+        }
+      }
+    }
+  } catch (error) {
+    console.error("Error updating waiting room occupancy:", error);
+  }
+}
+
+// Function to update waiting room UI elements
+function updateWaitingRoomUI() {
+  // Update any waiting room displays on the page
+  Object.keys(waitingRoomOccupancy).forEach(roomId => {
+    const occupancy = waitingRoomOccupancy[roomId];
+    
+    // Update room occupancy displays
+    const roomElements = document.querySelectorAll(`[data-room-id="${roomId}"]`);
+    roomElements.forEach(element => {
+      const occupancyElement = element.querySelector('.occupancy-count');
+      const percentageElement = element.querySelector('.occupancy-percentage');
+      const statusElement = element.querySelector('.room-status');
+      
+      if (occupancyElement) {
+        occupancyElement.textContent = `${occupancy.currentOccupancy}/${occupancy.capacity}`;
+      }
+      
+      if (percentageElement) {
+        percentageElement.textContent = `${occupancy.occupancyPercentage}%`;
+      }
+      
+      if (statusElement) {
+        statusElement.className = `room-status status-${occupancy.color}`;
+        statusElement.textContent = occupancy.status;
+      }
+    });
+  });
+}
+
+// Function to start real-time occupancy monitoring
+function startOccupancyMonitoring() {
+  // Update immediately
+  updateWaitingRoomOccupancy();
+  
+  // Then update every 30 seconds
+  occupancyUpdateInterval = setInterval(updateWaitingRoomOccupancy, 30000);
+}
+
+// Function to stop real-time occupancy monitoring
+function stopOccupancyMonitoring() {
+  if (occupancyUpdateInterval) {
+    clearInterval(occupancyUpdateInterval);
+    occupancyUpdateInterval = null;
+  }
+}
+
+// Function to handle room assignment and trigger real-time updates
+async function assignPatientsToRoom(queueIds, roomId) {
+  try {
+    const token = localStorage.getItem("authToken");
+    if (!token) {
+      showCustomPopup("Error", "Authentication required. Please log in again.", "error");
+      return;
+    }
+
+    const response = await fetch(`${API_BASE_URL}/queues/assign-room`, {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        queueIds: queueIds,
+        roomId: roomId
+      })
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      if (data.success) {
+        showCustomPopup("Success", `Successfully assigned ${queueIds.length} patient(s) to the waiting room.`, "success");
+        
+        // Trigger immediate occupancy update
+        setTimeout(() => {
+          updateWaitingRoomOccupancy();
+        }, 1000);
+        
+        return true;
+      } else {
+        showCustomPopup("Error", data.message || "Failed to assign patients to room.", "error");
+        return false;
+      }
+    } else {
+      const errorData = await response.json();
+      showCustomPopup("Error", errorData.message || "Failed to assign patients to room.", "error");
+      return false;
+    }
+  } catch (error) {
+    console.error("Error assigning patients to room:", error);
+    showCustomPopup("Error", "Network error. Please try again.", "error");
+    return false;
+  }
+}
+
+// Function to remove patients from room and trigger real-time updates
+async function removePatientsFromRoom(queueIds) {
+  try {
+    const token = localStorage.getItem("authToken");
+    if (!token) {
+      showCustomPopup("Error", "Authentication required. Please log in again.", "error");
+      return;
+    }
+
+    const response = await fetch(`${API_BASE_URL}/queues/remove-room`, {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        queueIds: queueIds
+      })
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      if (data.success) {
+        showCustomPopup("Success", `Successfully removed ${queueIds.length} patient(s) from waiting room.`, "success");
+        
+        // Trigger immediate occupancy update
+        setTimeout(() => {
+          updateWaitingRoomOccupancy();
+        }, 1000);
+        
+        return true;
+      } else {
+        showCustomPopup("Error", data.message || "Failed to remove patients from room.", "error");
+        return false;
+      }
+    } else {
+      const errorData = await response.json();
+      showCustomPopup("Error", errorData.message || "Failed to remove patients from room.", "error");
+      return false;
+    }
+  } catch (error) {
+    console.error("Error removing patients from room:", error);
+    showCustomPopup("Error", "Network error. Please try again.", "error");
+    return false;
+  }
+}
+
+// Auto-refresh staff and role data every 30 minutes
+function setupAutoRefresh() {
+  // Refresh every 30 minutes (30 * 60 * 1000 milliseconds)
+  const refreshInterval = 30 * 60 * 1000;
+  
+  setInterval(() => {
+    console.log("Auto-refreshing staff and role data...");
+    
+    // Refresh staff data
+    if (typeof loadStaffData === 'function') {
+      loadStaffData();
+    }
+    
+    // Refresh role data
+    if (typeof loadRoleData === 'function') {
+      loadRoleData();
+    }
+    
+    // Refresh department status
+    if (typeof loadDepartmentStatus === 'function') {
+      loadDepartmentStatus();
+    }
+    
+    // Show a subtle notification
+    showCustomPopup("Data Refreshed", "Staff and role data has been automatically refreshed.", "success");
+  }, refreshInterval);
+}
+
 // Add logout to logout link
 document.addEventListener("DOMContentLoaded", () => {
   const logoutLink = document.querySelector('.log-out a[href="login.html"]');
   if (logoutLink) {
     logoutLink.addEventListener("click", (e) => {
       e.preventDefault();
-      if (confirm("Are you sure you want to logout?")) {
-        handleLogout();
-      }
+      showLogoutConfirmation();
     });
   }
+  
+  // Setup auto-refresh
+  setupAutoRefresh();
+  
+  // Start real-time waiting room occupancy monitoring
+  startOccupancyMonitoring();
 });
 
 /* ---------- DOM refs ---------- */
