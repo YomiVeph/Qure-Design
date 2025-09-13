@@ -3,11 +3,15 @@ import express from "express";
 import cors from "cors";
 import helmet from "helmet";
 import morgan from "morgan";
+import { createServer } from "http";
 import { router as apiRouter } from "./src/routes/index.js";
 import { connectDatabase } from "./src/config/db.js";
 import { setupAppointmentReminderCron } from "./src/controllers/notificationSettingsController.js";
+import { webSocketService } from "./src/services/websocket.js";
 
 const app = express();
+const server = createServer(app);
+
 app.use(helmet());
 const corsOrigins = process.env.CORS_ORIGIN
   ? process.env.CORS_ORIGIN.split(",")
@@ -25,11 +29,15 @@ async function start() {
   try {
     await connectDatabase(process.env.MONGODB_URI);
 
+    // Initialize WebSocket service
+    webSocketService.initialize(server);
+
     // Setup appointment reminder cron job
     setupAppointmentReminderCron();
 
-    app.listen(port, () => {
+    server.listen(port, () => {
       console.log(`API listening on port ${port}`);
+      console.log(`WebSocket server ready for connections`);
     });
   } catch (err) {
     console.error("Failed to start server:", err.message);

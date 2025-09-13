@@ -1,6 +1,7 @@
 import { WaitingRoom } from "../models/WaitingRoom.js";
 import { Queue } from "../models/Queue.js";
 import { User } from "../models/User.js";
+import { webSocketService } from "../services/websocket.js";
 
 // Get all waiting rooms for a hospital
 export const getWaitingRooms = async (req, res) => {
@@ -28,11 +29,17 @@ export const getWaitingRooms = async (req, res) => {
     // Get current patient counts for each waiting room
     const waitingRoomsWithPatients = await Promise.all(
       waitingRooms.map(async (room) => {
-        // Count patients currently waiting in this room's specialties
+        // Count patients assigned to this specific room OR in this room's specialties
         const patientCount = await Queue.countDocuments({
           hospitalName,
           status: { $in: ["waiting", "called"] },
-          specialty: { $in: room.specialties },
+          $or: [
+            { assignedRoom: room._id }, // Patients assigned to this specific room
+            {
+              specialty: { $in: room.specialties },
+              assignedRoom: { $exists: false }, // Patients in room's specialties but not assigned to any room
+            },
+          ],
         });
 
         // Update occupancy if different
@@ -93,13 +100,20 @@ export const getWaitingRoomDetails = async (req, res) => {
       });
     }
 
-    // Get patients currently in this waiting room
+    // Get patients assigned to this specific room OR in this room's specialties
     const patients = await Queue.find({
       hospitalName,
       status: { $in: ["waiting", "called"] },
-      specialty: { $in: waitingRoom.specialties },
+      $or: [
+        { assignedRoom: roomId }, // Patients assigned to this specific room
+        {
+          specialty: { $in: waitingRoom.specialties },
+          assignedRoom: { $exists: false }, // Patients in room's specialties but not assigned to any room
+        },
+      ],
     })
       .populate("patient", "firstName lastName email phone")
+      .populate("assignedRoom", "name floor")
       .sort({ position: 1 })
       .lean();
 
@@ -414,6 +428,17 @@ export const updateOccupancy = async (req, res) => {
     }
 
     await waitingRoom.updateOccupancy(occupancy);
+
+    // Broadcast waiting room update via WebSocket
+    webSocketService.broadcastWaitingRoomUpdate(hospitalName, roomId, {
+      type: "occupancy_updated",
+      currentOccupancy: waitingRoom.currentOccupancy,
+      capacity: waitingRoom.capacity,
+      occupancyPercentage: waitingRoom.occupancyPercentage,
+      status: waitingRoom.status,
+      color: waitingRoom.color,
+      timestamp: new Date(),
+    });
 
     res.json({
       success: true,

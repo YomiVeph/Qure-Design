@@ -252,7 +252,7 @@ function updateDetails(roomData) {
 async function loadWaitingRooms() {
   try {
     const data = await makeApiCall("/waiting-rooms");
-    
+
     if (data.success && data.data) {
       currentWaitingRooms = data.data;
       renderWaitingRooms(currentWaitingRooms);
@@ -263,7 +263,10 @@ async function loadWaitingRooms() {
     }
   } catch (error) {
     console.error("Error loading waiting rooms:", error);
-    showPopup("Failed to load waiting rooms. Please check your connection and try again.", "error");
+    showPopup(
+      "Failed to load waiting rooms. Please check your connection and try again.",
+      "error"
+    );
     currentWaitingRooms = [];
     renderWaitingRooms([]);
   }
@@ -302,7 +305,9 @@ function createRoomElement(room) {
   roomEl.innerHTML = `
     <h3>${room.name}</h3>
     <p>${room.description}</p>
-    <span>${room.currentOccupancy}/${room.capacity} (${room.occupancyPercentage}%) - Status: ${room.status || 'unknown'} - Last updated: ${timeAgo}</span>
+    <span>${room.currentOccupancy}/${room.capacity} (${
+    room.occupancyPercentage
+  }%) - Status: ${room.status || "unknown"} - Last updated: ${timeAgo}</span>
   `;
 
   // Attach click event
@@ -718,12 +723,106 @@ function startRealTimeUpdates() {
   }, 30000);
 }
 
+// ===== Initialize Socket.IO for Real-time Updates =====
+function initializeSocketIO() {
+  if (!window.socketClient) {
+    console.error("Socket.IO client not available");
+    return;
+  }
+
+  // Connect to Socket.IO
+  window.socketClient.connect();
+
+  // Handle Socket.IO connection events
+  window.socketClient.on("connected", (data) => {
+    console.log("Socket.IO connected for waiting rooms:", data);
+    showPopup("Real-time updates enabled", "success");
+  });
+
+  window.socketClient.on("disconnected", (data) => {
+    console.log("Socket.IO disconnected:", data);
+    showPopup("Real-time updates disabled", "warning");
+  });
+
+  // Handle waiting room updates
+  window.socketClient.on("waitingRoomUpdate", (data) => {
+    console.log("Waiting room update received:", data);
+    handleWaitingRoomUpdate(data);
+  });
+
+  // Handle queue updates that might affect waiting rooms
+  window.socketClient.on("queueUpdate", (data) => {
+    console.log("Queue update received:", data);
+    // Refresh waiting rooms when queue updates occur
+    loadWaitingRooms();
+  });
+}
+
+// Handle real-time waiting room updates
+function handleWaitingRoomUpdate(data) {
+  console.log("Handling waiting room update:", data);
+
+  // Update specific room if we have room data
+  if (data.roomId && data.type) {
+    // Find the room element and update it
+    const roomElement = document.querySelector(
+      `[data-room-id="${data.roomId}"]`
+    );
+    if (roomElement) {
+      updateRoomElement(roomElement, data);
+    }
+
+    // Update details panel if this room is selected
+    if (selectedRoomId === data.roomId) {
+      loadRoomDetails(data.roomId);
+    }
+
+    // Show notification for specific events
+    if (data.type === "occupancy_updated") {
+      showPopup(
+        `Room occupancy updated: ${data.currentOccupancy}/${data.capacity}`,
+        "info"
+      );
+    } else if (data.type === "patients_assigned") {
+      showPopup(`${data.patientCount} patients assigned to room`, "success");
+    }
+  }
+
+  // Refresh all waiting rooms to ensure consistency
+  loadWaitingRooms();
+}
+
+// Update room element with new data
+function updateRoomElement(roomElement, data) {
+  if (data.currentOccupancy !== undefined && data.capacity !== undefined) {
+    const occupancyPercentage = Math.round(
+      (data.currentOccupancy / data.capacity) * 100
+    );
+    const statusText = roomElement.querySelector("span");
+    if (statusText) {
+      statusText.textContent = `${data.currentOccupancy}/${
+        data.capacity
+      } (${occupancyPercentage}%) - Status: ${
+        data.status || "unknown"
+      } - Last updated: Just now`;
+    }
+
+    // Update room color class based on occupancy
+    roomElement.className = `room ${data.color || "green"}`;
+  }
+}
+
 // ===== Initialize Page =====
 document.addEventListener("DOMContentLoaded", async () => {
   if (!checkAuthentication()) return;
 
   try {
     await loadWaitingRooms();
+
+    // Initialize Socket.IO for real-time updates
+    initializeSocketIO();
+
+    // Keep fallback polling but with reduced frequency
     startRealTimeUpdates();
   } catch (error) {
     console.error("Error initializing page:", error);

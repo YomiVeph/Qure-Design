@@ -2,6 +2,7 @@ import { Queue } from "../models/Queue.js";
 import { Notification } from "../models/Notification.js";
 import { User } from "../models/User.js";
 import { z } from "zod";
+import { webSocketService } from "../services/websocket.js";
 
 // Validation schemas
 const joinQueueSchema = z.object({
@@ -75,6 +76,13 @@ export const joinQueue = async (req, res) => {
         $set: { preferredHospital: data.hospitalName },
       });
     } catch (_) {}
+
+    // Broadcast queue update to hospital staff
+    webSocketService.broadcastQueueUpdate(data.hospitalName, {
+      type: "patient_joined",
+      queue: await queue.populate("patient", "firstName lastName"),
+      timestamp: new Date(),
+    });
 
     res.status(201).json({
       success: true,
@@ -432,6 +440,24 @@ export const callNextPatient = async (req, res) => {
       // Don't fail the call next operation if notification fails
     }
 
+    // Broadcast queue update to hospital staff
+    webSocketService.broadcastQueueUpdate(nextPatient.hospitalName, {
+      type: "patient_called",
+      queue: nextPatient,
+      timestamp: new Date(),
+    });
+
+    // Send notification to specific patient
+    webSocketService.sendNotificationToUser(
+      nextPatient.patient._id.toString(),
+      {
+        type: "queue_update",
+        title: "You've been called!",
+        message: `Please proceed to ${nextPatient.specialty} department. Your queue number is ${nextPatient.queueNumber}.`,
+        priority: "high",
+      }
+    );
+
     res.json({
       success: true,
       message: "Patient called successfully",
@@ -783,8 +809,46 @@ export const assignRoomToPatients = async (req, res) => {
     await Notification.insertMany(notifications);
 
     // Update waiting room occupancy
-    const newOccupancy = waitingRoom.currentOccupancy + updateResult.modifiedCount;
+    const newOccupancy =
+      waitingRoom.currentOccupancy + updateResult.modifiedCount;
     await waitingRoom.updateOccupancy(newOccupancy);
+
+    // Send notifications to assigned patients via WebSocket
+    updatedQueues.forEach((queue) => {
+      webSocketService.sendNotificationToUser(queue.patient._id.toString(), {
+        type: "room_assignment",
+        title: "Room Assignment",
+        message: `You have been assigned to ${
+          waitingRoom.name
+        }. Please proceed to ${waitingRoom.name} on ${
+          waitingRoom.floor || "the designated floor"
+        }.`,
+        priority: "high",
+        roomData: {
+          roomId: waitingRoom._id,
+          roomName: waitingRoom.name,
+          floor: waitingRoom.floor,
+        },
+      });
+    });
+
+    // Broadcast waiting room update to hospital staff
+    webSocketService.broadcastWaitingRoomUpdate(
+      waitingRoom.hospitalName,
+      roomId,
+      {
+        type: "patients_assigned",
+        patientCount: updateResult.modifiedCount,
+        newOccupancy: newOccupancy,
+        occupancyPercentage: waitingRoom.occupancyPercentage,
+        assignedPatients: updatedQueues.map((q) => ({
+          id: q._id,
+          patientName: `${q.patient.firstName} ${q.patient.lastName}`,
+          queueNumber: q.queueNumber,
+        })),
+        timestamp: new Date(),
+      }
+    );
 
     return res.json({
       success: true,

@@ -224,7 +224,10 @@ document.addEventListener("DOMContentLoaded", () => {
   // Load dashboard data
   loadDashboardData();
 
-  // Start live polling every 5s for queue updates
+  // Initialize Socket.IO for real-time updates
+  initializeSocketIO();
+
+  // Start live polling every 30s as fallback (reduced frequency)
   startQueuePolling();
 
   // Wire up toolbar buttons
@@ -438,6 +441,106 @@ function filterBySearch(query) {
       !q || name.includes(q) || ticket.includes(q) ? "" : "none";
   });
   updateStats();
+}
+
+// Initialize Socket.IO for real-time updates
+function initializeSocketIO() {
+  if (!window.socketClient) {
+    console.error("Socket.IO client not available");
+    return;
+  }
+
+  // Connect to Socket.IO
+  window.socketClient.connect();
+
+  // Handle Socket.IO connection events
+  window.socketClient.on("connected", (data) => {
+    console.log("Socket.IO connected:", data);
+    showCustomPopup("Connected", "Real-time updates enabled", "success");
+  });
+
+  window.socketClient.on("disconnected", (data) => {
+    console.log("Socket.IO disconnected:", data);
+    showCustomPopup("Disconnected", "Real-time updates disabled", "warning");
+  });
+
+  window.socketClient.on("error", (error) => {
+    console.error("Socket.IO error:", error);
+  });
+
+  // Handle queue updates
+  window.socketClient.on("queueUpdate", (data) => {
+    console.log("Queue update received:", data);
+    handleQueueUpdate(data);
+  });
+
+  // Handle waiting room updates
+  window.socketClient.on("waitingRoomUpdate", (data) => {
+    console.log("Waiting room update received:", data);
+    handleWaitingRoomUpdate(data);
+  });
+
+  // Handle announcements
+  window.socketClient.on("announcement", (data) => {
+    console.log("Announcement received:", data);
+    showCustomPopup(
+      "Announcement",
+      data.message || "New hospital announcement",
+      "info"
+    );
+  });
+}
+
+// Handle real-time queue updates
+function handleQueueUpdate(data) {
+  // Refresh queue data when updates are received
+  loadQueueData();
+
+  // Show notification for specific events
+  if (data.type === "patient_joined") {
+    const patientName = data.queue.patient
+      ? `${data.queue.patient.firstName} ${data.queue.patient.lastName}`
+      : "New patient";
+    showCustomPopup(
+      "New Patient",
+      `${patientName} joined the ${data.queue.specialty} queue`,
+      "info"
+    );
+  } else if (data.type === "patient_called") {
+    const patientName = data.queue.patient
+      ? `${data.queue.patient.firstName} ${data.queue.patient.lastName}`
+      : "Patient";
+    showCustomPopup(
+      "Patient Called",
+      `${patientName} (${data.queue.queueNumber}) has been called`,
+      "success"
+    );
+  }
+}
+
+// Handle real-time waiting room updates
+function handleWaitingRoomUpdate(data) {
+  console.log("Waiting room update:", data);
+
+  // Update occupancy display if on waiting room page
+  if (window.location.pathname.includes("wait-management")) {
+    // Trigger waiting room refresh
+    if (
+      window.loadWaitingRooms &&
+      typeof window.loadWaitingRooms === "function"
+    ) {
+      window.loadWaitingRooms();
+    }
+  }
+
+  // Show notification for occupancy updates
+  if (data.type === "occupancy_updated") {
+    showCustomPopup(
+      "Occupancy Updated",
+      `Room occupancy: ${data.currentOccupancy}/${data.capacity} (${data.occupancyPercentage}%)`,
+      "info"
+    );
+  }
 }
 
 function startQueuePolling() {
