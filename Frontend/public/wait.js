@@ -251,13 +251,24 @@ function updateDetails(roomData) {
 // ===== Load Waiting Rooms Data =====
 async function loadWaitingRooms() {
   try {
+    console.log("Loading waiting rooms...");
     const data = await makeApiCall("/waiting-rooms");
-    currentWaitingRooms = data.data;
-    renderWaitingRooms(currentWaitingRooms);
-    populateDropdowns(); // Populate dropdowns with real data
+    console.log("Waiting rooms data received:", data);
+    
+    if (data.success && data.data) {
+      currentWaitingRooms = data.data;
+      renderWaitingRooms(currentWaitingRooms);
+      populateDropdowns(); // Populate dropdowns with real data
+    } else {
+      console.log("No waiting rooms data available");
+      currentWaitingRooms = [];
+      renderWaitingRooms([]);
+    }
   } catch (error) {
     console.error("Error loading waiting rooms:", error);
-    showPopup("Failed to load waiting rooms", "error");
+    showPopup("Failed to load waiting rooms. Please check your connection and try again.", "error");
+    currentWaitingRooms = [];
+    renderWaitingRooms([]);
   }
 }
 
@@ -294,7 +305,7 @@ function createRoomElement(room) {
   roomEl.innerHTML = `
     <h3>${room.name}</h3>
     <p>${room.description}</p>
-    <span>${room.currentOccupancy}/${room.capacity} (${room.occupancyPercentage}%) - Last updated: ${timeAgo}</span>
+    <span>${room.currentOccupancy}/${room.capacity} (${room.occupancyPercentage}%) - Status: ${room.status || 'unknown'} - Last updated: ${timeAgo}</span>
   `;
 
   // Attach click event

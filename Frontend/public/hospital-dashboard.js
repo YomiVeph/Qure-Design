@@ -1159,12 +1159,16 @@ function setupAutoRefresh() {
 
 // Add logout to logout link
 document.addEventListener("DOMContentLoaded", () => {
+  // Setup logout functionality
   const logoutLink = document.querySelector('.log-out a[href="login.html"]');
   if (logoutLink) {
     logoutLink.addEventListener("click", (e) => {
       e.preventDefault();
       showLogoutConfirmation();
     });
+    console.log("Logout event listener attached");
+  } else {
+    console.log("Logout link not found");
   }
 
   // Setup auto-refresh
