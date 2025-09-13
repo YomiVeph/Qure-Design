@@ -1059,6 +1059,7 @@ async function assignPatientsToRoom(queueIds, roomId) {
 }
 
 // Function to remove patients from room and trigger real-time updates
+// Note: This function is ready for when a remove-room endpoint is added to the backend
 async function removePatientsFromRoom(queueIds) {
   try {
     const token = localStorage.getItem("authToken");
@@ -1067,37 +1068,16 @@ async function removePatientsFromRoom(queueIds) {
       return;
     }
 
-    const response = await fetch(`${API_BASE_URL}/queues/remove-room`, {
-      method: "POST",
-      headers: {
-        "Authorization": `Bearer ${token}`,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        queueIds: queueIds
-      })
-    });
-
-    if (response.ok) {
-      const data = await response.json();
-      if (data.success) {
-        showCustomPopup("Success", `Successfully removed ${queueIds.length} patient(s) from waiting room.`, "success");
-        
-        // Trigger immediate occupancy update
-        setTimeout(() => {
-          updateWaitingRoomOccupancy();
-        }, 1000);
-        
-        return true;
-      } else {
-        showCustomPopup("Error", data.message || "Failed to remove patients from room.", "error");
-        return false;
-      }
-    } else {
-      const errorData = await response.json();
-      showCustomPopup("Error", errorData.message || "Failed to remove patients from room.", "error");
-      return false;
-    }
+    // TODO: Implement remove-room endpoint in backend
+    // For now, we'll show a message that this feature is coming soon
+    showCustomPopup("Feature Coming Soon", "Room removal functionality will be available in the next update.", "info");
+    
+    // Trigger occupancy update anyway to refresh data
+    setTimeout(() => {
+      updateWaitingRoomOccupancy();
+    }, 1000);
+    
+    return false; // Indicate that the operation was not completed
   } catch (error) {
     console.error("Error removing patients from room:", error);
     showCustomPopup("Error", "Network error. Please try again.", "error");
