@@ -28,11 +28,11 @@ export const getWaitingRooms = async (req, res) => {
     // Get current patient counts for each waiting room
     const waitingRoomsWithPatients = await Promise.all(
       waitingRooms.map(async (room) => {
-        // Count patients currently waiting in this room's specialties
+        // Count patients currently assigned to this room
         const patientCount = await Queue.countDocuments({
           hospitalName,
           status: { $in: ["waiting", "called"] },
-          specialty: { $in: room.specialties },
+          assignedRoom: room._id,
         });
 
         // Update occupancy if different
