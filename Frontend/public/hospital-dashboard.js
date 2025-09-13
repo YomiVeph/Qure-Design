@@ -445,8 +445,9 @@ function startQueuePolling() {
   if (window.__queuePoll) clearInterval(window.__queuePoll);
   window.__queuePoll = setInterval(async () => {
     await loadQueueData();
-    await loadAnalyticsData(); // Also refresh analytics with latest data
-  }, 5000);
+    // Removed loadAnalyticsData() to prevent frequent "Loading staff data..." messages
+    // Analytics will be refreshed by the 30-minute auto-refresh
+  }, 30000); // Changed from 5 seconds to 30 seconds
 }
 
 async function exportQueueCsv() {
@@ -823,8 +824,12 @@ async function loadDepartmentStatus() {
 async function loadWaitingRooms() {
   try {
     const token = localStorage.getItem("authToken");
-    if (!token) return;
+    if (!token) {
+      console.log("No auth token found, skipping waiting rooms load");
+      return;
+    }
 
+    console.log("Loading waiting rooms...");
     const response = await fetch(`${API_BASE_URL}/waiting-rooms`, {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -832,11 +837,19 @@ async function loadWaitingRooms() {
       },
     });
 
+    console.log("Waiting rooms response status:", response.status);
+
     if (response.ok) {
       const data = await response.json();
-      if (data.success) {
+      console.log("Waiting rooms data:", data);
+      if (data.success && data.data) {
         displayWaitingRooms(data.data);
+      } else {
+        console.log("No waiting rooms data or API returned success: false");
       }
+    } else {
+      const errorData = await response.json();
+      console.error("Failed to load waiting rooms:", errorData);
     }
   } catch (error) {
     console.error("Error loading waiting rooms:", error);
@@ -845,9 +858,17 @@ async function loadWaitingRooms() {
 
 // Display waiting rooms with patient counts
 function displayWaitingRooms(rooms) {
+  console.log("Displaying waiting rooms:", rooms);
+  
+  if (!rooms || rooms.length === 0) {
+    console.log("No rooms to display");
+    return;
+  }
+
   // Find or create a container for waiting rooms
   let container = document.getElementById("waiting-rooms-container");
   if (!container) {
+    console.log("Creating waiting rooms container");
     container = document.createElement("div");
     container.id = "waiting-rooms-container";
     container.className = "waiting-rooms-container";
@@ -855,7 +876,7 @@ function displayWaitingRooms(rooms) {
       <h3>Waiting Rooms</h3>
       <div class="rooms-grid" id="rooms-grid"></div>
     `;
-
+    
     // Insert after the occupancy section
     const occupancySection = document.querySelector(".length");
     if (occupancySection) {
@@ -863,6 +884,9 @@ function displayWaitingRooms(rooms) {
         container,
         occupancySection.nextSibling
       );
+      console.log("Waiting rooms container inserted after occupancy section");
+    } else {
+      console.log("Could not find occupancy section to insert after");
     }
   }
 
