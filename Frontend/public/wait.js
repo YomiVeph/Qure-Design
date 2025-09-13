@@ -251,16 +251,13 @@ function updateDetails(roomData) {
 // ===== Load Waiting Rooms Data =====
 async function loadWaitingRooms() {
   try {
-    console.log("Loading waiting rooms...");
     const data = await makeApiCall("/waiting-rooms");
-    console.log("Waiting rooms data received:", data);
     
     if (data.success && data.data) {
       currentWaitingRooms = data.data;
       renderWaitingRooms(currentWaitingRooms);
-      populateDropdowns(); // Populate dropdowns with real data
+      populateDropdowns();
     } else {
-      console.log("No waiting rooms data available");
       currentWaitingRooms = [];
       renderWaitingRooms([]);
     }

@@ -798,25 +798,17 @@ function updateDepartmentHeatmap(queues) {
   });
 }
 
-// Load staff data
+// Placeholder functions for future implementation
 async function loadStaffData() {
-  // This would typically fetch from staff API
-  console.log("Loading staff data...");
-  // For now, we'll use static data
+  // TODO: Implement staff data loading
 }
 
-// Load role data
 async function loadRoleData() {
-  // This would typically fetch from role API
-  console.log("Loading role data...");
-  // For now, we'll use static data
+  // TODO: Implement role data loading
 }
 
-// Load department status
 async function loadDepartmentStatus() {
-  // This would typically fetch from department status API
-  console.log("Loading department status...");
-  // For now, we'll use static data
+  // TODO: Implement department status loading
 }
 
 // Waiting rooms functionality moved to wait-management.html
@@ -932,9 +924,7 @@ function showLogoutConfirmation() {
   });
 }
 
-// Real-time waiting room occupancy tracking
-let waitingRoomOccupancy = {};
-let occupancyUpdateInterval = null;
+// Real-time waiting room occupancy tracking - moved to wait-management.html
 
 // Function to update waiting room occupancy in real-time
 async function updateWaitingRoomOccupancy() {
@@ -1166,9 +1156,6 @@ document.addEventListener("DOMContentLoaded", () => {
       e.preventDefault();
       showLogoutConfirmation();
     });
-    console.log("Logout event listener attached");
-  } else {
-    console.log("Logout link not found");
   }
 
   // Setup auto-refresh
