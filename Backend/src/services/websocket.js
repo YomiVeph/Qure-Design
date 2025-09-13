@@ -37,9 +37,9 @@ class WebSocketService {
       }
 
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      const user = await User.findById(decoded.id).select(
-        "_id role hospitalName"
-      );
+      // Handle both 'id' and 'userId' fields in JWT token
+      const userId = decoded.id || decoded.userId;
+      const user = await User.findById(userId).select("_id role hospitalName");
 
       if (!user) {
         return next(new Error("User not found"));

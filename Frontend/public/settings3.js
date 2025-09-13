@@ -45,7 +45,7 @@ const showNotification = (message, type = "success") => {
     border-left: 4px solid ${type === "success" ? "#10b981" : "#ef4444"};
     border-radius: 8px;
     box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-    z-index: 10000;
+    z-index: 1000;
     animation: slideInRight 0.3s ease;
     min-width: 300px;
     max-width: 400px;
@@ -388,7 +388,7 @@ style.textContent = `
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: 10001;
+    z-index: 1050;
   }
   
   .modal-overlay {

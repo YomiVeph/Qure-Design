@@ -124,12 +124,13 @@
         border-radius: 8px;
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         padding: 16px 20px;
-        z-index: 10000;
+        z-index: 1000;
         opacity: 0;
         transform: translateX(100%);
         transition: all 0.3s ease;
         min-width: 300px;
         border-left: 4px solid #3b82f6;
+        max-width: 400px;
       }
 
       .popup-toast.show {
@@ -153,6 +154,30 @@
         display: flex;
         align-items: center;
         gap: 12px;
+        position: relative;
+      }
+
+      .popup-close {
+        position: absolute;
+        top: -8px;
+        right: -8px;
+        background: rgba(0, 0, 0, 0.1);
+        border: none;
+        border-radius: 50%;
+        width: 24px;
+        height: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        font-size: 16px;
+        color: #6b7280;
+        transition: all 0.2s ease;
+      }
+
+      .popup-close:hover {
+        background: rgba(0, 0, 0, 0.2);
+        color: #374151;
       }
 
       .popup-toast-content i {
@@ -189,9 +214,10 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        z-index: 10000;
+        z-index: 1050;
         opacity: 0;
         transition: opacity 0.3s ease;
+        cursor: pointer;
       }
 
       .modal-overlay.show {

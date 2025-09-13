@@ -10,11 +10,15 @@ export const getWaitingRooms = async (req, res) => {
 
     // If hospitalName is not in token, get it from user database record
     if (!hospitalName) {
-      const user = await User.findById(req.user.id);
-      hospitalName = user?.hospitalName;
+      const userId = req.user.id;
+      const user = await User.findById(userId);
+      if (user) {
+        hospitalName = user.hospitalName;
+      }
     }
 
     if (!hospitalName) {
+      console.error("Hospital information not found for user:", req.user.id);
       return res.status(400).json({
         success: false,
         message: "Hospital information not found. Please log in again.",
@@ -44,7 +48,12 @@ export const getWaitingRooms = async (req, res) => {
 
         // Update occupancy if different
         if (patientCount !== room.currentOccupancy) {
-          await room.updateOccupancy(patientCount);
+          try {
+            await room.updateOccupancy(patientCount);
+          } catch (updateError) {
+            console.error("Error updating room occupancy:", updateError);
+            // Continue with the original room data if update fails
+          }
         }
 
         return {
@@ -61,9 +70,14 @@ export const getWaitingRooms = async (req, res) => {
     });
   } catch (error) {
     console.error("Get waiting rooms error:", error);
+    console.error("Error stack:", error.stack);
     res.status(500).json({
       success: false,
       message: "Internal server error",
+      error:
+        process.env.NODE_ENV === "development"
+          ? error.message
+          : "Failed to fetch waiting rooms",
     });
   }
 };

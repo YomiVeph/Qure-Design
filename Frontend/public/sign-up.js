@@ -233,10 +233,12 @@ async function handleStaffSignup(e) {
     const formData = validateFormData(staffForm, "staff");
     await registerUser(formData, "staff");
 
-    showSuccessMessage("Account created successfully! Redirecting...");
+    showSuccessMessage(
+      "Account created successfully! Check your email for the access code. Redirecting to access page..."
+    );
     setTimeout(() => {
-      window.location.href = "hospital-dashboard.html";
-    }, 1500);
+      window.location.href = "access.html";
+    }, 2000);
   } catch (error) {
     console.error("Registration error:", error);
 

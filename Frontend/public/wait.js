@@ -43,6 +43,9 @@ async function makeApiCall(endpoint, options = {}) {
 function showPopup(message, type = "info") {
   const popup = document.createElement("div");
   popup.className = `popup-toast popup-${type}`;
+  popup.setAttribute("role", "alert");
+  popup.setAttribute("aria-live", "polite");
+  popup.setAttribute("aria-label", "Notification");
 
   const icons = {
     success: "fa-check-circle",
@@ -55,6 +58,7 @@ function showPopup(message, type = "info") {
     <div class="popup-toast-content">
       <i class="fa-solid ${icons[type] || icons.info}"></i>
       <span>${message}</span>
+      <button class="popup-close" onclick="this.parentElement.parentElement.remove()" aria-label="Close notification">×</button>
     </div>
   `;
 
@@ -63,7 +67,7 @@ function showPopup(message, type = "info") {
   // Animate in
   setTimeout(() => popup.classList.add("show"), 100);
 
-  // Auto remove after 4 seconds
+  // Auto remove after 3 seconds (reduced from 4 seconds)
   setTimeout(() => {
     popup.classList.remove("show");
     setTimeout(() => {
@@ -71,7 +75,7 @@ function showPopup(message, type = "info") {
         document.body.removeChild(popup);
       }
     }, 300);
-  }, 4000);
+  }, 3000);
 }
 
 // ===== Dropdown Functionality =====
@@ -346,10 +350,13 @@ function getTimeAgo(date) {
 function showModal(title, content, onConfirm, confirmText = "Confirm") {
   const modal = document.createElement("div");
   modal.className = "modal-overlay";
+  modal.setAttribute("role", "dialog");
+  modal.setAttribute("aria-modal", "true");
+  modal.setAttribute("aria-labelledby", "modal-title");
   modal.innerHTML = `
     <div class="modal-content">
       <div class="modal-header">
-        <h3>${title}</h3>
+        <h3 id="modal-title">${title}</h3>
         <button class="modal-close">&times;</button>
       </div>
       <div class="modal-body">

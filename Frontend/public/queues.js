@@ -1182,7 +1182,7 @@ style.textContent = `
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 10000;
+    z-index: 1000;
     animation: fadeIn 0.3s ease;
   }
   
@@ -1357,7 +1357,7 @@ style.textContent = `
     border-radius: 8px;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
     padding: 16px 20px;
-    z-index: 10001;
+    z-index: 1050;
     transform: translateX(400px);
     transition: transform 0.3s ease;
     border-left: 4px solid #3b82f6;

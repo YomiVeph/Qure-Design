@@ -1,6 +1,15 @@
 import nodemailer from "nodemailer";
+import sgMail from "@sendgrid/mail";
 
-// Create transporter
+// Initialize SendGrid if API key is provided
+if (process.env.SENDGRID_API_KEY) {
+  sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+  console.log("SendGrid initialized successfully");
+} else {
+  console.log("SendGrid API key not found, falling back to Gmail");
+}
+
+// Create nodemailer transporter as fallback
 const transporter = nodemailer.createTransport({
   service: process.env.EMAIL_SERVICE || "gmail",
   auth: {
@@ -9,14 +18,60 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-// Verify transporter configuration
-transporter.verify((error, success) => {
-  if (error) {
-    console.log("Email transporter error:", error);
+// Verify transporter configuration (only for nodemailer)
+if (!process.env.SENDGRID_API_KEY) {
+  transporter.verify((error, success) => {
+    if (error) {
+      console.log("Email transporter error:", error);
+    } else {
+      console.log("Email server is ready to send messages");
+    }
+  });
+}
+
+// Helper function to send emails using SendGrid or nodemailer
+const sendEmailMessage = async (mailOptions) => {
+  if (process.env.SENDGRID_API_KEY) {
+    // Use SendGrid
+    const msg = {
+      to: mailOptions.to,
+      from: mailOptions.from,
+      subject: mailOptions.subject,
+      text: mailOptions.text,
+      html: mailOptions.html,
+    };
+
+    try {
+      const response = await sgMail.send(msg);
+      console.log(
+        "Email sent via SendGrid:",
+        response[0].headers["x-message-id"]
+      );
+      return {
+        success: true,
+        messageId: response[0].headers["x-message-id"],
+        provider: "SendGrid",
+      };
+    } catch (error) {
+      console.error("SendGrid error:", error);
+      throw error;
+    }
   } else {
-    console.log("Email server is ready to send messages");
+    // Use nodemailer (Gmail)
+    try {
+      const info = await transporter.sendMail(mailOptions);
+      console.log("Email sent via nodemailer:", info.messageId);
+      return {
+        success: true,
+        messageId: info.messageId,
+        provider: "nodemailer",
+      };
+    } catch (error) {
+      console.error("Nodemailer error:", error);
+      throw error;
+    }
   }
-});
+};
 
 // Send password reset email
 export const sendPasswordResetEmail = async (email, resetToken) => {
@@ -191,9 +246,12 @@ export const sendPasswordResetEmail = async (email, resetToken) => {
       `,
     };
 
-    const info = await transporter.sendMail(mailOptions);
-    console.log("Password reset email sent:", info.messageId);
-    return { success: true, messageId: info.messageId };
+    const result = await sendEmailMessage(mailOptions);
+    console.log(
+      `Password reset email sent via ${result.provider}:`,
+      result.messageId
+    );
+    return result;
   } catch (error) {
     console.error("Error sending password reset email:", error);
     throw new Error("Failed to send password reset email");
@@ -308,9 +366,9 @@ export const sendWelcomeEmail = async (email, firstName) => {
       `,
     };
 
-    const info = await transporter.sendMail(mailOptions);
-    console.log("Welcome email sent:", info.messageId);
-    return { success: true, messageId: info.messageId };
+    const result = await sendEmailMessage(mailOptions);
+    console.log(`Welcome email sent via ${result.provider}:`, result.messageId);
+    return result;
   } catch (error) {
     console.error("Error sending welcome email:", error);
     throw new Error("Failed to send welcome email");
@@ -561,9 +619,12 @@ export const sendAccessCodeEmail = async (
       `,
     };
 
-    const info = await transporter.sendMail(mailOptions);
-    console.log("Access code email sent:", info.messageId);
-    return { success: true, messageId: info.messageId };
+    const result = await sendEmailMessage(mailOptions);
+    console.log(
+      `Access code email sent via ${result.provider}:`,
+      result.messageId
+    );
+    return result;
   } catch (error) {
     console.error("Error sending access code email:", error);
     throw new Error("Failed to send access code email");
@@ -583,8 +644,11 @@ export const sendEmail = async ({ to, subject, html, text }) => {
       text,
     };
 
-    const result = await transporter.sendMail(mailOptions);
-    console.log("Email sent successfully:", result.messageId);
+    const result = await sendEmailMessage(mailOptions);
+    console.log(
+      `Email sent successfully via ${result.provider}:`,
+      result.messageId
+    );
     return result;
   } catch (error) {
     console.error("Error sending email:", error);

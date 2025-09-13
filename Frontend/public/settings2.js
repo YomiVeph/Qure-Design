@@ -24,7 +24,7 @@ const showNotification = (message, type = "success") => {
     color: white;
     padding: 1rem 2rem;
     border-radius: 8px;
-    z-index: 10000;
+    z-index: 1000;
     animation: slideIn 0.3s ease;
   `;
   document.body.appendChild(notification);

@@ -24,7 +24,7 @@ function showCustomPopup(title, message, type = "info") {
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 10000;
+    z-index: 1000;
     animation: fadeIn 0.3s ease;
   `;
 
@@ -946,7 +946,7 @@ function showLogoutConfirmation() {
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 10000;
+    z-index: 1000;
     animation: fadeIn 0.3s ease;
   `;
 

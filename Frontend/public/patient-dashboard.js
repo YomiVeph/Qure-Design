@@ -368,7 +368,7 @@ function showCustomPopup(title, message, type = "info", options = {}) {
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 10000;
+    z-index: 1000;
     backdrop-filter: blur(8px);
     animation: fadeIn 0.3s ease;
   `;
@@ -583,7 +583,7 @@ function showConfirmDialog(title, message, options = {}) {
       display: flex;
       align-items: center;
       justify-content: center;
-      z-index: 10000;
+      z-index: 1000;
       backdrop-filter: blur(8px);
       animation: fadeIn 0.3s ease;
     `;
@@ -903,7 +903,7 @@ const showQueueSelectionModal = () => {
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 10000;
+    z-index: 1000;
     animation: fadeIn 0.3s ease;
   `;
 
@@ -1176,7 +1176,7 @@ const showRescheduleModal = (appointmentId) => {
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 10000;
+    z-index: 1000;
     animation: fadeIn 0.3s ease;
   `;
 
