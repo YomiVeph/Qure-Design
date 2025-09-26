@@ -841,8 +841,13 @@ html {
 }
 @media screen and (max-width: 900px) {
   .role-card {
-    width: 30rem;
+    width: 40rem;
     height: 36rem;
+  }
+
+  .role-card img {
+    height: 8rem;
+    width: 8rem;
   }
 }
 @media screen and (max-width: 820px) {
@@ -856,7 +861,7 @@ html {
   }
   .role-card {
     width: 28rem;
-    height: 40rem;
+    height: 36rem;
   }
   .second-part {
     width: 100%;
@@ -917,7 +922,6 @@ html {
   .feature {
     padding: 3rem 2rem;
     width: 100%;
-    max-width: 500px;
   }
 
   .features-card {
@@ -1319,6 +1323,7 @@ html {
     justify-content: center;
   }
   .sign-section-2 button {
+    display: none;
     font-size: 1.4rem;
     padding: 11px;
     border-radius: 10px;
