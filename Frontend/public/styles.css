@@ -1326,9 +1326,6 @@ html {
     box-shadow: 0 0.01rem rgba(0, 0, 0, 0.021);
   }
 
-  .semi-footer-btn {
-    display: none;
-  }
   .footer-links h4 {
     font-size: 14px;
   }
