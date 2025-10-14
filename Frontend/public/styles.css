@@ -73,6 +73,38 @@ html {
 .user-profile {
   display: flex;
   align-items: center;
+  gap: 1.6rem;
+}
+
+.login-text {
+  font-size: 1.4rem;
+  font-weight: 500;
+  color: #1e3a8a;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.login-text:hover {
+  color: #3b82f6;
+}
+
+.join-queue-btn {
+  background-color: #1e3a8a;
+  color: white;
+  padding: 0.8rem 1.6rem;
+  border-radius: 0.8rem;
+  text-decoration: none;
+  font-size: 1.4rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  border: none;
+  cursor: pointer;
+}
+
+.join-queue-btn:hover {
+  background-color: #3b82f6;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(30, 58, 138, 0.3);
 }
 
 .user-icon {
@@ -888,6 +920,15 @@ html {
     padding: 1.2rem 1.6rem;
   }
 
+  .login-text {
+    display: none;
+  }
+
+  .join-queue-btn {
+    padding: 0.6rem 1.2rem;
+    font-size: 1.2rem;
+  }
+
   .main-section {
     flex-direction: row;
     justify-content: space-evenly;
@@ -1048,6 +1089,11 @@ html {
   }
 }
 @media screen and (max-width: 600px) {
+  .join-queue-btn {
+    padding: 0.5rem 1rem;
+    font-size: 1.1rem;
+  }
+
   .sign-section {
     display: flex;
   }
@@ -1332,6 +1378,14 @@ html {
   }
 }
 @media screen and (max-width: 430px) {
+  .join-queue-btn {
+    padding: 0.4rem 0.8rem;
+    font-size: 1rem;
+  }
+
+  .user-profile {
+    gap: 1rem;
+  }
   .role-card {
     width: 22rem;
     height: 30rem;
