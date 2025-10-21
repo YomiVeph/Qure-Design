@@ -77,7 +77,7 @@ const sendEmailMessage = async (mailOptions) => {
 export const sendPasswordResetEmail = async (email, resetToken) => {
   try {
     const resetUrl = `${
-      process.env.FRONTEND_URL || "http://localhost:5500"
+      process.env.FRONTEND_URL || "https://qure-design.vercel.app"
     }/reset-password.html?token=${resetToken}`;
 
     const mailOptions = {
@@ -351,7 +351,7 @@ export const sendWelcomeEmail = async (email, firstName) => {
               
               <div style="text-align: center;">
                 <a href="${
-                  process.env.FRONTEND_URL || "http://localhost:5500"
+                  process.env.FRONTEND_URL || "https://qure-design.vercel.app"
                 }/login.html" class="button">Get Started</a>
               </div>
             </div>
@@ -384,7 +384,7 @@ export const sendAccessCodeEmail = async (
 ) => {
   try {
     const accessUrl = `${
-      process.env.FRONTEND_URL || "http://localhost:5500"
+      process.env.FRONTEND_URL || "https://qure-design.vercel.app"
     }/access.html`;
 
     const mailOptions = {

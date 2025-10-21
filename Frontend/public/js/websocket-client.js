@@ -22,7 +22,7 @@ class SocketClient {
 
     const socketUrl =
       window.location.hostname === "localhost"
-        ? "http://localhost:4000"
+        ? "http://localhost:10000"
         : "https://qure-design.onrender.com";
 
     try {
