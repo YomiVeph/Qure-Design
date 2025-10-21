@@ -1,15 +1,10 @@
 {
-  "version": 2,
-  "builds": [
+  "buildCommand": "echo 'No build needed for static site'",
+  "outputDirectory": "Frontend/public",
+  "rewrites": [
     {
-      "src": "Frontend/public/**",
-      "use": "@vercel/static"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "/Frontend/public/$1"
+      "source": "/(.*)",
+      "destination": "/$1"
     }
   ]
 }
