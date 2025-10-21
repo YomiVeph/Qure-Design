@@ -1,0 +1,8 @@
+Backend/
+node_modules/
+*.md
+!README.md
+render.yaml
+.git/
+.gitignore
+
